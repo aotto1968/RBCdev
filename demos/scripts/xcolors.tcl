@@ -1,31 +1,31 @@
-#!../bltwish
+#!/usr/bin/env wish
 #
 #  Tk version of xcolors
 #
 
-package require BLT
+package require rbc
 # --------------------------------------------------------------------------
-# Starting with Tcl 8.x, the BLT commands are stored in their own 
-# namespace called "blt".  The idea is to prevent name clashes with
+# Starting with Tcl 8.x, the RBC commands are stored in their own 
+# namespace called "rbc".  The idea is to prevent name clashes with
 # Tcl commands and variables from other packages, such as a "table"
 # command in two different packages.  
 #
-# You can access the BLT commands in a couple of ways.  You can prefix
-# all the BLT commands with the namespace qualifier "blt::"
+# You can access the RBC commands in a couple of ways.  You can prefix
+# all the RBC commands with the namespace qualifier "rbc::"
 #  
-#    blt::graph .g
-#    blt::table . .g -resize both
+#    rbc::graph .g
+#    rbc::table . .g -resize both
 # 
 # or you can import all the command into the global namespace.
 #
-#    namespace import blt::*
+#    namespace import rbc::*
 #    graph .g
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
 if { $tcl_version >= 8.0 } {
-    namespace import blt::*
-    namespace import -force blt::tile::*
+    namespace import rbc::*
+    namespace import -force rbc::tile::*
 }
 source scripts/demo.tcl
 set numCols 0

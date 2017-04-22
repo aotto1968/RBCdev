@@ -109,10 +109,10 @@ foreach {label yData fg bg stipple bd} $attributes {
 	-stipple $stipple
 }
 
-Blt_ZoomStack $graph
-Blt_Crosshairs $graph
-Blt_ActiveLegend $graph
-Blt_ClosestPoint $graph
+Rbc_ZoomStack $graph
+Rbc_Crosshairs $graph
+Rbc_ActiveLegend $graph
+Rbc_ClosestPoint $graph
 
 $graph marker bind all <B2-Motion> {
     set coords [%W invtransform %x %y]

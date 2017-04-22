@@ -1,4 +1,4 @@
-#bltdebug 100
+#rbcdebug 100
 
 array set cursors {
     w left_side

@@ -57,9 +57,9 @@ $graph element configure line0 \
     -dashes  { 2 4 2 } \
     -linewidth 2
 
-Blt_ZoomStack $graph
-Blt_Crosshairs $graph
-Blt_ActiveLegend $graph
-Blt_ClosestPoint $graph
-Blt_PrintKey $graph
+Rbc_ZoomStack $graph
+Rbc_Crosshairs $graph
+Rbc_ActiveLegend $graph
+Rbc_ClosestPoint $graph
+Rbc_PrintKey $graph
 

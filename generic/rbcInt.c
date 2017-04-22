@@ -133,11 +133,20 @@ Rbc_Init (interp)
         return TCL_ERROR;
     }
 
+    if (Tcl_Export(interp, nsPtr, "htext", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "bitmap", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
 
     Rbc_VectorInit(interp);
     Rbc_GraphInit(interp);
     Rbc_WinopInit(interp);
     Rbc_BusyInit(interp);
+    Rbc_HtextInit(interp);
+    Rbc_BitmapInit(interp);
     Rbc_InitEpsCanvasItem(interp);
 
     return TCL_OK;

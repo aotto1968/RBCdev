@@ -1417,4 +1417,4 @@ Rbc_TilePolygon(
                      nPoints, Complex, CoordModeOrigin);
     }
 }
-#endif
+#endif // WIN32

@@ -1,6 +1,7 @@
 #!/usr/bin/env wish
 
 package require rbc
+namespace import rbc::*
 # --------------------------------------------------------------------------
 # Starting with Tcl 8.x, the RNC commands are stored in their own 
 # namespace called "rbc".  The idea is to prevent name clashes with
@@ -21,10 +22,7 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 
@@ -163,14 +161,14 @@ Rbc_ActiveLegend .bc
 Rbc_ClosestPoint .bc
 
 if 0 {
-set printer [printer open [lindex [printer names] 0]]
-printer getattr $printer attrs
-set attrs(Orientation) Portrait
-printer setattr $printer attrs
-after 2000 {
-	$graph print2 $printer
-	printer close $printer
-}
+  set printer [printer open [lindex [printer names] 0]]
+  printer getattr $printer attrs
+  set attrs(Orientation) Portrait
+  printer setattr $printer attrs
+  after 2000 {
+          $graph print2 $printer
+          printer close $printer
+  }
 }
 
 .bc axis bind x <Enter> {

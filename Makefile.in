@@ -35,8 +35,8 @@
 # $(srcdir) or in the generic, win or unix subdirectory.
 #========================================================================
 
-PKG_SOURCES	= @PKG_SOURCES@
-PKG_OBJECTS	= @PKG_OBJECTS@
+PKG_SOURCES	= @PKG_SOURCES@ rbcHtext.c rbcBitmap.c
+PKG_OBJECTS	= @PKG_OBJECTS@ rbcHtext.o rbcBitmap.o
 
 PKG_STUB_SOURCES = @PKG_STUB_SOURCES@
 PKG_STUB_OBJECTS = @PKG_STUB_OBJECTS@

@@ -1,4 +1,4 @@
-blt::bitmap define globe.0 { 
+rbc::bitmap define globe.0 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -15,7 +15,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.1 { 
+rbc::bitmap define globe.1 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -32,7 +32,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1e, 0x00};
 }
 
-blt::bitmap define globe.2 {
+rbc::bitmap define globe.2 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -49,7 +49,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x1c, 0x00};
 }
 
-blt::bitmap define globe.3 { 
+rbc::bitmap define globe.3 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -66,7 +66,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x18, 0x00};
 }
 
-blt::bitmap define globe.4 { 
+rbc::bitmap define globe.4 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -83,7 +83,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x10, 0x00};
 }
 
-blt::bitmap define globe.5 {
+rbc::bitmap define globe.5 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -100,7 +100,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x10, 0x00};
 }
 
-blt::bitmap define globe.6 { 
+rbc::bitmap define globe.6 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -117,7 +117,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00};
 }
 
-blt::bitmap define globe.7 { 
+rbc::bitmap define globe.7 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -134,7 +134,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00};
 }
 
-blt::bitmap define globe.8 { 
+rbc::bitmap define globe.8 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -151,7 +151,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00};
 }
 
-blt::bitmap define globe.9 {
+rbc::bitmap define globe.9 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -168,7 +168,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00};
 }
 
-blt::bitmap define globe.10 {
+rbc::bitmap define globe.10 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -185,7 +185,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00};
 }
 
-blt::bitmap define globe.11 { 
+rbc::bitmap define globe.11 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -202,7 +202,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00};
 }
 
-blt::bitmap define globe.12 {
+rbc::bitmap define globe.12 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -219,7 +219,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 }
 
-blt::bitmap define globe.13 {
+rbc::bitmap define globe.13 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -236,7 +236,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00};
 }
 
-blt::bitmap define globe.14 {
+rbc::bitmap define globe.14 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -253,7 +253,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00};
 }
 
-blt::bitmap define globe.15 {
+rbc::bitmap define globe.15 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -270,7 +270,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00};
 }
 
-blt::bitmap define globe.16 {
+rbc::bitmap define globe.16 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -287,7 +287,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x00, 0x00};
 }
 
-blt::bitmap define globe.17 {
+rbc::bitmap define globe.17 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -304,7 +304,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x01, 0x00};
 }
 
-blt::bitmap define globe.18 {
+rbc::bitmap define globe.18 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -321,7 +321,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x03, 0x00};
 }
 
-blt::bitmap define globe.19 {
+rbc::bitmap define globe.19 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -338,7 +338,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x07, 0x00};
 }
 
-blt::bitmap define globe.20 {
+rbc::bitmap define globe.20 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -355,7 +355,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x0f, 0x00};
 }
 
-blt::bitmap define globe.21 {
+rbc::bitmap define globe.21 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -372,7 +372,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.22 {
+rbc::bitmap define globe.22 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -389,7 +389,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.23 {
+rbc::bitmap define globe.23 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -406,7 +406,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.24 {
+rbc::bitmap define globe.24 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -423,7 +423,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.25 {
+rbc::bitmap define globe.25 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -440,7 +440,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.26 {
+rbc::bitmap define globe.26 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -457,7 +457,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xf0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.27 {
+rbc::bitmap define globe.27 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -474,7 +474,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.28 {
+rbc::bitmap define globe.28 {
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {
@@ -491,7 +491,7 @@ static char globe_bits[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0x1f, 0x00};
 }
 
-blt::bitmap define globe.29 { 
+rbc::bitmap define globe.29 { 
 #define globe_width 32
 #define globe_height 32
 static char globe_bits[] = {

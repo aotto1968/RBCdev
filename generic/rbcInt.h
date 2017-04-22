@@ -667,6 +667,12 @@ Tcl_AppInitProc Rbc_WinopInit;
 #ifndef NO_SPLINE
 Tcl_AppInitProc Rbc_SplineInit;
 #endif
+#ifndef NO_HTEXT
+Tcl_AppInitProc Rbc_HtextInit;
+#endif
+#ifndef NO_BITMAP
+Tcl_AppInitProc Rbc_BitmapInit;
+#endif
 
 char *RbcStrdup _ANSI_ARGS_((CONST char *ptr));
 void *RbcCalloc _ANSI_ARGS_((unsigned int nElem, size_t size));

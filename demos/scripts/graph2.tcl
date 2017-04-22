@@ -130,9 +130,9 @@ $graph element create line1 \
     -x x \
     -y sinX 
 
-Blt_ZoomStack $graph
-Blt_Crosshairs $graph
-#Blt_ActiveLegend $graph
-Blt_ClosestPoint $graph
-Blt_PrintKey $graph
+Rbc_ZoomStack $graph
+Rbc_Crosshairs $graph
+#Rbc_ActiveLegend $graph
+Rbc_ClosestPoint $graph
+Rbc_PrintKey $graph
 

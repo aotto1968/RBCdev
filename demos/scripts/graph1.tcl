@@ -66,7 +66,7 @@ $graph element create line1 -x $X -y $Y2
 $graph element create line2 -x $X -y $Y3 
 $graph element create line3 -x $X -y $Y1 
 
-Blt_ZoomStack $graph
-Blt_Crosshairs $graph
-Blt_ActiveLegend $graph
-Blt_ClosestPoint $graph
+Rbc_ZoomStack $graph
+Rbc_Crosshairs $graph
+Rbc_ActiveLegend $graph
+Rbc_ClosestPoint $graph
