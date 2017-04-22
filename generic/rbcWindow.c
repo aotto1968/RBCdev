@@ -684,11 +684,11 @@ Rbc_MakeTransparentWindowExist(tkwin, parent, isBusy)
     Window parent; /* Parent window. */
     int isBusy; /*  */
 {
-    TkWindow *winPtr = (TkWindow *) tkwin;
+    register TkWindow *winPtr = (TkWindow *) tkwin;
     TkWindow *winPtr2;
     Tcl_HashEntry *hPtr;
-    int notUsed;
-    TkDisplay *dispPtr;
+    int isNew;
+    //TkDisplay *dispPtr;
 #ifdef WIN32
     HWND hParent;
     int style;
@@ -711,7 +711,6 @@ Rbc_MakeTransparentWindowExist(tkwin, parent, isBusy)
         }
     }
 #endif
-
     /* Create a transparent window and put it on top.  */
 
 #ifdef WIN32
@@ -738,19 +737,21 @@ Rbc_MakeTransparentWindowExist(tkwin, parent, isBusy)
 
     winPtr->window = XCreateWindow(winPtr->display, parent,
                                    winPtr->changes.x, winPtr->changes.y,
-                                   (unsigned)winPtr->changes.width,	/* width */
-                                   (unsigned)winPtr->changes.height,	/* height */
-                                   (unsigned)winPtr->changes.border_width,	/* border_width */
-                                   winPtr->depth,		/* depth */
-                                   InputOnly,		/* class */
-                                   winPtr->visual,		/* visual */
-                                   mask,			/* valuemask */
-                                   &(winPtr->atts)		/* attributes */ );
+                                   (unsigned)winPtr->changes.width,	    /* width */
+                                   (unsigned)winPtr->changes.height,	    /* height */
+                                   (unsigned)winPtr->changes.border_width,  /* border_width */
+                                   winPtr->depth,		            /* depth */
+                                   InputOnly,		                    /* class */
+                                   winPtr->visual,		            /* visual */
+                                   mask,			            /* valuemask */
+                                   &(winPtr->atts)		            /* attributes */
+                      );
 #endif /* WIN32 */
-
-    dispPtr = winPtr->dispPtr;
-    hPtr = Tcl_CreateHashEntry(&(dispPtr->winTable), (char *)winPtr->window,
-                               &notUsed);
+M2
+    //dispPtr = winPtr->dispPtr;
+    //hPtr = Tcl_CreateHashEntry(&winPtr->dispPtr->winTable, (char *)winPtr->window, &isNew);
+    hPtr = Tcl_CreateHashEntry(&winPtr->dispPtr->winTable, (char *)100, &isNew);
+M3
     Tcl_SetHashValue(hPtr, winPtr);
     winPtr->dirtyAtts = 0;
     winPtr->dirtyChanges = 0;

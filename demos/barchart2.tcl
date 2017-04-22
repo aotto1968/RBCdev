@@ -21,10 +21,8 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 
@@ -140,7 +138,7 @@ htext .footer -text {    Hit the %%
 
 barchart .graph -tile bgTexture 
 
-vector X Y0 Y1 Y2 Y3 Y4
+vector create X Y0 Y1 Y2 Y3 Y4
 
 X set { 1 2 3 4 5 6 7 8 9 }
 Y0 set { 

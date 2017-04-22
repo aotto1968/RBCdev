@@ -1,7 +1,6 @@
 #!/usr/bin/env wish
 
 package require rbc
-namespace import rbc::*
 # --------------------------------------------------------------------------
 # Starting with Tcl 8.x, the RNC commands are stored in their own 
 # namespace called "rbc".  The idea is to prevent name clashes with
@@ -22,6 +21,7 @@ namespace import rbc::*
 #
 # --------------------------------------------------------------------------
 
+namespace import rbc::*
 cd [file dirname [info script]]
 
 source scripts/demo.tcl

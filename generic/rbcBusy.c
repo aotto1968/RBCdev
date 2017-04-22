@@ -574,7 +574,10 @@ CreateBusy(interp, tkRef)
         parent = (Window) Tk_GetHWND(parent);
 #endif
     }
+MVvar("tkBusy<%p>, parent<%ui>, TRUE<%d>", tkBusy, (unsigned int)parent, TRUE);
+M0
     Rbc_MakeTransparentWindowExist(tkBusy, parent, TRUE);
+M1
 
 #if BUSYDEBUG
     PurifyPrintf("menubar1: width=%d, height=%d\n", busyPtr->width,

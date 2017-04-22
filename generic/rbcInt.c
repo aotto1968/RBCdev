@@ -124,10 +124,11 @@ Rbc_Init (interp)
     if (Tcl_Export(interp, nsPtr, "barchart", 0) != TCL_OK) {
         return TCL_ERROR;
     }
-
+/*
     if (Tcl_Export(interp, nsPtr, "busy", 0) != TCL_OK) {
         return TCL_ERROR;
     }
+*/
 
     if (Tcl_Export(interp, nsPtr, "winop", 0) != TCL_OK) {
         return TCL_ERROR;
@@ -141,12 +142,17 @@ Rbc_Init (interp)
         return TCL_ERROR;
     }
 
+    if (Tcl_Export(interp, nsPtr, "table", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
     Rbc_VectorInit(interp);
     Rbc_GraphInit(interp);
     Rbc_WinopInit(interp);
-    Rbc_BusyInit(interp);
+    // Rbc_BusyInit(interp);
     Rbc_HtextInit(interp);
     Rbc_BitmapInit(interp);
+    Rbc_TableInit(interp);
     Rbc_InitEpsCanvasItem(interp);
 
     return TCL_OK;

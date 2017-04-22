@@ -401,3 +401,37 @@ Rbc_ChainAllocLink(extraSize)
     }
     return linkPtr;
 }
+
+/*
+ *----------------------------------------------------------------------
+ *
+ * Rbc_ChainGetNthLink --
+ *
+ *      Find the link at the given position in the chain.
+ *
+ * Results:
+ *      Returns the pointer to the link, if that numbered link
+ *      exists. Otherwise NULL.
+ *
+ *----------------------------------------------------------------------
+ */
+Rbc_ChainLink *
+Rbc_ChainGetNthLink(chainPtr, position)
+    Rbc_Chain *chainPtr;        /* Chain to traverse */
+    int position;               /* Index of link to select from front
+                                 * or back of the chain. */
+{   
+    Rbc_ChainLink *linkPtr;
+
+    if (chainPtr != NULL) {
+        for (linkPtr = chainPtr->headPtr; linkPtr != NULL;
+            linkPtr = linkPtr->nextPtr) {
+            if (position == 0) {
+                return linkPtr;
+            }
+            position--;
+        }
+    }
+    return NULL;
+}
+

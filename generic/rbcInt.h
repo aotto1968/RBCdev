@@ -673,6 +673,9 @@ Tcl_AppInitProc Rbc_HtextInit;
 #ifndef NO_BITMAP
 Tcl_AppInitProc Rbc_BitmapInit;
 #endif
+#ifndef NO_TABLE
+Tcl_AppInitProc Rbc_TableInit;
+#endif
 
 char *RbcStrdup _ANSI_ARGS_((CONST char *ptr));
 void *RbcCalloc _ANSI_ARGS_((unsigned int nElem, size_t size));

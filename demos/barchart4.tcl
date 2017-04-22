@@ -21,10 +21,8 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 
@@ -109,7 +107,7 @@ foreach { color stipple } $attributes {
     incr count
 }
 
-vector x y w
+vector create x y w
 
 x seq 0 1000
 y expr random(x)*90.0

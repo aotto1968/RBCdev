@@ -219,9 +219,9 @@ proc rbc::PopZoom { graph } {
 	set zoomInfo($graph,stack) [lrange $zoomStack 1 end]
 	eval $cmd
 	rbc::ZoomTitleLast $graph
-	busy hold $graph
+	tk busy hold $graph
 	update
-	busy release $graph
+	tk busy forget $graph
 	after 2000 "rbc::DestroyZoomTitle $graph"
     } else {
 	catch { $graph marker delete "zoomTitle" }
@@ -279,9 +279,9 @@ proc rbc::PushZoom { graph } {
 	    }
 	}
     }
-    busy hold $graph 
+    tk busy hold $graph 
     update;				# This "update" redraws the graph
-    busy release $graph
+    tk busy forget $graph
 }
 
 #
