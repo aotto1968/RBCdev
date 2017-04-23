@@ -841,6 +841,23 @@ ReadBytes(sinkPtr)
 }
 
 #define IsOpenSink(sinkPtr)  ((sinkPtr)->fd != -1)
+/*
+static inline int IsOpenSink(Sink *sinkPtr) {
+  printC(sinkPtr->name)
+  printI(sinkPtr->fd)
+  return ((sinkPtr)->fd != -1);
+}
+*/
+
+// get call to "Tcl_FileProc" of "Tcl_CreateFileHandler" AFTER
+// Tcl_DeleteFileHandler
+static void
+DummyProc(clientData, mask)
+    ClientData clientData;	/* File output information. */
+    int mask;			/* Not used. */
+{
+// dummy… do nothing
+}
 
 static void
 CloseSink(interp, sinkPtr) 
@@ -853,7 +870,10 @@ CloseSink(interp, sinkPtr)
 	Tcl_DeleteFileHandler(sinkPtr->file);
 	Tcl_FreeFile(sinkPtr->file);
 #else
+//MVvar("Tcl_DeleteFileHandler<%d>",sinkPtr->fd)
 	Tcl_DeleteFileHandler(sinkPtr->fd);
+        // really disable
+        Tcl_CreateFileHandler(sinkPtr->fd,TCL_READABLE,DummyProc,NULL);
 #endif
 	sinkPtr->file = (Tcl_File)NULL;
 	sinkPtr->fd = -1;
@@ -1363,11 +1383,11 @@ CreateSinkHandler(bgPtr, sinkPtr, proc)
     int flags;
 
     flags = fcntl(sinkPtr->fd, F_GETFL);
-#ifdef O_NONBLOCK
+# ifdef O_NONBLOCK
     flags |= O_NONBLOCK;
-#else
+# else
     flags |= O_NDELAY;
-#endif
+# endif
     if (fcntl(sinkPtr->fd, F_SETFL, flags) < 0) {
 	Tcl_AppendResult(bgPtr->interp, "can't set file descriptor ",
 	    Rbc_Itoa(sinkPtr->fd), " to non-blocking:",
@@ -1378,7 +1398,7 @@ CreateSinkHandler(bgPtr, sinkPtr, proc)
 #ifdef FILEHANDLER_USES_TCLFILES
     sinkPtr->file = Tcl_GetFile((ClientData)sinkPtr->fd, TCL_UNIX_FD);
     Tcl_CreateFileHandler(sinkPtr->file, TCL_READABLE, proc, bgPtr);
-#else
+# else
     Tcl_CreateFileHandler(sinkPtr->fd, TCL_READABLE, proc, bgPtr);
 #endif /* FILEHANDLER_USES_TCLFILES */
     return TCL_OK;
@@ -1388,7 +1408,6 @@ static void
 DisableTriggers(bgPtr)
     BackgroundInfo *bgPtr;	/* Background info record. */
 {
-
     if (bgPtr->traced) {
 	Tcl_UntraceVar(bgPtr->interp, bgPtr->statVar, TRACE_FLAGS, 
 		VariableProc, bgPtr);
@@ -1467,12 +1486,12 @@ DestroyBackgroundInfo(bgPtr)
 	    }
 #ifdef WIN32
 	    Tcl_DetachPids(1, (Tcl_Pid *)&bgPtr->procArr[i].pid);
-#else
-#if (TCL_MAJOR_VERSION == 7)
+# else
+#   if (TCL_MAJOR_VERSION == 7)
 	    Tcl_DetachPids(1, &bgPtr->procArr[i]);
-#else
+#   else
 	    Tcl_DetachPids(1, (Tcl_Pid *)bgPtr->procArr[i]);
-#endif /* TCL_MAJOR_VERSION == 7 */
+#   endif /* TCL_MAJOR_VERSION == 7 */
 #endif /* WIN32 */
 	}
     }

@@ -21,10 +21,8 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 
@@ -88,12 +86,16 @@ bitmap define rbc.4 {{40 40} {
     fe ff 00 00 00 00 00 00}
 }
 
-set program /usr/bin/env wish
 if { [info exists tcl_platform ] } {
     puts stderr $tcl_platform(platform)
-    if { $tcl_platform(platform) == "windows" } {
+    switch -exact $tcl_platform(platform) {
+      "windows" {
         set shells [glob C:/Program\ Files/Tcl/bin/tclsh8*.exe ]
   	set program [lindex $shells 0]
+      }
+      "unix" {
+        set program [exec which wish]
+      }
     }
 }
 if { ![file executable $program] } {
@@ -180,9 +182,9 @@ proc Start { command } {
     if { $animate(index) < 0 } {
         set results {}
         set animate(index) 0
-        eval "bgexec results -error barney -output fred -killsignal SIGINT \
+        bgexec results -error barney -output fred -killsignal SIGINT \
 	    -onoutput DisplayOutput -onerror DisplayErrors -linebuffered no \
-		$command &"
+		{*}$command &
         Animate
     }
 }
