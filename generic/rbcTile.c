@@ -901,15 +901,15 @@ TileRegion(srcDC, destDC, maskDC, clientPtr, x, y, width, height)
                 SetBkColor(destDC, RGB(255, 255, 255));
                 SetTextColor(destDC, RGB(0, 0, 0));
 #endif
-                BitBlt(destDC, destX, destY, destWidth, destHeight, maskDC,
+                BitRbc(destDC, destX, destY, destWidth, destHeight, maskDC,
                        0, 0, SRCAND);
-                BitBlt(destDC, destX, destY, destWidth, destHeight, srcDC,
+                BitRbc(destDC, destX, destY, destWidth, destHeight, srcDC,
                        srcX, srcY, SRCPAINT);
 #ifdef notdef
                 TkWinReleaseDrawableDC(tilePtr->mask, maskDC, &maskState);
 #endif
             } else {		/* Opaque tile. */
-                BitBlt(destDC, destX, destY, destWidth, destHeight,
+                BitRbc(destDC, destX, destY, destWidth, destHeight,
                        srcDC, srcX, srcY, SRCCOPY);
             }
         }

@@ -212,7 +212,7 @@ Rbc_DrawableToColorImage(tkwin, drawable, x, y, width, height, inputGamma)
     }
     image = NULL;
     /* Copy the window contents to the memory surface. */
-    if (!BitBlt(memDC, 0, 0, width, height, hDC, x, y, SRCCOPY)) {
+    if (!BitRbc(memDC, 0, 0, width, height, hDC, x, y, SRCCOPY)) {
 #ifdef notdef
         PurifyPrintf("can't blit: %s\n", Rbc_LastError());
 #endif
@@ -681,7 +681,7 @@ Rbc_ScaleBitmap(tkwin, srcBitmap, srcWidth, srcHeight, destWidth, destHeight)
     src = TkWinGetDrawableDC(display, srcBitmap, &srcState);
     dest = TkWinGetDrawableDC(display, destBitmap, &destState);
 
-    StretchBlt(dest, 0, 0, destWidth, destHeight, src, 0, 0,
+    StretchRbc(dest, 0, 0, destWidth, destHeight, src, 0, 0,
                srcWidth, srcHeight, SRCCOPY);
 
     TkWinReleaseDrawableDC(srcBitmap, src, &srcState);
@@ -1006,7 +1006,7 @@ Rbc_BlendColorImage(
     }
     image = NULL;
     /* Copy the window contents to the memory surface. */
-    if (!BitBlt(memDC, 0, 0, width, height, hDC, regionPtr->left,
+    if (!BitRbc(memDC, 0, 0, width, height, hDC, regionPtr->left,
                 regionPtr->top, SRCCOPY)) {
 #ifdef notdef
         PurifyPrintf("can't blit: %s\n", Rbc_LastError());

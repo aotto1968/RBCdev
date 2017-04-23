@@ -545,7 +545,7 @@ Rbc_CreateTextBitmap(tkwin, textPtr, tsPtr, bmWidthPtr, bmHeightPtr)
     gc = Rbc_GetBitmapGC(tkwin);
 #ifdef WIN32
     hDC = TkWinGetDrawableDC(display, bitmap, &state);
-    PatBlt(hDC, 0, 0, width, height, WHITENESS);
+    PatRbc(hDC, 0, 0, width, height, WHITENESS);
     TkWinReleaseDrawableDC(bitmap, hDC, &state);
 #else
     XSetForeground(display, gc, 0);
@@ -562,7 +562,7 @@ Rbc_CreateTextBitmap(tkwin, textPtr, tsPtr, bmWidthPtr, bmHeightPtr)
      * reversed. Which is why we are inverting the bitmap here.
      */
     hDC = TkWinGetDrawableDC(display, bitmap, &state);
-    PatBlt(hDC, 0, 0, width, height, DSTINVERT);
+    PatRbc(hDC, 0, 0, width, height, DSTINVERT);
     TkWinReleaseDrawableDC(bitmap, hDC, &state);
 #endif
     if (tsPtr->theta != 0.0) {

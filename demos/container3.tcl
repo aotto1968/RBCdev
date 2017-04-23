@@ -410,7 +410,7 @@ proc MakeContainer { count images } {
     set top .top$count
     set b .b$count
 
-    rbc::container $c -bd 0 -highlightthickness 0
+    container $c -bd 0 -highlightthickness 0
     toplevel $top 
     wm withdraw $top
 
@@ -428,11 +428,11 @@ proc MakeContainer { count images } {
     checkbutton $b -variable $img -onvalue $top -offvalue "" -command \
 	[subst -nocommands { $c configure -window \$$img }]
     $b select 
-    rbc::table . \
+    table . \
 	$b $count,0 -anchor w \
 	$c $count,1 -fill x 
-    rbc::table configure . c0 -resize none
-    rbc::table configure . r$count -resize none
+    table configure . c0 -resize none
+    table configure . r$count -resize none
     after 1 [subst {
 	update 
 	wm deiconify $top
@@ -447,5 +447,5 @@ MakeContainer 3 $images3
 MakeContainer 4 $images4
 
 canvas .a 
-rbc::table . .a -cspan 40
+table . .a -cspan 40
 

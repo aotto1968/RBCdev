@@ -146,6 +146,14 @@ Rbc_Init (interp)
         return TCL_ERROR;
     }
 
+    if (Tcl_Export(interp, nsPtr, "bgexec", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "container", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
     Rbc_VectorInit(interp);
     Rbc_GraphInit(interp);
     Rbc_WinopInit(interp);
@@ -153,6 +161,8 @@ Rbc_Init (interp)
     Rbc_HtextInit(interp);
     Rbc_BitmapInit(interp);
     Rbc_TableInit(interp);
+    Rbc_BgexecInit(interp);
+    Rbc_ContainerInit(interp);
     Rbc_InitEpsCanvasItem(interp);
 
     return TCL_OK;

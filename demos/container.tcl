@@ -3,12 +3,16 @@
 package require rbc
 namespace import rbc::*
 
-set cmd "xterm -geom +4000+4000"
+set cmd "xterm -T otto -geom +4000+4000"
 #set cmd "xclock -name fred -geom +4000+4000"
-eval bgexec myVar $cmd &
+bgexec myVar {*}$cmd &
 container .c 
 pack .c -fill both -expand yes
-#.c configure -relief raised -bd 2 -name fred
-.c configure -relief raised -bd 2 -command $cmd
+
+## 1. using --command
+#.c configure -relief raised -bd 2 -command "*xterm*"
+
+## 2. using --name
+.c configure -relief raised -bd 2 -name "otto"
 
 

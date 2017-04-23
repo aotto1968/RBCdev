@@ -73,7 +73,7 @@ static int tkpWinRopModes[] = {
 #define COPYFG		0x00CA0749 /* dest = (pat & src) | (!pat & dst) */
 #define COPYBG		0x00AC0744 /* dest = (!pat & src) | (pat & dst) */
 /*
- * Translation table between X gc functions and Win32 BitBlt op modes.  Some
+ * Translation table between X gc functions and Win32 BitRbc op modes.  Some
  * of the operations defined in X don't have names, so we have to construct
  * new opcodes for those functions.  This is arcane and probably not all that
  * useful, but at least it's accurate.
@@ -84,7 +84,7 @@ static int tkpWinRopModes[] = {
 #define SRCORREVERSE	(DWORD)0x00DD0228 /* dest = src OR (NOT dest) */
 #define SRCNAND		(DWORD)0x007700E6 /* dest = NOT (src AND dest) */
 
-static int bltModes[] = {
+static int rbcModes[] = {
     BLACKNESS,			/* GXclear */
     SRCAND,			/* GXand */
     SRCERASE,			/* GXandReverse */
@@ -1913,7 +1913,7 @@ TileArea(destDC, srcDC, tileOriginX, tileOriginY, tileWidth, tileHeight,
             PurifyPrintf("drawing pattern (%d,%d,%d,%d) at %d,%d\n",
                          srcX , srcY, destWidth, destHeight, destX, destY);
 #endif
-            BitBlt(destDC, destX, destY, destWidth, destHeight,
+            BitRbc(destDC, destX, destY, destWidth, destHeight,
                    srcDC, srcX, srcY, SRCCOPY);
         }
     }
@@ -1965,7 +1965,7 @@ Rbc_EmulateXFillRectangles(display, drawable, gc, rectArr, nRectangles)
                 goto fillSolid;
             }
 #ifdef notdef
-            if ((GetDeviceCaps(hDC, RASTERCAPS) & RC_BITBLT) == 0) {
+            if ((GetDeviceCaps(hDC, RASTERCAPS) & RC_BITRBC) == 0) {
                 goto fillSolid;
             }
 #endif
@@ -2013,11 +2013,11 @@ Rbc_EmulateXFillRectangles(display, drawable, gc, rectArr, nRectangles)
                 rect.right = rectPtr->width;
                 rect.bottom = rectPtr->height;
                 FillRect(memDC, &rect, hFgBrush);
-                BitBlt(hDC, rectPtr->x, rectPtr->y, rectPtr->width, rectPtr->height,
+                BitRbc(hDC, rectPtr->x, rectPtr->y, rectPtr->width, rectPtr->height,
                        memDC, 0, 0, COPYBG);
                 if (gc->fill_style == FillOpaqueStippled) {
                     FillRect(memDC, &rect, hBgBrush);
-                    BitBlt(hDC, rectPtr->x, rectPtr->y, rectPtr->width,
+                    BitRbc(hDC, rectPtr->x, rectPtr->y, rectPtr->width,
                            rectPtr->height, memDC, 0, 0, COPYFG);
                 }
                 SelectObject(memDC, oldBitmap);
@@ -2043,7 +2043,7 @@ fillSolid:
                 rect.right = rectPtr->width;
                 rect.bottom = rectPtr->height;
                 FillRect(memDC, &rect, hFgBrush);
-                BitBlt(hDC, rectPtr->x, rectPtr->y, rectPtr->width, rectPtr->height,
+                BitRbc(hDC, rectPtr->x, rectPtr->y, rectPtr->width, rectPtr->height,
                        memDC, 0, 0, SRCCOPY);
                 SelectObject(memDC, oldBitmap);
                 DeleteObject(hBitmap);
@@ -2104,7 +2104,7 @@ Rbc_EmulateXFillRectangle(display, drawable, gc, x, y, width, height)
                     goto fillSolid;
                 }
 #ifdef notdef
-                if ((GetDeviceCaps(hDC, RASTERCAPS) & RC_BITBLT) == 0) {
+                if ((GetDeviceCaps(hDC, RASTERCAPS) & RC_BITRBC) == 0) {
                     goto fillSolid;
                 }
 #endif
@@ -2147,10 +2147,10 @@ Rbc_EmulateXFillRectangle(display, drawable, gc, x, y, width, height)
                 oldBitmap = SelectObject(memDC, hBitmap);
                 FillRect(memDC, &rect, hBrushFg);
                 SetBkMode(hDC, TRANSPARENT);
-                BitBlt(hDC, x, y, width, height, memDC, 0, 0, COPYFG);
+                BitRbc(hDC, x, y, width, height, memDC, 0, 0, COPYFG);
                 if (gc->fill_style == FillOpaqueStippled) {
                     FillRect(memDC, &rect, hBrushBg);
-                    BitBlt(hDC, x, y, width, height, memDC, 0, 0, COPYBG);
+                    BitRbc(hDC, x, y, width, height, memDC, 0, 0, COPYBG);
                 }
                 SelectBrush(hDC, oldBrush);
                 SelectBitmap(memDC, oldBitmap);
@@ -2177,7 +2177,7 @@ fillSolid:
                 rect.right = width;
                 rect.bottom = height;
                 FillRect(memDC, &rect, hBrush);
-                BitBlt(hDC, x, y, width, height, memDC, 0, 0, SRCCOPY);
+                BitRbc(hDC, x, y, width, height, memDC, 0, 0, SRCCOPY);
                 SelectObject(memDC, oldBitmap);
                 DeleteBitmap(hBitmap);
                 DeleteBrush(hBrush);
@@ -2400,7 +2400,7 @@ DrawPixel(hDC, x, y, color)
     rect.left = rect.top = 0;
     rect.right = rect.bottom = size;
     FillRect(memDC, &rect, hBrushFg);
-    BitBlt(hDC, x, y, size, size, memDC, 0, 0, SRCCOPY);
+    BitRbc(hDC, x, y, size, size, memDC, 0, 0, SRCCOPY);
     SelectObject(memDC, oldBitmap);
     DeleteObject(hBitmap);
     DeleteBrush(hBrushFg);
@@ -2415,7 +2415,7 @@ DrawPixel(hDC, x, y, color)
  *      Draws a masked bitmap in given device (should be printer)
  *      context.  Bit operations on print devices usually fail because
  *      there's no way to read back from the device surface to get the
- *      previous pixel values, rendering BitBlt useless. The bandaid
+ *      previous pixel values, rendering BitRbc useless. The bandaid
  *      solution here is to draw 1x1 pixel rectangles at each
  *      coordinate as directed by the the mask and source bitmaps.
  *
@@ -2567,7 +2567,7 @@ Rbc_EmulateXCopyPlane(display, src, dest, gc, srcX, srcY, width, height, destX, 
         SetBkMode(destDC, OPAQUE);
         SetBkColor(destDC, gc->foreground);
         SetTextColor(destDC, gc->background);
-        BitBlt(destDC, destX, destY, width, height, srcDC, srcX, srcY,
+        BitRbc(destDC, destX, destY, width, height, srcDC, srcX, srcY,
                SRCCOPY);
 
         SelectClipRgn(destDC, NULL);
@@ -2603,7 +2603,7 @@ Rbc_EmulateXCopyPlane(display, src, dest, gc, srcX, srcY, width, height, destX, 
             SetBkMode(destDC, OPAQUE);
             SetTextColor(destDC, gc->background);
             SetBkColor(destDC, gc->foreground);
-            BitBlt(destDC, destX, destY, width, height, srcDC, srcX, srcY,
+            BitRbc(destDC, destX, destY, width, height, srcDC, srcX, srcY,
                    SRCINVERT);
             /*
              * Make sure we treat the mask as a monochrome bitmap.
@@ -2614,11 +2614,11 @@ Rbc_EmulateXCopyPlane(display, src, dest, gc, srcX, srcY, width, height, destX, 
             SetBkColor(destDC, RGB(0,0,0));
 
             /* FIXME: Handle gc->clip_?_origin's */
-            BitBlt(destDC, destX, destY, width, height, maskDC, 0, 0, SRCAND);
+            BitRbc(destDC, destX, destY, width, height, maskDC, 0, 0, SRCAND);
 
             SetTextColor(destDC, gc->background);
             SetBkColor(destDC, gc->foreground);
-            BitBlt(destDC, destX, destY, width, height, srcDC, srcX, srcY,
+            BitRbc(destDC, destX, destY, width, height, srcDC, srcX, srcY,
                    SRCINVERT);
             if (mask != src) {
                 TkWinReleaseDrawableDC(mask, maskDC, &maskState);
@@ -2684,8 +2684,8 @@ Rbc_EmulateXCopyArea(display, src, dest, gc, srcX, srcY, width, height, destX, d
         OffsetClipRgn(destDC, gc->clip_x_origin, gc->clip_y_origin);
     }
 
-    BitBlt(destDC, destX, destY, width, height, srcDC, srcX, srcY,
-           bltModes[gc->function]);
+    BitRbc(destDC, destX, destY, width, height, srcDC, srcX, srcY,
+           rbcModes[gc->function]);
     SelectClipRgn(destDC, NULL);
 
     if (src != dest) {
@@ -2820,20 +2820,20 @@ StippleRegion(display, hDC, gc, x, y, width, height)
                 SetBkMode(hDC, OPAQUE);
                 SetTextColor(hDC, gc->background);
                 SetBkColor(hDC, gc->foreground);
-                BitBlt(hDC, destX, destY, destWidth, destHeight, memDC,
+                BitRbc(hDC, destX, destY, destWidth, destHeight, memDC,
                        srcX, srcY, SRCINVERT);
                 SetTextColor(hDC, RGB(255,255,255));
                 SetBkColor(hDC, RGB(0,0,0));
-                BitBlt(hDC, destX, destY, destWidth, destHeight, maskDC,
+                BitRbc(hDC, destX, destY, destWidth, destHeight, maskDC,
                        srcX, srcY, SRCAND);
                 SetTextColor(hDC, gc->background);
                 SetBkColor(hDC, gc->foreground);
-                BitBlt(hDC, destX, destY, destWidth, destHeight, memDC,
+                BitRbc(hDC, destX, destY, destWidth, destHeight, memDC,
                        srcX, srcY, SRCINVERT);
             } else if (gc->fill_style == FillOpaqueStippled) { /* Opaque. */
                 SetBkColor(hDC, gc->foreground);
                 SetTextColor(hDC, gc->background);
-                BitBlt(hDC, destX, destY, destWidth, destHeight, memDC,
+                BitRbc(hDC, destX, destY, destWidth, destHeight, memDC,
                        srcX, srcY, SRCCOPY);
             }
         }

@@ -32,6 +32,9 @@
 #include <tk.h>
 
 #define MIN_VERSION "8.4"
+#define _VERSION(a,b,c)     (((a) << 16) + ((b) << 8) + (c))
+#define TCL_VERSION_NUMBER _VERSION(TCL_MAJOR_VERSION, TCL_MINOR_VERSION, TCL_RELEASE_SERIAL)
+#define TK_VERSION_NUMBER _VERSION(TK_MAJOR_VERSION, TK_MINOR_VERSION, TK_RELEASE_SERIAL)
 
 #include "rbcTkInt.h"
 
@@ -675,6 +678,12 @@ Tcl_AppInitProc Rbc_BitmapInit;
 #endif
 #ifndef NO_TABLE
 Tcl_AppInitProc Rbc_TableInit;
+#endif
+#ifndef NO_BGEXEC
+Tcl_AppInitProc Rbc_BgexecInit;
+#endif
+#ifndef NO_CONTAINER
+Tcl_AppInitProc Rbc_ContainerInit;
 #endif
 
 char *RbcStrdup _ANSI_ARGS_((CONST char *ptr));
