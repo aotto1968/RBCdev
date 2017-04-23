@@ -48,6 +48,46 @@ typedef int Tcl_File;
 /*
  *----------------------------------------------------------------------
  *
+ * Rbc_Create/DeleteFileHandler --
+ *
+ *	BUG:
+ *        get call to "Tcl_FileProc" of "Tcl_CreateFileHandler" AFTER
+ *	  Tcl_DeleteFileHandler
+ *      WORK AROUND:
+ *        replace with "DummyProc"
+ *
+ * Results:
+ *	nothing
+ *
+ *----------------------------------------------------------------------
+ */
+
+/*
+static void
+DummyProc(
+    ClientData clientData, int mask
+) {
+  Tcl_DoOneEvent(TCL_DONT_WAIT);
+}
+*/
+
+void Rbc_CreateFileHandler(
+    int fd, int mask, Tcl_FileProc *proc, ClientData clientData
+) {
+  Tcl_CreateFileHandler( fd, mask, proc, clientData );
+}
+
+void Rbc_DeleteFileHandler(
+    int fd
+) {
+  //MVvar("Tcl_DeleteFileHandler<%d>",fd)
+  //Tcl_CreateFileHandler(fd,TCL_READABLE,DummyProc,NULL);
+  Tcl_DeleteFileHandler(fd);
+}
+
+/*
+ *----------------------------------------------------------------------
+ *
  * OpenFile --
  *
  *	Open a file for use in a pipeline.
@@ -187,7 +227,7 @@ CloseFile(fd)
 	return 0;		/* Don't close stdin, stdout or stderr. */
     }
 #if (TCL_MAJOR_VERSION > 7)
-    Tcl_DeleteFileHandler(fd);
+    Rbc_DeleteFileHandler(fd);
 #endif
     return close(fd);
 }

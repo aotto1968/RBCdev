@@ -21,22 +21,26 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 source scripts/globe.tcl
 
+#set tcl_traceExec 2
+
 option add *HighlightThickness 0
 
-set program /usr/bin/env wish
 if { [info exists tcl_platform ] } {
     puts stderr $tcl_platform(platform)
-    if { $tcl_platform(platform) == "windows" } {
-        set shells [glob C:/Program\ Files/Tcl/bin/tclsh8*.exe ] 
+    switch -exact $tcl_platform(platform) {
+      "windows" {
+        set shells [glob C:/Program\ Files/Tcl/bin/tclsh8*.exe ]
         set program [lindex $shells 0]
+      }
+      "unix" {
+        set program [exec which tclsh]
+      }
     }
 }
 if { ![file executable $program] } {
@@ -134,8 +138,10 @@ proc Start { command } {
     .text delete 1.0 end
     if { $animate(index) < 0 } {
         set results(status) {}
-	eval "bgexec results(status) -lasterror results(stderr) \
-		-lastoutput results(stdout) $command &"
+	bgexec results(status) \
+          -lasterror results(stderr) \
+            -lastoutput results(stdout) \
+              {*}$command &
         set animate(index) 0
         Animate
     }
@@ -176,5 +182,3 @@ table configure . .start .stop -reqwidth $buttonWidth -anchor e
 table configure . .title .text -fill both
 
 wm min . 0 0
-
-

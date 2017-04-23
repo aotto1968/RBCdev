@@ -178,6 +178,7 @@ if { [string match *color $visual] } {
 
 proc Start { command } {
     global results animate
+    .switch configure -text "Stop" -command Stop
     .text delete 1.0 end
     if { $animate(index) < 0 } {
         set results {}
@@ -191,6 +192,7 @@ proc Start { command } {
 
 proc Stop { } {
     global results animate
+    .switch configure -text "Start" -command [list Start $::command]
     set results {}
     set animate(index) -1
 }
@@ -201,8 +203,8 @@ text .text
 .text tag configure stderr -font  { Courier 14 } -foreground red2
 
 scrollbar .vscroll 
-button .start -text "Start" -command [list Start $command]
-button .stop -text "Stop" -command Stop
+button .switch -text "Start" -command [list Start $command]
+#button .stop -text "Stop" -command Stop
 label .logo  -bitmap rbc.0
 label .title
 
@@ -212,13 +214,12 @@ table . \
     .text 	1,0 -columnspan 3 \
     .vscroll 	1,3 -fill y \
     .logo 	2,0 -anchor w -padx 10 -reqheight .6i -pady 4 \
-    .start 	2,1 \
-    .stop 	2,2 
+    .switch 	2,2 
 
 set buttonWidth 1i
 table configure . c1 c2 -width 1i
 table configure . c3 r0 r2 -resize none
-table configure . .start .stop -reqwidth $buttonWidth -anchor e
+table configure . .switch -reqwidth $buttonWidth -anchor e
 table configure . .title .text -fill both
 
 wm min . 0 0

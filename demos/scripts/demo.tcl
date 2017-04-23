@@ -24,5 +24,5 @@ bind all <Control-KeyPress-c> { DoExit 0 }
 
 proc DoExit { code } {
     destroy .
-    #exit $code
+    exit $code
 }

@@ -79,11 +79,18 @@ extern int Rbc_CreatePipeline _ANSI_ARGS_((Tcl_Interp *interp, int argc,
 	char **argv, Process **pidPtrPtr, int *inPipePtr, int *outPipePtr,
 	int *errFilePtr));
 
+void Rbc_CreateFileHandler(
+    int fd, int mask, Tcl_FileProc *proc, ClientData clientData
+);
+
+void Rbc_DeleteFileHandler(
+    int fd
+);
+
+
 #ifdef WIN32
 #define read(fd, buf, size)	Rbc_AsyncRead((fd),(buf),(size))
 #define close(fd)		CloseHandle((HANDLE)fd)
-#define Tcl_CreateFileHandler	Rbc_CreateFileHandler
-#define Tcl_DeleteFileHandler	Rbc_DeleteFileHandler
 #define kill			KillProcess
 #define waitpid			WaitProcess
 #endif
@@ -309,7 +316,12 @@ typedef struct {
 #define SINK_KEEP_NL		(1<<1)
 #define SINK_NOTIFY		(1<<2)
 
+/// \brief signature marker 
+#define BackgroundInfo_SIGNATURE 0xA55BB89
+
 typedef struct {
+    int  signature;             // protection against double free 
+                                // BackgroundInfo_SIGNATURE
     char *statVar;		/* Name of a Tcl variable set to the
 				 * exit status of the last
 				 * process. Setting this variable
@@ -849,16 +861,6 @@ static inline int IsOpenSink(Sink *sinkPtr) {
 }
 */
 
-// get call to "Tcl_FileProc" of "Tcl_CreateFileHandler" AFTER
-// Tcl_DeleteFileHandler
-static void
-DummyProc(clientData, mask)
-    ClientData clientData;	/* File output information. */
-    int mask;			/* Not used. */
-{
-// dummy… do nothing
-}
-
 static void
 CloseSink(interp, sinkPtr) 
     Tcl_Interp *interp;
@@ -870,10 +872,7 @@ CloseSink(interp, sinkPtr)
 	Tcl_DeleteFileHandler(sinkPtr->file);
 	Tcl_FreeFile(sinkPtr->file);
 #else
-//MVvar("Tcl_DeleteFileHandler<%d>",sinkPtr->fd)
-	Tcl_DeleteFileHandler(sinkPtr->fd);
-        // really disable
-        Tcl_CreateFileHandler(sinkPtr->fd,TCL_READABLE,DummyProc,NULL);
+	Rbc_DeleteFileHandler(sinkPtr->fd);
 #endif
 	sinkPtr->file = (Tcl_File)NULL;
 	sinkPtr->fd = -1;
@@ -1397,9 +1396,9 @@ CreateSinkHandler(bgPtr, sinkPtr, proc)
 #endif /* WIN32 */
 #ifdef FILEHANDLER_USES_TCLFILES
     sinkPtr->file = Tcl_GetFile((ClientData)sinkPtr->fd, TCL_UNIX_FD);
-    Tcl_CreateFileHandler(sinkPtr->file, TCL_READABLE, proc, bgPtr);
+    Rbc_CreateFileHandler(sinkPtr->file, TCL_READABLE, proc, bgPtr);
 # else
-    Tcl_CreateFileHandler(sinkPtr->fd, TCL_READABLE, proc, bgPtr);
+    Rbc_CreateFileHandler(sinkPtr->fd, TCL_READABLE, proc, bgPtr);
 #endif /* FILEHANDLER_USES_TCLFILES */
     return TCL_OK;
 }
@@ -1449,6 +1448,7 @@ FreeBackgroundInfo(bgPtr)
     if (bgPtr->procArr != NULL) {
 	ckfree(bgPtr->procArr);
     }
+    bgPtr->signature = 0x00000000;
     ckfree(bgPtr);
 }
 
@@ -1713,11 +1713,25 @@ StdoutProc(clientData, mask)
     ClientData clientData;	/* File output information. */
     int mask;			/* Not used. */
 {
+
     BackgroundInfo *bgPtr = clientData;
 
-    if (CollectData(bgPtr, &bgPtr->sink1) == TCL_OK) {
-	return;
+    // BUG: the bgPtr is deleted after CollectData
+    // this happen if Tcl_BackgroundError was fired by CollectData
+    // and Tcl_CreateTimerHandler fire TimerProc and
+    // TimerProc clean all data
+    {
+      if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
+        return;
+      }
+      if (CollectData(bgPtr, &bgPtr->sink1) == TCL_OK) {
+          return;
+      }
+      if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
+        return;
+      }
     }
+
     /*
      * Either EOF or an error has occurred.  In either case, close the
      * sink. Note that closing the sink will also remove the file
@@ -1763,9 +1777,22 @@ StderrProc(clientData, mask)
 {
     BackgroundInfo *bgPtr = clientData;
 
-    if (CollectData(bgPtr, &bgPtr->sink2) == TCL_OK) {
-	return;
+    // BUG: the bgPtr is deleted after CollectData
+    // this happen if Tcl_BackgroundError was fired by CollectData
+    // and Tcl_CreateTimerHandler fire TimerProc and
+    // TimerProc clean all data
+    {
+      if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
+        return;
+      }
+      if (CollectData(bgPtr, &bgPtr->sink2) == TCL_OK) {
+          return;
+      }
+      if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
+        return;
+      }
     }
+
     /*
      * Either EOF or an error has occurred.  In either case, close the
      * sink. Note that closing the sink will also remove the file
@@ -1833,6 +1860,7 @@ BgexecCmd(clientData, interp, argc, argv)
     }
     bgPtr = RbcCalloc(1, sizeof(BackgroundInfo));
     assert(bgPtr);
+    bgPtr->signature = BackgroundInfo_SIGNATURE;
 
     /* Initialize the background information record */
     bgPtr->interp = interp;

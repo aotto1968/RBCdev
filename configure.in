@@ -66,7 +66,7 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor.c rbcConfig.c rbcGraph.c rbcGrAxis.c rbcGrBar.c rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c rbcWindow.c rbcWinop.c])
+TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor.c rbcConfig.c rbcGraph.c rbcGrAxis.c rbcGrBar.c rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
@@ -95,13 +95,13 @@ if test "${TEA_PLATFORM}" = "windows" ; then
     AC_DEFINE(BUILD_RBC, 1, [Build windows export dll])
 	AC_DEFINE(WIN32, 1, [Tell rbc to use windows])
     CLEANFILES="$CLEANFILES *.lib *.dll *.exp *.ilk *.pdb vc*.pch"
-    TEA_ADD_SOURCES([rbcWinDraw.c rbcWinImage.c rbcWinUtil.c])
+    TEA_ADD_SOURCES([rbcWinDraw.c rbcWinImage.c rbcWinUtil.c rbcWinPipe.c])
     #TEA_ADD_INCLUDES([-I\"$(${CYGPATH} ${srcdir}/win)\"])
 	TEA_ADD_LIBS([-lwinspool -ladvapi32 -lgdi32])
 else
     # Ensure no empty else clauses
     :
-    TEA_ADD_SOURCES([rbcUnixImage.c])
+    TEA_ADD_SOURCES([rbcUnixImage.c rbcUnixPipe.c])
     #TEA_ADD_LIBS([-lsuperfly])
 fi
 AC_SUBST(CLEANFILES)
