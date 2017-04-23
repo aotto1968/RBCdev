@@ -22,10 +22,8 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 
@@ -48,11 +46,11 @@ with assorted line attributes and symbols.  To create a postscript file
 "xy.ps", press the %%
     button $htext(widget).print -text print -command {
         puts stderr [time {
-	   rbc::busy hold .
+	   tk busy hold .
 	   update
 	   .g postscript output demo1.eps 
 	   update
-	   rbc::busy release .
+	   tk busy forget .
 	   update
         }]
     } 
@@ -144,7 +142,7 @@ proc UpdateTable { graph p1 p2 how } {
     table configure . r3 -height [$graph extents bottommargin]
 }
 
-set image2 [image create photo -file images/blt98.gif]
+set image2 [image create photo -file images/rbc98.gif]
 .g element configure line2 -areapattern @bitmaps/sharky.xbm \
 
 #	-areaforeground blue -areabackground ""

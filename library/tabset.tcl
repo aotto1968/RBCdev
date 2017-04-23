@@ -2,7 +2,7 @@
 # tabset.tcl
 #
 # ----------------------------------------------------------------------
-# Bindings for the BLT tabset widget
+# Bindings for the RBC tabset widget
 # ----------------------------------------------------------------------
 #   AUTHOR:  George Howlett
 #            Bell Labs Innovations for Lucent Technologies

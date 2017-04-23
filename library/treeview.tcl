@@ -4,7 +4,7 @@
 # treeview.tcl
 #
 # ----------------------------------------------------------------------
-# Bindings for the BLT treeview widget
+# Bindings for the RBC treeview widget
 # ----------------------------------------------------------------------
 #
 #   AUTHOR:  George Howlett

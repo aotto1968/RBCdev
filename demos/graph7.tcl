@@ -1,9 +1,6 @@
 #!/usr/bin/env wish
 
-set blt_library ../library
 package require rbc
-set blt_library ../library
-set auto_path [linsert $auto_path 0 ../library]
 
 # --------------------------------------------------------------------------
 # Starting with Tcl 8.x, the RNC commands are stored in their own 
@@ -25,10 +22,8 @@ set auto_path [linsert $auto_path 0 ../library]
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
 
 source scripts/demo.tcl
 
@@ -76,7 +71,7 @@ $graph element create line3 -symbol square -color green4 -fill green2 \
 table . .graph 0,0  -fill both
 update
 
-vector x($length) y($length)
+vector create x($length) y($length)
 x expr random(x)
 y expr random(y)
 x sort y
@@ -89,7 +84,7 @@ Rbc_Crosshairs $graph
 Rbc_ActiveLegend $graph
 Rbc_ClosestPoint $graph
 
-busy hold $graph
+tk busy hold $graph
 update
-busy release $graph
+tk busy forget $graph
 

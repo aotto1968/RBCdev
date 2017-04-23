@@ -215,9 +215,9 @@ proc SortColumn { column } {
     .h configure -flat yes
     .h sort auto yes
 
-    rbc::busy hold .h
+    tk busy hold .h
     update
-    rbc::busy release .h
+    tk busy forget .h
 }
 
 foreach column [.h column names] {

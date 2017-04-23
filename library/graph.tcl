@@ -219,6 +219,8 @@ proc rbc::PopZoom { graph } {
 	set zoomInfo($graph,stack) [lrange $zoomStack 1 end]
 	eval $cmd
 	rbc::ZoomTitleLast $graph
+        set tl [winfo toplevel $graph]
+        wm geometry $tl "[expr [winfo width $tl]+1]x[expr [winfo height $tl]+1]"
 	tk busy hold $graph
 	update
 	tk busy forget $graph
@@ -279,6 +281,8 @@ proc rbc::PushZoom { graph } {
 	    }
 	}
     }
+    set tl [winfo toplevel $graph]
+    wm geometry $tl "[expr [winfo width $tl]-1]x[expr [winfo height $tl]-1]"
     tk busy hold $graph 
     update;				# This "update" redraws the graph
     tk busy forget $graph

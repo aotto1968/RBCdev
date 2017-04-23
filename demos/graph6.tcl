@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 set tcl_precision 15 
@@ -82,7 +82,7 @@ option add *zoomOutline.outline		yellow
 
 graph .graph
 
-vector x -variable ""
+vector create x -variable ""
 for { set i 1 } { $i <= 39 } { incr i } {
     vector create v${i} -variable ""
 }

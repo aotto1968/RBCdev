@@ -2,7 +2,7 @@
 # dragdrop.tcl
 #
 # ----------------------------------------------------------------------
-# Bindings for the BLT drag&drop command
+# Bindings for the RBC drag&drop command
 # ----------------------------------------------------------------------
 #   AUTHOR:  George Howlett
 #            Bell Labs Innovations for Lucent Technologies

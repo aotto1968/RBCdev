@@ -39,9 +39,9 @@ proc SortColumn { column } {
     }
     .t sort auto yes
 
-    rbc::busy hold .t
+    tk busy hold .t
     update
-    rbc::busy release .t
+    tk busy forget .t
 }
 
 proc FormatSize { size } {

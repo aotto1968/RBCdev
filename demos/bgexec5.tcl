@@ -21,23 +21,15 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
-
+namespace import rbc::*
+cd [file dirname [info script]]
 source scripts/demo.tcl
+cd ..
 
-set shell wish
-if { [info exists tcl_platform] && $tcl_platform(platform) == "windows" } {
-    set shell "$shell.exe"
-}
-if { [file executable "../src/$shell"] } {
-    set shell "../src/$shell"
-}
+set shell [info nameofexecutable]
 
 set count 0
-foreach demo [glob barchart?.tcl] {
+foreach demo [glob demos/barchart?.tcl] {
     bgexec var $shell $demo &
 }
 

@@ -28,7 +28,7 @@ if { $tcl_version >= 8.0 } {
 source scripts/demo.tcl
 
 #
-# Script to test the "busy" command.
+# Script to test the "tk busy" command.
 # 
 
 #
@@ -95,7 +95,7 @@ image create photo textureBg -file $file
 
 #
 # This never gets used; it's reset by the Animate proc. It's 
-# here to just demonstrate how to set busy window options via
+# here to just demonstrate how to set tk busy window options via
 # the host window path name
 #
 #option add *f1.busyCursor 	bogosity 
@@ -107,15 +107,15 @@ set numWin 0
 
 #
 # Create two frames. The top frame will be the host window for the
-# busy window.  It'll contain widgets to test the effectiveness of
-# the busy window.  The bottom frame will contain buttons to 
+# tk busy window.  It'll contain widgets to test the effectiveness of
+# the tk busy window.  The bottom frame will contain buttons to 
 # control the testing.
 #
 frame .f1
 frame .f2
 
 #
-# Create some widgets to test the busy window and its cursor
+# Create some widgets to test the tk busy window and its cursor
 #
 label .buttonLabel
 button .testButton -command { 
@@ -140,17 +140,17 @@ button .newButton -command {
 }
 
 button .holdButton -command {
-    if { [busy isbusy .f1] == "" } {
+    if { [tk busy isbusy .f1] == "" } {
         global activeBg
 	.f1 configure -bg $activeBg
     }
-    busy .f1 
+    tk busy .f1 
     focus -force . 
 }
 
 button .releaseButton -command {
-    if { [busy isbusy .f1] == ".f1" } {
-        busy release .f1
+    if { [tk busy isbusy .f1] == ".f1" } {
+        tk busy forget .f1
     }
     global normalBg
     .f1 configure -bg $normalBg
@@ -208,7 +208,7 @@ proc StartAnimation { widget count } {
     global bitmapList
     set prefix bitmaps/fish/[lindex $bitmapList $count]
     set cursor [list @${prefix}.xbm ${prefix}m.xbm blue green ]
-    busy configure $widget -cursor $cursor
+    tk busy configure $widget -cursor $cursor
 
     incr count
     set limit [llength $bitmapList]

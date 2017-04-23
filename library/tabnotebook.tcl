@@ -2,7 +2,7 @@
 # tabnotebook.tcl
 #
 # ----------------------------------------------------------------------
-# Bindings for the BLT tabnotebook widget
+# Bindings for the RBC tabnotebook widget
 # ----------------------------------------------------------------------
 #   AUTHOR:  George Howlett
 #            Bell Labs Innovations for Lucent Technologies

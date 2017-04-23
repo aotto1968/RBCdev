@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    #namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 option add *Element.ScaleSymbols	true
@@ -45,12 +45,12 @@ set graph .graph
 
 graph $graph
 
-vector x -variable ""
+vector create x -variable ""
 x set { 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 }
 
 for { set i 0 } { $i < 11 } { incr i } {
     set vecName "y${i}"
-    vector ${vecName}
+    vector create ${vecName}
     $vecName length 11
     $vecName variable y
     set y(:) [expr $i*100.0]

@@ -1,6 +1,6 @@
 # hiertable.tcl
 # ----------------------------------------------------------------------
-# Bindings for the BLT hiertable widget
+# Bindings for the RBC hiertable widget
 # ----------------------------------------------------------------------
 #   AUTHOR:  George Howlett
 #            Bell Labs Innovations for Lucent Technologies

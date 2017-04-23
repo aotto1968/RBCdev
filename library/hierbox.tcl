@@ -1,7 +1,7 @@
 #
 # hierbox.tcl
 # ----------------------------------------------------------------------
-# Bindings for the BLT hierbox widget
+# Bindings for the RBC hierbox widget
 # ----------------------------------------------------------------------
 #   AUTHOR:  George Howlett
 #            Bell Labs Innovations for Lucent Technologies
