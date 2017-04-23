@@ -1,0 +1,22 @@
+sed -i '
+
+s/Blt/Rbc/g
+s/blt/rbc/g
+s/BLT/RBC/g
+s/Rbc_Hash/Tcl_Hash/g
+s/Rbc_InitHash/Tcl_InitHash/g
+s/Rbc_FindHash/Tcl_FindHash/g
+s/Rbc_SetHash/Tcl_SetHash/g
+s/Rbc_NextHash/Tcl_NextHash/g
+s/Rbc_GetHash/Tcl_GetHash/g
+s/Rbc_CreateHash/Tcl_CreateHash/g
+s/Rbc_FirstHash/Tcl_FirstHash/g
+s/Rbc_DeleteHash/Tcl_DeleteHash/g
+s/Rbc_Free\>/ckfree/g
+s/Rbc_Calloc/RbcCalloc/g
+s/Rbc_Malloc/ckalloc/g
+s/Rbc_Strdup/RbcStrdup/g
+s/blt::/rbc::/g
+
+' $1
+
