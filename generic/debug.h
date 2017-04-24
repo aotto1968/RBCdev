@@ -30,6 +30,10 @@
 # include <pthread.h>
 #endif
 
+#if defined(HAVE_EXECINFO_H)
+# include <execinfo.h>
+#endif
+
 #if !defined(MQ_OUT)
 # define MQ_OUT stderr
 #endif
@@ -81,7 +85,7 @@ END_C_DECLS
 	      MqThreadSelfP(), #s);fflush(MQ_OUT);
 # endif
 #else
-# define MX(s) fprintf(MQ_OUT, "%s(%s:%d:%d) -> %s \n", __func__, __FILE__, __LINE__, mq_getpid(), #s);fflush(MQ_OUT);
+#  define MX(s) fprintf(MQ_OUT, "%s(%s:%d:%d) -> %s \n", __func__, __FILE__, __LINE__, mq_getpid(), #s);fflush(MQ_OUT);
 #endif
 
 #define M0 MX(00000000000000000)

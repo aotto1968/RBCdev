@@ -65,6 +65,11 @@ typedef void *Tcl_Encoding;	/* Make up dummy type for encoding.  */
 #define ENCODING_ASCII		((Tcl_Encoding)NULL)
 #define ENCODING_BINARY		((Tcl_Encoding)1)
 
+// to use the backtrace feature of gcc…
+// → disable "static" because "static" means don't export the symbol...
+#define STATIC static
+//#define STATIC
+
 /*
  *	As of Tcl 7.6, we're using our own version of the old
  *	Tcl_CreatePipeline routine.  I would have tried to use
@@ -79,15 +84,13 @@ extern int Rbc_CreatePipeline _ANSI_ARGS_((Tcl_Interp *interp, int argc,
 	char **argv, Process **pidPtrPtr, int *inPipePtr, int *outPipePtr,
 	int *errFilePtr));
 
-void Rbc_CreateFileHandler(
-    int fd, int mask, Tcl_FileProc *proc, ClientData clientData
-);
+void Rbc_CreateFileHandler( int fd, int mask, Tcl_FileProc *proc, ClientData clientData);
+void Rbc_DeleteFileHandler( int fd);
 
-void Rbc_DeleteFileHandler(
-    int fd
-);
-
-
+STATIC void Rbc_BackgroundError(Tcl_Interp *interp)
+{
+  Tcl_BackgroundError(interp);
+}
 #ifdef WIN32
 #define read(fd, buf, size)	Rbc_AsyncRead((fd),(buf),(size))
 #define close(fd)		CloseHandle((HANDLE)fd)
@@ -263,6 +266,7 @@ static SignalId signalIds[] =
  *  |                    |
  *  |____________________| 0
  */
+
 typedef struct {
     char *name;			/* Name of the sink */
 
@@ -316,7 +320,7 @@ typedef struct {
 #define SINK_KEEP_NL		(1<<1)
 #define SINK_NOTIFY		(1<<2)
 
-/// \brief signature marker 
+/// signature marker 
 #define BackgroundInfo_SIGNATURE 0xA55BB89
 
 typedef struct {
@@ -415,11 +419,11 @@ static Rbc_SwitchSpec switchSpecs[] =
     {RBC_SWITCH_END, NULL, 0, 0}
 };
 
-static char *VariableProc _ANSI_ARGS_((ClientData clientData,
+STATIC char *VariableProc _ANSI_ARGS_((ClientData clientData,
 	Tcl_Interp *interp, char *part1, char *part2, int flags));
-static void TimerProc _ANSI_ARGS_((ClientData clientData));
-static void StdoutProc _ANSI_ARGS_((ClientData clientData, int mask));
-static void StderrProc _ANSI_ARGS_((ClientData clientData, int mask));
+STATIC void TimerProc _ANSI_ARGS_((ClientData clientData));
+STATIC void StdoutProc _ANSI_ARGS_((ClientData clientData, int mask));
+STATIC void StderrProc _ANSI_ARGS_((ClientData clientData, int mask));
 
 /*
  *----------------------------------------------------------------------
@@ -435,7 +439,7 @@ static void StderrProc _ANSI_ARGS_((ClientData clientData, int mask));
  *----------------------------------------------------------------------
  */
 /*ARGSUSED*/
-static int
+STATIC int
 StringToSignal(clientData, interp, switchName, string, record, offset)
     ClientData clientData;	/* Contains a pointer to the tabset containing
 				 * this image. */
@@ -499,7 +503,7 @@ StringToSignal(clientData, interp, switchName, string, record, offset)
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 GetSinkData(sinkPtr, dataPtr, lengthPtr)
     Sink *sinkPtr;
     unsigned char **dataPtr;
@@ -531,7 +535,7 @@ GetSinkData(sinkPtr, dataPtr, lengthPtr)
  *
  *---------------------------------------------------------------------- 
  */
-static unsigned char *
+STATIC unsigned char *
 NextBlock(sinkPtr, lengthPtr)
     Sink *sinkPtr;
     int *lengthPtr;
@@ -562,7 +566,7 @@ NextBlock(sinkPtr, lengthPtr)
  *
  *----------------------------------------------------------------------
  */
-static unsigned char *
+STATIC unsigned char *
 NextLine(sinkPtr, lengthPtr)
     Sink *sinkPtr;
     int *lengthPtr;
@@ -608,7 +612,7 @@ NextLine(sinkPtr, lengthPtr)
  *
  *---------------------------------------------------------------------- 
  */
-static void
+STATIC void
 ResetSink(sinkPtr)
     Sink *sinkPtr;
 { 
@@ -647,7 +651,7 @@ ResetSink(sinkPtr)
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 InitSink(bgPtr, sinkPtr, name, encoding)
     BackgroundInfo *bgPtr;
     Sink *sinkPtr;
@@ -707,7 +711,7 @@ InitSink(bgPtr, sinkPtr, name, encoding)
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 FreeSinkBuffer(sinkPtr)
     Sink *sinkPtr;
 {
@@ -741,7 +745,7 @@ FreeSinkBuffer(sinkPtr)
  *
  *----------------------------------------------------------------------
  */
-static int
+STATIC int
 ExtendSinkBuffer(sinkPtr)
     Sink *sinkPtr;
 {
@@ -783,7 +787,7 @@ ExtendSinkBuffer(sinkPtr)
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 ReadBytes(sinkPtr)
     Sink *sinkPtr;
 {
@@ -854,14 +858,14 @@ ReadBytes(sinkPtr)
 
 #define IsOpenSink(sinkPtr)  ((sinkPtr)->fd != -1)
 /*
-static inline int IsOpenSink(Sink *sinkPtr) {
+STATIC inline int IsOpenSink(Sink *sinkPtr) {
   printC(sinkPtr->name)
   printI(sinkPtr->fd)
   return ((sinkPtr)->fd != -1);
 }
 */
 
-static void
+STATIC void
 CloseSink(interp, sinkPtr) 
     Tcl_Interp *interp;
     Sink *sinkPtr;
@@ -892,13 +896,13 @@ CloseSink(interp, sinkPtr)
 	    data[length] = '\0';
 	    if (Tcl_SetVar(interp, sinkPtr->doneVar, data, 
 			   TCL_GLOBAL_ONLY) == NULL) {
-		Tcl_BackgroundError(interp);
+		Rbc_BackgroundError(interp);
 	    }
 #else
 	    if (Tcl_SetVar2Ex(interp, sinkPtr->doneVar, NULL, 
 			      Tcl_NewByteArrayObj(data, length),
 			      (TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG)) == NULL) {
-		Tcl_BackgroundError(interp);
+		Rbc_BackgroundError(interp);
 	    }
 #endif
 	}
@@ -923,7 +927,7 @@ CloseSink(interp, sinkPtr)
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 CookSink(interp, sinkPtr)
     Tcl_Interp *interp;
     Sink *sinkPtr;
@@ -1068,7 +1072,7 @@ CookSink(interp, sinkPtr)
  *----------------------------------------------------------------------
  */
 #define WINDEBUG 0
-static int
+STATIC int
 WaitProcess(
     Process child,
     int *statusPtr,
@@ -1126,7 +1130,7 @@ WaitProcess(
     return result;
 }
 
-static BOOL CALLBACK
+STATIC BOOL CALLBACK
 EnumWindowsProc(HWND hWnd, LPARAM lParam)
 {
     DWORD pid = 0;
@@ -1154,7 +1158,7 @@ EnumWindowsProc(HWND hWnd, LPARAM lParam)
  *
  *----------------------------------------------------------------------
  */
-static int
+STATIC int
 KillProcess(Process proc, int signal)
 {
     DWORD status;
@@ -1192,7 +1196,7 @@ KillProcess(Process proc, int signal)
 
 #if (TCL_VERSION_NUMBER < _VERSION(8,1,0)) 
 
-static void
+STATIC void
 NotifyOnUpdate(interp, sinkPtr, data, nBytes)
     Tcl_Interp *interp;
     Sink *sinkPtr;
@@ -1215,7 +1219,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 	channel = Tcl_GetStdChannel(TCL_STDERR);
 	if (channel == NULL) {
 	    Tcl_AppendResult(interp, "can't get stderr channel", (char *)NULL);
-	    Tcl_BackgroundError(interp);
+	    Rbc_BackgroundError(interp);
 	    sinkPtr->echo = FALSE;
 	} else {
 	    Tcl_Write(channel, data, nBytes);
@@ -1238,7 +1242,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 	result = Tcl_GlobalEval(interp, Tcl_DStringValue(&dString));
 	Tcl_DStringFree(&dString);
 	if (result != TCL_OK) {
-	    Tcl_BackgroundError(interp);
+	    Rbc_BackgroundError(interp);
 	}
     }
     if (sinkPtr->updateVar != NULL) {
@@ -1248,7 +1252,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 	flags = (TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG);
 	result = Tcl_SetVar(interp, sinkPtr->updateVar, data, flags);
 	if (result == NULL) {
-	    Tcl_BackgroundError(interp);
+	    Rbc_BackgroundError(interp);
 	}
     }
     data[nBytes] = save;
@@ -1256,7 +1260,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 
 #else 
 
-static void
+STATIC void
 NotifyOnUpdate(interp, sinkPtr, data, nBytes)
     Tcl_Interp *interp;
     Sink *sinkPtr;
@@ -1277,7 +1281,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 	channel = Tcl_GetStdChannel(TCL_STDERR);
 	if (channel == NULL) {
 	    Tcl_AppendResult(interp, "can't get stderr channel", (char *)NULL);
-	    Tcl_BackgroundError(interp);
+	    Rbc_BackgroundError(interp);
 	    sinkPtr->echo = FALSE;
 	} else {
 	    if (data[nBytes] == '\n') {
@@ -1298,7 +1302,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 	sinkPtr->objv[sinkPtr->objc - 1] = objPtr;
 	result = Tcl_EvalObjv(interp, sinkPtr->objc, sinkPtr->objv, 0);
 	if (result != TCL_OK) {
-	    Tcl_BackgroundError(interp);
+	    Rbc_BackgroundError(interp);
 	}
     }
     if (sinkPtr->updateVar != NULL) {
@@ -1307,7 +1311,7 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 	result = Tcl_SetVar2Ex(interp, sinkPtr->updateVar, NULL, objPtr, 
 	       (TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG));
 	if (result == NULL) {
-	    Tcl_BackgroundError(interp);
+	    Rbc_BackgroundError(interp);
 	}
     }
     Tcl_DecrRefCount(objPtr);
@@ -1315,11 +1319,13 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
 
 #endif /* < 8.1.0 */
 
-static int
+STATIC int
 CollectData(bgPtr, sinkPtr)
     BackgroundInfo *bgPtr;
     Sink *sinkPtr;
 {
+    Tcl_Preserve(bgPtr);
+    int ret = TCL_OK;
     if ((bgPtr->detached) && (sinkPtr->doneVar == NULL)) {
 	ResetSink(sinkPtr);
     }
@@ -1342,18 +1348,23 @@ CollectData(bgPtr, sinkPtr)
 	}
     }
     if (sinkPtr->status >= 0) {
-	return TCL_OK;
+      goto end;
     }
     if (sinkPtr->status == READ_ERROR) {
 	Tcl_AppendResult(bgPtr->interp, "can't read data from ", sinkPtr->name,
 	    ": ", Tcl_PosixError(bgPtr->interp), (char *)NULL);
-	Tcl_BackgroundError(bgPtr->interp);
-	return TCL_ERROR;
+	Rbc_BackgroundError(bgPtr->interp);
+        ret = TCL_ERROR;
+        goto end;
     }
 #if WINDEBUG
     PurifyPrintf("CollectData %s: done\n", sinkPtr->name);
 #endif
-    return TCL_RETURN;
+    ret = TCL_RETURN;
+
+end:
+    Tcl_Release(bgPtr);
+    return ret;
 }
 
 /*
@@ -1372,7 +1383,7 @@ CollectData(bgPtr, sinkPtr)
  *
  *----------------------------------------------------------------------
  */
-static int
+STATIC int
 CreateSinkHandler(bgPtr, sinkPtr, proc)
     BackgroundInfo *bgPtr;
     Sink *sinkPtr;
@@ -1403,7 +1414,7 @@ CreateSinkHandler(bgPtr, sinkPtr, proc)
     return TCL_OK;
 }
 
-static void
+STATIC void
 DisableTriggers(bgPtr)
     BackgroundInfo *bgPtr;	/* Background info record. */
 {
@@ -1437,7 +1448,7 @@ DisableTriggers(bgPtr)
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 FreeBackgroundInfo(bgPtr)
     BackgroundInfo *bgPtr;
 {
@@ -1448,8 +1459,14 @@ FreeBackgroundInfo(bgPtr)
     if (bgPtr->procArr != NULL) {
 	ckfree(bgPtr->procArr);
     }
+
+    // the following 2 lines protect code from invalid usage
+    // 1. Tcl_Preserve, Tcl_Release, Tcl_EventuallyFree
+    //    prevent deletion until "Tcl_Release"
+    // 2. "signature" prevent further usage if code is marked
+    //    for  "deletion"
     bgPtr->signature = 0x00000000;
-    ckfree(bgPtr);
+    Tcl_EventuallyFree(bgPtr,Tcl_Free);
 }
 
 /*
@@ -1470,7 +1487,7 @@ FreeBackgroundInfo(bgPtr)
  *----------------------------------------------------------------------
  */
 /* ARGSUSED */
-static void
+STATIC void
 DestroyBackgroundInfo(bgPtr)
     BackgroundInfo *bgPtr;	/* Background info record. */
 {
@@ -1519,7 +1536,7 @@ DestroyBackgroundInfo(bgPtr)
  * ----------------------------------------------------------------------
  */
 /* ARGSUSED */
-static char *
+STATIC char *
 VariableProc(
     ClientData clientData,	/* File output information. */
     Tcl_Interp *interp,
@@ -1569,7 +1586,7 @@ VariableProc(
  *
  *----------------------------------------------------------------------
  */
-static void
+STATIC void
 TimerProc(clientData)
     ClientData clientData;
 {
@@ -1681,7 +1698,7 @@ TimerProc(clientData)
 	Tcl_DStringValue(&dString), TCL_GLOBAL_ONLY);
     Tcl_DStringFree(&dString);
     if (result == NULL) {
-	Tcl_BackgroundError(bgPtr->interp);
+	Rbc_BackgroundError(bgPtr->interp);
     }
     if (bgPtr->detached) {
 	DestroyBackgroundInfo(bgPtr);
@@ -1708,27 +1725,28 @@ TimerProc(clientData)
  *----------------------------------------------------------------------
  */
 /* ARGSUSED */
-static void
+STATIC void
 StdoutProc(clientData, mask)
     ClientData clientData;	/* File output information. */
     int mask;			/* Not used. */
 {
-
+    Tcl_Preserve(clientData);
     BackgroundInfo *bgPtr = clientData;
 
     // BUG: the bgPtr is deleted after CollectData
     // this happen if Tcl_BackgroundError was fired by CollectData
     // and Tcl_CreateTimerHandler fire TimerProc and
     // TimerProc clean all data
+    // > read more at: FreeBackgroundInfo 
     {
       if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
-        return;
+        goto end;
       }
       if (CollectData(bgPtr, &bgPtr->sink1) == TCL_OK) {
-          return;
+        goto end;
       }
       if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
-        return;
+        goto end;
       }
     }
 
@@ -1748,6 +1766,9 @@ StdoutProc(clientData, mask)
     if (!IsOpenSink(&bgPtr->sink2)) {
 	bgPtr->timerToken = Tcl_CreateTimerHandler(0, TimerProc, clientData);
     }
+
+end:
+    Tcl_Release(clientData);
 }
 
 /*
@@ -1769,27 +1790,41 @@ StdoutProc(clientData, mask)
  *
  *----------------------------------------------------------------------
  */
+
+#if defined(HAVE_EXECINFO_H)
+/*
+STATIC void printBT()
+{
+  static void* buffer[10];
+  int size = backtrace(buffer,10);
+  backtrace_symbols_fd(buffer, size, STDOUT_FILENO);
+}
+*/
+#endif
+
 /* ARGSUSED */
-static void
+STATIC void
 StderrProc(clientData, mask)
     ClientData clientData;	/* File output information. */
     int mask;			/* Not used. */
 {
+    Tcl_Preserve(clientData);
     BackgroundInfo *bgPtr = clientData;
 
     // BUG: the bgPtr is deleted after CollectData
     // this happen if Tcl_BackgroundError was fired by CollectData
     // and Tcl_CreateTimerHandler fire TimerProc and
     // TimerProc clean all data
+    // > read more at: FreeBackgroundInfo 
     {
       if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
-        return;
+        goto end;
       }
       if (CollectData(bgPtr, &bgPtr->sink2) == TCL_OK) {
-          return;
+        goto end;
       }
       if (*((int*)clientData) != BackgroundInfo_SIGNATURE) {
-        return;
+        goto end;
       }
     }
 
@@ -1809,6 +1844,9 @@ StderrProc(clientData, mask)
     if (!IsOpenSink(&bgPtr->sink1)) {
 	bgPtr->timerToken = Tcl_CreateTimerHandler(0, TimerProc, clientData);
     }
+
+end:
+    Tcl_Release(clientData);
 }
 
 /*
@@ -1828,7 +1866,7 @@ StderrProc(clientData, mask)
  *----------------------------------------------------------------------
  */
 /* ARGSUSED */
-static int
+STATIC int
 BgexecCmd(clientData, interp, argc, argv)
     ClientData clientData;	/* Thread-specific data. */
     Tcl_Interp *interp;		/* Current interpreter. */

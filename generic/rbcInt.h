@@ -41,11 +41,14 @@
 #include <stdio.h>
 #include <assert.h>
 
+/*
+// get all config on command line (TEA)
 #if defined(WIN32)
 #include "rbcWinConfig.h"
 #else
 #include "rbcConfig.h"
 #endif
+*/
 
 #ifdef WIN32
 #ifndef EXPORT
@@ -624,7 +627,7 @@ int Rbc_ReparentWindow _ANSI_ARGS_((Display *display, Window window,
                                     Window newParent, int x, int y));
 
 #if defined(HAVE_JPEGLIB_H) || defined(HAVE_IJL_H)
-#define HAVE_JPEG 1
+# define HAVE_JPEG 1
 int Rbc_JPEGToPhoto _ANSI_ARGS_((Tcl_Interp *interp, char *fileName,
                                  Tk_PhotoHandle photo));
 #endif /* HAVE_JPEGLIB_H || HAVE_IJL_H */
@@ -684,6 +687,9 @@ Tcl_AppInitProc Rbc_BgexecInit;
 #endif
 #ifndef NO_CONTAINER
 Tcl_AppInitProc Rbc_ContainerInit;
+#endif
+#ifndef NO_HIERBOX
+Tcl_AppInitProc Rbc_HierboxInit;
 #endif
 
 char *RbcStrdup _ANSI_ARGS_((CONST char *ptr));

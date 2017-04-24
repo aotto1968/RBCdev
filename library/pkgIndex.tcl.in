@@ -2,7 +2,7 @@
 
 proc LoadRBC { version dir } {
 
-    set prefix "%LIB_PREFIX%"
+    set prefix "@LIB_PREFIX@"
     set suffix [info sharedlibextension]
     regsub {\.} $version {} version_no_dots
 
@@ -24,7 +24,7 @@ proc LoadRBC { version dir } {
 	}
 	if { ![file exists $library] } {
 	    # Default to the path generated at compilation.
-	    set library [file join "%LIB_DIR%" $name]
+	    set library [file join "@LIB_DIR@" $name]
 	}
     } else {
 	set library $name
@@ -32,7 +32,7 @@ proc LoadRBC { version dir } {
     load $library RBC
 }
 
-set version "%VERSION%"
+set version "@VERSION@"
 
 package ifneeded RBC $version [list LoadRBC $version $dir]
 

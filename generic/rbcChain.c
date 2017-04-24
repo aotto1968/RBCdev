@@ -435,3 +435,55 @@ Rbc_ChainGetNthLink(chainPtr, position)
     return NULL;
 }
 
+/*
+ *----------------------------------------------------------------------
+ *
+ * Rbc_ChainSort --
+ *
+ *      Sorts the chain according to the given comparison routine.  
+ *
+ * Results:
+ *      None.
+ *
+ * Side Effects:
+ *      The chain is reordered.
+ *
+ *----------------------------------------------------------------------
+ */
+void
+Rbc_ChainSort(chainPtr, proc)
+    Rbc_Chain *chainPtr;        /* Chain to traverse */
+    Rbc_ChainCompareProc *proc;
+{
+    Rbc_ChainLink **linkArr;
+    register Rbc_ChainLink *linkPtr;
+    register int i;
+
+    if (chainPtr->nLinks < 2) {
+        return;
+    }
+    linkArr = ckalloc(sizeof(Rbc_ChainLink *) * (chainPtr->nLinks + 1));
+    if (linkArr == NULL) {
+        return;                 /* Out of memory. */
+    }
+    i = 0;
+    for (linkPtr = chainPtr->headPtr; linkPtr != NULL;
+         linkPtr = linkPtr->nextPtr) {
+        linkArr[i++] = linkPtr;
+    }
+    qsort((char *)linkArr, chainPtr->nLinks, sizeof(Rbc_ChainLink *),
+        (QSortCompareProc *)proc);
+
+    /* Rethread the chain. */
+    linkPtr = linkArr[0];
+    chainPtr->headPtr = linkPtr;
+    linkPtr->prevPtr = NULL;
+    for (i = 1; i < chainPtr->nLinks; i++) {
+        linkPtr->nextPtr = linkArr[i];
+        linkPtr->nextPtr->prevPtr = linkPtr;
+        linkPtr = linkPtr->nextPtr;
+    }
+    chainPtr->tailPtr = linkPtr;
+    linkPtr->nextPtr = NULL;
+    ckfree(linkArr);
+}

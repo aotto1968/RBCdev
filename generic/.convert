@@ -17,6 +17,8 @@ s/Rbc_Calloc/RbcCalloc/g
 s/Rbc_Malloc/ckalloc/g
 s/Rbc_Strdup/RbcStrdup/g
 s/blt::/rbc::/g
+s/RBC_ONE_WORD_KEYS/TCL_ONE_WORD_KEYS/g
+s/RBC_STRING_KEYS/TCL_STRING_KEYS/g
 
 ' $1
 

@@ -204,7 +204,7 @@ int Rbc_GetResampleFilter _ANSI_ARGS_((Tcl_Interp *interp,
 
 void Rbc_FreeColorImage _ANSI_ARGS_((Rbc_ColorImage image));
 
-#if HAVE_JPEG
+#if HAVE_JPEGLIB_H
 Rbc_ColorImage Rbc_JPEGToColorImage _ANSI_ARGS_((Tcl_Interp *interp,
         char *fileName));
 #endif

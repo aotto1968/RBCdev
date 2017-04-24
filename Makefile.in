@@ -35,10 +35,8 @@
 # $(srcdir) or in the generic, win or unix subdirectory.
 #========================================================================
 
-PKG_SOURCES	= @PKG_SOURCES@ rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcUnixPipe.c \
-			rbcContainer.c
-PKG_OBJECTS	= @PKG_OBJECTS@ rbcHtext.o rbcBitmap.o rbcTable.o rbcBgexec.o rbcUnixPipe.o \
-			rbcContainer.o
+PKG_SOURCES	= @PKG_SOURCES@
+PKG_OBJECTS	= @PKG_OBJECTS@
 
 PKG_STUB_SOURCES = @PKG_STUB_SOURCES@
 PKG_STUB_OBJECTS = @PKG_STUB_OBJECTS@
@@ -111,7 +109,7 @@ RANLIB		= @RANLIB@
 RANLIB_STUB	= @RANLIB_STUB@
 SHLIB_CFLAGS	= @SHLIB_CFLAGS@
 SHLIB_LD	= @SHLIB_LD@
-SHLIB_LD_LIBS	= @SHLIB_LD_LIBS@ -lX11
+SHLIB_LD_LIBS	= @SHLIB_LD_LIBS@
 STLIB_LD	= @STLIB_LD@
 #TCL_DEFS	= @TCL_DEFS@
 TCL_BIN_DIR	= @TCL_BIN_DIR@
@@ -164,7 +162,7 @@ CONFIG_CLEAN_FILES = Makefile pkgIndex.tcl
 CLEANFILES	= @CLEANFILES@
 
 CPPFLAGS	= @CPPFLAGS@
-LIBS		= @PKG_LIBS@ @LIBS@
+LIBS		= @PKG_LIBS@ @LIBS@ 
 AR		= @AR@
 CFLAGS		= @CFLAGS@
 COMPILE		= $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -441,17 +439,22 @@ uninstall-binaries:
 	done
 
 .PHONY: all binaries clean depend distclean doc install libraries test \
-	tags depend tclsh wish
+	tags depend tclsh wish depends
 
 tags:
 	ctags $$(scripts/get_all_headers.tcl) generic/*.c
 
 depend:
-	makedepend \
+	makedepend $(DEPENDTARGET) $(DEFS) \
 	-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include \
 		-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include-fixed \
-			-I../tk8.6.6/generic/ -I../tcl8.6.6/generic/ \
-				generic/*.c
+			$(INCLUDES) generic/*.c
+
+.dep.mk:
+	makedepend -f- $(DEFS) \
+	-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include \
+		-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include-fixed \
+			$(INCLUDES) generic/*.c | sed 's#^generic/##' > .dep.mk
 
 tclsh:
 	$(TCLSH) $(ARGS)
@@ -462,3 +465,5 @@ wish:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
+
+-include .dep.mk

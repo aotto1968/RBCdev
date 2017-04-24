@@ -1756,7 +1756,7 @@ Rbc_JPEGToPhoto(interp, fileName, photo)
     if (image == NULL) {
         return TCL_ERROR;
     }
-    Rbc_ColorImageToPhoto(image, photo);
+    Rbc_ColorImageToPhoto(interp, image, photo);
     Rbc_FreeColorImage(image);
     return TCL_OK;
 }

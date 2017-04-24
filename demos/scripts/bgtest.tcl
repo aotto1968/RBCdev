@@ -1,5 +1,5 @@
 set dir [file normalize [file dirname [info script]]]
-set fid [open [file join $dir .. .. README.md] "r"]
+set fid [open [file join $dir .. .. README.md1] "r"]
 set data [read $fid]
 close $fid
 

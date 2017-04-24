@@ -22,7 +22,7 @@ AC_INIT([rbc], [0.1])
 # as well as PKG_LIB_FILE and PKG_STUB_LIB_FILE.
 #--------------------------------------------------------------------
 
-TEA_INIT([3.7])
+TEA_INIT([3.10])
 
 AC_CONFIG_AUX_DIR(tclconfig)
 
@@ -66,13 +66,17 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor.c rbcConfig.c rbcGraph.c rbcGrAxis.c rbcGrBar.c rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c])
+TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor.c rbcConfig.c rbcGraph.c rbcGrAxis.c rbcGrBar.c rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c rbcHierbox.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
 TEA_ADD_CFLAGS([])
 TEA_ADD_STUB_SOURCES([])
-TEA_ADD_TCL_SOURCES([library/graph.tcl library/rbcCanvEps.pro library/rbcGraph.pro])
+TEA_ADD_TCL_SOURCES([ library/rbcCanvEps.pro library/rbcGraph.pro library/dnd.tcl library/dragdrop.tcl library/hierbox.tcl
+library/hiertable.tcl library/tabnotebook.tcl library/tabset.tcl library/tclIndex library/treeview.cur library/treeview_m.xbm 
+library/treeview.tcl library/treeview.xbm library/ZoomStack.itcl library/dd_protocols/dd-color.tcl library/dd_protocols/dd-file.tcl
+library/dd_protocols/dd-number.tcl library/dd_protocols/dd-text.tcl library/dd_protocols/tclIndex library/graph.tcl])
+
 
 #--------------------------------------------------------------------
 # __CHANGE__
@@ -121,6 +125,88 @@ TEA_PUBLIC_TCL_HEADERS
 TEA_PUBLIC_TK_HEADERS
 TEA_PRIVATE_TK_HEADERS
 #TEA_PATH_X
+
+# -----------------------------------------------------------------------
+#
+# Headers:      Check for RBC header files used
+#
+# -----------------------------------------------------------------------
+
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_HEADER_TIME
+
+# >>> from BLT
+AC_CHECK_HEADERS(limits.h sys/param.h)
+AC_CHECK_HEADERS(string.h ctype.h)
+AC_CHECK_HEADERS(errno.h float.h math.h ieeefp.h)
+AC_CHECK_HEADERS(sys/time.h waitflags.h sys/wait.h)
+AC_CHECK_HEADERS(malloc.h memory.h)
+AC_CHECK_HEADERS(setjmp.h)
+# <<< from BLT
+
+#debugging
+#AC_CHECK_HEADERS([execinfo.h])
+
+AC_DEFINE([HAVE_UTF],[1],[utf8 support by default])
+
+# -----------------------------------------------------------------------
+#
+# Types:        Check for existence of types of size_t and pid_t
+#
+# -----------------------------------------------------------------------
+AC_TYPE_SIZE_T
+AC_TYPE_PID_T
+
+AC_MSG_CHECKING([whether union wait is defined correctly])
+AC_CACHE_VAL(rbc_cv_struct_wait_works,
+    AC_TRY_COMPILE([#include <sys/types.h> 
+#include <sys/wait.h>], [
+    /*
+     *  Check whether <sys/wait.h> defines the type "union wait"
+     *  correctly.  It´s needed because of weirdness in HP-UX where
+     *  "union wait" is defined in both the BSD and SYS-V  environments.
+     *  Checking the usability of WIFEXITED seems to do the trick.
+     */
+    union wait x;
+    WIFEXITED(x);       /* Generates compiler error if WIFEXITED
+                         * uses an int. */
+],
+        [rbc_cv_struct_wait_works="yes"],
+        [rbc_cv_struct_wait_works="no"]))
+
+if test "${rbc_cv_struct_wait_works}" = "yes"; then
+    AC_DEFINE(HAVE_UNION_WAIT,1,[Define if union wait type is defined incorrectly.])
+fi
+AC_MSG_RESULT([$rbc_cv_struct_wait_works])
+
+# -----------------------------------------------------------------------
+#
+# Library Functions:    Check for  strdup, drand48, and srand48.
+#
+# -----------------------------------------------------------------------
+
+AC_HAVE_FUNCS(strdup strtolower strcasecmp strncasecmp drand48 srand48 finite iffinite isnan)
+
+# -----------------------------------------------------------------------
+#
+# Types:        Check for jpeg tiff ijl…
+#
+# -----------------------------------------------------------------------
+
+# AC_SEARCH_LIBS([TIFFReadRGBAImage],[tiff],[AC_CHECK_HEADERS([tiffio.h])])
+AC_SEARCH_LIBS([jpeg_read_header],[jpeg],[AC_CHECK_HEADERS([jpeglib.h])])
+AC_SEARCH_LIBS([ijlRead],[ijl],[AC_CHECK_HEADERS([ijl.h])])
+
+# -----------------------------------------------------------------------
+#
+# System services:      X, Tcl, Tk
+#
+# -----------------------------------------------------------------------
+AC_PATH_XTRA
+
+AC_SEARCH_LIBS([XExtendedMaxRequestSize],[X11])
+AC_CHECK_FUNCS([XExtendedMaxRequestSize])
 
 #--------------------------------------------------------------------
 # Check whether --enable-threads or --disable-threads was given.

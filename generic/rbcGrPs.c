@@ -283,19 +283,19 @@ StringToFormat(clientData, interp, tkwin, string, widgRec, offset)
     if ((c == 'c') && (strncmp(string, "epsi", length) == 0)) {
         *formatPtr = PS_PREVIEW_EPSI;
 #ifdef WIN32
-#ifdef HAVE_TIFF_H
+#ifdef HAVE_TIFFIO_H
     } else if ((c == 't') && (strncmp(string, "tiff", length) == 0)) {
         *formatPtr = PS_PREVIEW_TIFF;
-#endif /* HAVE_TIFF_H */
+#endif /* HAVE_TIFFIO_H */
     } else if ((c == 'w') && (strncmp(string, "wmf", length) == 0)) {
         *formatPtr = PS_PREVIEW_WMF;
 #endif /* WIN32 */
     } else {
         Tcl_AppendResult(interp, "bad format \"", string, "\": should be ",
 #ifdef WIN32
-#ifdef HAVE_TIFF_H
+#ifdef HAVE_TIFFIO_H
                          "\"tiff\" or ",
-#endif /* HAVE_TIFF_H */
+#endif /* HAVE_TIFFIO_H */
                          "\"wmf\" or ",
 #endif /* WIN32 */
                          "\"epsi\"", (char *)NULL);

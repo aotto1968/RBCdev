@@ -21,8 +21,8 @@
 #include "rbcPs.h"
 #include "rbcImage.h"
 
-#ifdef HAVE_TIFF_H
-#include "tiff.h"
+#ifdef HAVE_TIFFIO_H
+#include <tiffio.h>
 #endif
 #include <fcntl.h>
 
@@ -720,11 +720,11 @@ OpenEpsFile(interp, epsPtr)
         epsPtr->tiffStart = dosHeader.tiffStart;
         epsPtr->tiffLength = dosHeader.tiffLength;
         epsPtr->previewFormat = PS_PREVIEW_EPSI;
-#ifdef HAVE_TIFF_H
+#ifdef HAVE_TIFFIO_H
         if (epsPtr->tiffLength > 0) {
             epsPtr->previewFormat = PS_PREVIEW_TIFF;
         }
-#endif /* HAVE_TIFF_H */
+#endif /* HAVE_TIFFIO_H */
         if (epsPtr->wmfLength > 0) {
             epsPtr->previewFormat = PS_PREVIEW_WMF;
         }
@@ -759,7 +759,7 @@ CloseEpsFile(epsPtr)
     }
 }
 
-#ifdef HAVE_TIFF_H
+#ifdef HAVE_TIFFIO_H
 /*
  *----------------------------------------------------------------------
  *
@@ -782,14 +782,12 @@ ReadTiffPreview(epsPtr)
     unsigned int width, height;
     Rbc_ColorImage image;
     Pix32 *dataPtr;
-    FILE *f;
-    int n;
 
     TIFFGetField(epsPtr->tiffPtr, TIFFTAG_IMAGEWIDTH, &width);
     TIFFGetField(epsPtr->tiffPtr, TIFFTAG_IMAGELENGTH, &height);
     image = Rbc_CreateColorImage(width, height);
     dataPtr = Rbc_ColorImageBits(image);
-    if (!TIFFReadRGBAImage(epsPtr->tiffPtr, width, height, dataPtr, 0)) {
+    if (!TIFFReadRGBAImage(epsPtr->tiffPtr, width, height, (uint32*) dataPtr, 0)) {
         Rbc_FreeColorImage(image);
         return;
     }
