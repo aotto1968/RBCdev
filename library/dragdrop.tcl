@@ -31,7 +31,7 @@
 #
 # ======================================================================
 
-if { $tcl_version >= 8.0 } {
+if { $::tcl_version >= 8.0 } {
     set cmd rbc::drag&drop
 } else {
     set cmd drag&drop

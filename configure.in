@@ -22,7 +22,7 @@ AC_INIT([rbc], [0.1])
 # as well as PKG_LIB_FILE and PKG_STUB_LIB_FILE.
 #--------------------------------------------------------------------
 
-TEA_INIT([3.10])
+TEA_INIT([3.7])
 
 AC_CONFIG_AUX_DIR(tclconfig)
 
@@ -66,17 +66,18 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor.c rbcConfig.c rbcGraph.c rbcGrAxis.c rbcGrBar.c rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c rbcHierbox.c])
+TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor.c rbcConfig.c rbcGraph.c rbcGrAxis.c rbcGrBar.c
+rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c
+rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c
+rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c rbcHierbox.c rbcTreeView.c rbcObjConfig.c
+rbcPool.c rbcTree.c rbcArrayObj.c rbcTreeViewCmd.c rbcTreeViewColumn.c rbcTreeViewStyle.c rbcTreeCmd.c rbcNsUtil.c rbcTreeViewEdit.c])
+
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
 TEA_ADD_CFLAGS([])
 TEA_ADD_STUB_SOURCES([])
-TEA_ADD_TCL_SOURCES([ library/rbcCanvEps.pro library/rbcGraph.pro library/dnd.tcl library/dragdrop.tcl library/hierbox.tcl
-library/hiertable.tcl library/tabnotebook.tcl library/tabset.tcl library/tclIndex library/treeview.cur library/treeview_m.xbm 
-library/treeview.tcl library/treeview.xbm library/ZoomStack.itcl library/dd_protocols/dd-color.tcl library/dd_protocols/dd-file.tcl
-library/dd_protocols/dd-number.tcl library/dd_protocols/dd-text.tcl library/dd_protocols/tclIndex library/graph.tcl])
-
+TEA_ADD_TCL_SOURCES([library/graph.tcl library/rbcCanvEps.pro library/rbcGraph.pro])
 
 #--------------------------------------------------------------------
 # __CHANGE__
@@ -120,11 +121,11 @@ AC_SUBST(CLEANFILES)
 #--------------------------------------------------------------------
 
 TEA_PUBLIC_TCL_HEADERS
-#TEA_PRIVATE_TCL_HEADERS
+TEA_PRIVATE_TCL_HEADERS
 
 TEA_PUBLIC_TK_HEADERS
 TEA_PRIVATE_TK_HEADERS
-#TEA_PATH_X
+TEA_PATH_X
 
 # -----------------------------------------------------------------------
 #
@@ -203,7 +204,7 @@ AC_SEARCH_LIBS([ijlRead],[ijl],[AC_CHECK_HEADERS([ijl.h])])
 # System services:      X, Tcl, Tk
 #
 # -----------------------------------------------------------------------
-AC_PATH_XTRA
+#AC_PATH_XTRA
 
 AC_SEARCH_LIBS([XExtendedMaxRequestSize],[X11])
 AC_CHECK_FUNCS([XExtendedMaxRequestSize])

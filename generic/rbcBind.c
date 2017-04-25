@@ -500,9 +500,6 @@ Rbc_ConfigureBindings(interp, bindPtr, item, argc, argv)
     return TCL_OK;
 }
 
-
-#if (TCL_MAJOR_VERSION >= 8)
-
 /*
  *--------------------------------------------------------------
  *
@@ -572,7 +569,6 @@ Rbc_ConfigureBindingsFromObj(interp, bindPtr, item, objc, objv)
     }
     return TCL_OK;
 }
-#endif
 
 /*
  *--------------------------------------------------------------

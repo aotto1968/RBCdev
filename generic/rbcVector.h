@@ -82,12 +82,6 @@ typedef struct {
 #define VECTOR_CHAR(c)	((isalnum(UCHAR(c))) || \
 	(c == '_') || (c == ':') || (c == '@') || (c == '.'))
 
-
-#define NS_SEARCH_NONE		(0)
-#define NS_SEARCH_CURRENT	(1<<0)
-#define NS_SEARCH_GLOBAL	(1<<1)
-#define NS_SEARCH_BOTH		(NS_SEARCH_GLOBAL | NS_SEARCH_CURRENT)
-
 typedef struct {
     Tcl_HashTable vectorTable; /* Table of vectors */
     Tcl_HashTable mathProcTable; /* Table of vector math functions */

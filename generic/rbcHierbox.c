@@ -48,12 +48,6 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
-#if HAVE_UTF
-#else
-#define Tcl_NumUtfChars(s,n)	(((n) == -1) ? strlen((s)) : (n))
-#define Tcl_UtfAtIndex(s,i)	((s) + (i))
-#endif
-
 #define SEPARATOR_NONE		((char *)-1)
 #define SEPARATOR_LIST		((char *)NULL)
 #define APPEND			(-1)
@@ -207,13 +201,8 @@
 #define DEF_BUTTON_ACTIVE_FOREGROUND	STD_ACTIVE_FOREGROUND
 #define DEF_BUTTON_ACTIVE_FG_MONO	STD_ACTIVE_FG_MONO
 #define DEF_BUTTON_BORDERWIDTH		"1"
-#if (TK_MAJOR_VERSION == 4) 
-#define DEF_BUTTON_CLOSE_RELIEF		"flat"
-#define DEF_BUTTON_OPEN_RELIEF		"flat"
-#else
 #define DEF_BUTTON_CLOSE_RELIEF		"solid"
 #define DEF_BUTTON_OPEN_RELIEF		"solid"
-#endif
 #define DEF_BUTTON_IMAGES		(char *)NULL
 #define DEF_BUTTON_NORMAL_BACKGROUND	RGB_WHITE
 #define DEF_BUTTON_NORMAL_BG_MONO	STD_NORMAL_BG_MONO
@@ -3584,9 +3573,7 @@ CreateHierbox(interp, tkwin)
 	PickEntry, GetTags);
     hboxPtr->buttonBindTable = Rbc_CreateBindingTable(interp, tkwin, hboxPtr, 
 	PickButton, GetTags);
-#if (TK_MAJOR_VERSION > 4)
     Rbc_SetWindowInstanceData(tkwin, hboxPtr);
-#endif
     return hboxPtr;
 }
 
@@ -5972,15 +5959,11 @@ ScreenToIndex(hboxPtr, x, y)
 	    char *next;
 
 	    next = fragPtr->text + nBytes;
-#if HAVE_UTF
 	    {
 		Tcl_UniChar dummy;
 
 		length = Tcl_UtfToUniChar(next, &dummy);
 	    }
-#else
-	    length = 1;
-#endif
 	    charSize = Tk_TextWidth(font, next, length);
 	    fract = ((double)(x - newX) / (double)charSize);
 	    if (ROUND(fract)) {

@@ -168,11 +168,6 @@ double rbcNaN;
 char *strdup _ANSI_ARGS_((CONST char *s));
 #endif /* NEED_DECL_STRDUP */
 
-/*
-#ifndef HAVE_STRTOLOWER
-extern void strtolower _ANSI_ARGS_((char *s));
-#endif HAVE_STRTOLOWER */
-
 #ifdef NEED_DECL_DRAND48
 double drand48 _ANSI_ARGS_((void));
 void srand48 _ANSI_ARGS_((long seed));

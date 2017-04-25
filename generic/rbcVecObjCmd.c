@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "rbcVector.h"
+#include "rbcNsUtil.h"
 
 enum NativeFormats {
     FMT_UNKNOWN = -1,

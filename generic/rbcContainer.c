@@ -71,10 +71,6 @@
 #define DEF_CONTAINER_WIDTH		"0"
 #define DEF_CONTAINER_WINDOW		(char *)NULL
 
-#if (TK_MAJOR_VERSION == 4)
-#define TK_REPARENTED			0x2000
-#endif
-
 typedef struct SearchInfoStruct SearchInfo;
 typedef void (SearchProc) _ANSI_ARGS_((Display *display, Window window, 
        SearchInfo *searchPtr));
@@ -288,11 +284,9 @@ GetXID(tkwin)
     TkWinWindow *twdPtr;
 
     hWnd = Tk_GetHWND(Tk_WindowId(tkwin));
-#if (TK_MAJOR_VERSION > 4)
     if (Tk_IsTopLevel(tkwin)) {
 	hWnd = GetParent(hWnd);
     }
-#endif /* TK_MAJOR_VERSION > 4 */
     twdPtr = ckalloc(sizeof(TkWinWindow));
     twdPtr->handle = hWnd;
     twdPtr->type = TWD_WINDOW;
@@ -1318,9 +1312,7 @@ ContainerCmd(clientData, interp, argc, argv)
     cntrPtr->borderWidth = cntrPtr->highlightWidth = 2;
     cntrPtr->relief = TK_RELIEF_SUNKEN;
     Tk_SetClass(tkwin, "Container");
-#if (TK_MAJOR_VERSION > 4)
     Rbc_SetWindowInstanceData(tkwin, cntrPtr);
-#endif
     if (ConfigureContainer(interp, cntrPtr, argc - 2, argv + 2, 0) != TCL_OK) {
 	Tk_DestroyWindow(cntrPtr->tkwin);
 	return TCL_ERROR;

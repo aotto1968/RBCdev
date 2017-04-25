@@ -31,11 +31,7 @@
 #
 # ======================================================================
 
-if { $tcl_version >= 8.0 } {
-    set cmd rbc::dnd
-} else {
-    set cmd dnd
-}
+set cmd rbc::dnd
 for { set i 1 } { $i <= 5 } { incr i } {
     bind RbcDndButton$i <ButtonPress-$i>  [list $cmd select %W %X %Y %t]
     bind RbcDndButton$i <B$i-Motion>	  [list $cmd drag %W %X %Y]

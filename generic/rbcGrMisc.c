@@ -1197,7 +1197,6 @@ Rbc_GetScrollInfo(interp, argc, argv, offsetPtr, worldSize, windowSize,
     return TCL_OK;
 }
 
-#if (TCL_MAJOR_VERSION >= 8)
 /*
  *----------------------------------------------------------------------
  *
@@ -1279,7 +1278,6 @@ Rbc_GetScrollInfoFromObj(interp, objc, objv, offsetPtr, worldSize, windowSize,
                                     scrollMode);
     return TCL_OK;
 }
-#endif /* TCL_MAJOR_VERSION >= 8 */
 
 /*
  * ----------------------------------------------------------------------

@@ -210,9 +210,8 @@ proc rbc::DestroyZoomTitle { graph } {
     }
 }
 
-proc rbc::Redraw { graph num } {
-    set tl [winfo toplevel $graph]
-    wm geometry $tl "[expr [winfo width $tl] $num]x[expr [winfo height $tl] $num]"
+proc rbc::Redraw { graph } {
+    event generate $graph <Configure>
 }
 
 proc rbc::PopZoom { graph } {
@@ -224,7 +223,7 @@ proc rbc::PopZoom { graph } {
 	set zoomInfo($graph,stack) [lrange $zoomStack 1 end]
 	eval $cmd
 	rbc::ZoomTitleLast $graph
-        rbc::Redraw $graph +1
+        rbc::Redraw $graph
 	tk busy hold $graph
 	update
 	tk busy forget $graph
@@ -286,7 +285,7 @@ proc rbc::PushZoom { graph } {
 	}
     }
 
-    rbc::Redraw $graph -1
+    rbc::Redraw $graph
 
     tk busy hold $graph 
     update;				# This "update" redraws the graph

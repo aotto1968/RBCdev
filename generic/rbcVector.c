@@ -12,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include "rbcVector.h"
+#include "rbcNsUtil.h"
 
 static CONST84 char *subCmds[] = { "*", "+", "-", "/", "append", "binread", "clear", "delete", "dup",
                                  "expr", "index", "length", "merge", "normalize", "offset", "populate",
@@ -57,8 +58,6 @@ static void               VectorNotifyClients    _ANSI_ARGS_((ClientData clientD
 static void               VectorFlushCache       _ANSI_ARGS_((VectorObject *vPtr));
 static char * 			  VectorVarTrace         _ANSI_ARGS_((ClientData clientData, Tcl_Interp *interp, char *part1, char *part2, int flags));
 static char *             BuildQualifiedName     _ANSI_ARGS_((Tcl_Interp *interp, const char *name, Tcl_DString *fullName));
-static int                ParseQualifiedName     _ANSI_ARGS_((Tcl_Interp *interp, const char *qualName, Tcl_Namespace **nsPtrPtr, const char **namePtrPtr));
-static char *             GetQualifiedName       _ANSI_ARGS_((Tcl_Namespace *nsPtr, const char *name, Tcl_DString *resultPtr));
 static VectorObject *     GetVectorObject        _ANSI_ARGS_((VectorInterpData *dataPtr, const char *name, int flags));
 static VectorObject *     FindVectorInNamespace  _ANSI_ARGS_((VectorInterpData *dataPtr, Tcl_Namespace *nsPtr, const char *vecName));
 static void               DeleteCommand          _ANSI_ARGS_((VectorObject *vPtr));
@@ -946,7 +945,7 @@ Rbc_VectorCreate(dataPtr, vecName, cmdName, varName, newPtr)
 
     /* process the vector name: */
     vecName = BuildQualifiedName(interp, vecName, &qualVecNamePtr);
-    if (ParseQualifiedName(interp, vecName, &nsPtr, &vecNameTail) != TCL_OK) {
+    if (Rbc_ParseQualifiedName(interp, vecName, &nsPtr, &vecNameTail) != TCL_OK) {
         Tcl_AppendStringsToObj(resultPtr, "unknown namespace in \"", vecName,
                                "\"", NULL);
         Tcl_SetObjResult(interp, resultPtr);
@@ -959,7 +958,7 @@ Rbc_VectorCreate(dataPtr, vecName, cmdName, varName, newPtr)
 
         do {
             sprintf(string, "vector%d", dataPtr->nextId++);
-            qualVecName = GetQualifiedName(nsPtr, string, &qualVecNamePtr);
+            qualVecName = Rbc_GetQualifiedName(nsPtr, string, &qualVecNamePtr);
             hPtr = Tcl_FindHashEntry(&(dataPtr->vectorTable), qualVecName);
         } while (hPtr != NULL);
         isAutoName = 1;
@@ -1009,7 +1008,7 @@ Rbc_VectorCreate(dataPtr, vecName, cmdName, varName, newPtr)
         }
         nsPtr = NULL;
         vecNameTail = NULL;
-        if (ParseQualifiedName(interp, cmdName, &nsPtr, &vecNameTail) != TCL_OK) {
+        if (Rbc_ParseQualifiedName(interp, cmdName, &nsPtr, &vecNameTail) != TCL_OK) {
             Tcl_AppendStringsToObj(resultPtr, "unknown namespace in \"",
                                    cmdName, "\"", NULL);
             Tcl_SetObjResult(interp, resultPtr);
@@ -2190,102 +2189,6 @@ BuildQualifiedName(interp, name, fullName)
 /*
  * ----------------------------------------------------------------------
  *
- * ParseQualifiedName --
- *
- *      Parses a possibly namespaced (variable) name
- *      and checkes whether the corresponding namespace
- *      exists or not. Splits the name into its components
- *      as the namespace part and the name itself
- *
- *      This function is the counterpart of GetQualifiedName
- *
- * Results:
- *      A standard Tcl result. Returns TCL_ERROR if the namespace does
- *      not exist yet, else returns TCL_OK
- *
- * Side effects:
- *      If TCL_OK is returned, the nsPtr contains the namespace
- *      and namePtr contains the name of the vector in that namespace
- *
- * ----------------------------------------------------------------------
- */
-static int
-ParseQualifiedName(interp, qualName, nsPtrPtr, namePtrPtr)
-    Tcl_Interp *interp; /* the interpreter, where the name is found in */
-    const char *qualName; /* the qualified name to parse */
-    Tcl_Namespace **nsPtrPtr; /* pointer to store the namespace part into */
-    const char **namePtrPtr; /* pointer to store the name itself into */
-{
-    register char *p, *colon;
-    Tcl_Namespace *nsPtr;
-
-    colon = NULL;
-    p = (char *) (qualName + strlen(qualName));
-    while (--p > qualName) {
-        if ((*p == ':') && (*(p - 1) == ':')) {
-            p++; /* just after the last "::" */
-            colon = p - 2;
-            break;
-        }
-    }
-    if (colon == NULL) {
-        *nsPtrPtr = NULL;
-        *namePtrPtr = (char *) qualName;
-        return TCL_OK;
-    }
-    *colon = '\0';
-    if (qualName[0] == '\0') {
-        nsPtr = Tcl_GetGlobalNamespace(interp);
-    } else {
-        nsPtr = Tcl_FindNamespace(interp, (char *) qualName,
-                                  (Tcl_Namespace *) NULL, 0);
-    }
-    *colon = ':';
-    if (nsPtr == NULL) {
-        return TCL_ERROR;
-    }
-    *nsPtrPtr = nsPtr;
-    *namePtrPtr = p;
-    return TCL_OK;
-}
-
-/*
- * ----------------------------------------------------------------------
- *
- * GetQualifiedName --
- *
- *      Builds a namespaced variable name
- *      from a namespace and a variable name specification
- *
- *      This function is the counterpart of ParseQualifiedName
- *
- * Results:
- *      A namespaced Tcl name
- *
- * Side effects:
- *      fills the supplied DString with the qualified name
- *
- * ----------------------------------------------------------------------
- */
-static char *
-GetQualifiedName(nsPtr, name, resultPtr)
-    Tcl_Namespace *nsPtr;
-    const char *name;
-    Tcl_DString *resultPtr;
-{
-    Tcl_DStringInit(resultPtr);
-    if ((nsPtr->fullName[0] != ':') || (nsPtr->fullName[1] != ':')
-            || (nsPtr->fullName[2] != '\0')) {
-        Tcl_DStringAppend(resultPtr, nsPtr->fullName, -1);
-    }
-    Tcl_DStringAppend(resultPtr, "::", -1);
-    Tcl_DStringAppend(resultPtr, (char *) name, -1);
-    return Tcl_DStringValue(resultPtr);
-}
-
-/*
- * ----------------------------------------------------------------------
- *
  * GetVectorObject --
  *
  *      Searches for the vector associated with the name given.
@@ -2311,7 +2214,7 @@ static VectorObject *
 
     nsPtr = NULL;
     vecName = name;
-    if (ParseQualifiedName(dataPtr->interp, name, &nsPtr, &vecName) != TCL_OK) {
+    if (Rbc_ParseQualifiedName(dataPtr->interp, name, &nsPtr, &vecName) != TCL_OK) {
         return NULL; /* Can't find namespace. */
     }
     vPtr = NULL;
@@ -2356,7 +2259,7 @@ FindVectorInNamespace(dataPtr, nsPtr, vecName)
     const char *name;
     Tcl_HashEntry *hPtr;
 
-    name = GetQualifiedName(nsPtr, vecName, &dString);
+    name = Rbc_GetQualifiedName(nsPtr, vecName, &dString);
     hPtr = Tcl_FindHashEntry(&(dataPtr->vectorTable), name);
     Tcl_DStringFree(&dString);
     if (hPtr != NULL) {

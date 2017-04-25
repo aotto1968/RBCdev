@@ -10,6 +10,7 @@
  */
 
 #include "rbcInt.h"
+#include "rbcVector.h"
 
 typedef double TriDiagonalMatrix[3];
 typedef struct {

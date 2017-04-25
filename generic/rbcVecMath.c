@@ -11,6 +11,7 @@
  */
 
 #include "rbcVector.h"
+#include "rbcNsUtil.h"
 #include <errno.h>
 #include <math.h>
 

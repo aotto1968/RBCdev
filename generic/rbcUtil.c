@@ -242,7 +242,6 @@ strncasecmp(s1, s2, length)
 
 #endif /* !HAVE_STRCASECMP */
 
-#if HAVE_UTF
 /*
  *----------------------------------------------------------------------
  *
@@ -381,128 +380,6 @@ Rbc_DictionaryCompare(left, right)
     }
     return diff;
 }
-
-#else
-
-/*
- *--------------------------------------------------------------
- *
- * Rbc_DictionaryCompare --
- *
- *      TODO: Description
- *
- * Results:
- *      TODO: Results
- *
- * Side effects:
- *      TODO: Side Effects
- *
- *--------------------------------------------------------------
- */
-int
-Rbc_DictionaryCompare(left, right)
-    char *left; /* Left string of the comparison */
-    char *right; /* Right string of the comparison */
-{
-    int diff, zeros;
-    int secondaryDiff = 0;
-
-    while (1) {
-        if (isdigit(UCHAR(*right)) && isdigit(UCHAR(*left))) {
-            /*
-             * There are decimal numbers embedded in the two
-             * strings.  Compare them as numbers, rather than
-             * strings.  If one number has more leading zeros than
-             * the other, the number with more leading zeros sorts
-             * later, but only as a secondary choice.
-             */
-
-            zeros = 0;
-            while ((*right == '0') && (isdigit(UCHAR(right[1])))) {
-                right++;
-                zeros--;
-            }
-            while ((*left == '0') && (isdigit(UCHAR(left[1])))) {
-                left++;
-                zeros++;
-            }
-            if (secondaryDiff == 0) {
-                secondaryDiff = zeros;
-            }
-
-            /*
-             * The code below compares the numbers in the two
-             * strings without ever converting them to integers.  It
-             * does this by first comparing the lengths of the
-             * numbers and then comparing the digit values.
-             */
-
-            diff = 0;
-            while (1) {
-                if (diff == 0) {
-                    diff = UCHAR(*left) - UCHAR(*right);
-                }
-                right++;
-                left++;
-                /* Ignore commas in numbers. */
-                if (*left == ',') {
-                    left++;
-                }
-                if (*right == ',') {
-                    right++;
-                }
-                if (!isdigit(UCHAR(*right))) {
-                    if (isdigit(UCHAR(*left))) {
-                        return 1;
-                    } else {
-                        /*
-                         * The two numbers have the same length. See
-                         * if their values are different.
-                         */
-
-                        if (diff != 0) {
-                            return diff;
-                        }
-                        break;
-                    }
-                } else if (!isdigit(UCHAR(*left))) {
-                    return -1;
-                }
-            }
-            continue;
-        }
-        diff = UCHAR(*left) - UCHAR(*right);
-        if (diff) {
-            if (isupper(UCHAR(*left)) && islower(UCHAR(*right))) {
-                diff = UCHAR(tolower(*left)) - UCHAR(*right);
-                if (diff) {
-                    return diff;
-                } else if (secondaryDiff == 0) {
-                    secondaryDiff = -1;
-                }
-            } else if (isupper(UCHAR(*right)) && islower(UCHAR(*left))) {
-                diff = UCHAR(*left) - UCHAR(tolower(UCHAR(*right)));
-                if (diff) {
-                    return diff;
-                } else if (secondaryDiff == 0) {
-                    secondaryDiff = 1;
-                }
-            } else {
-                return diff;
-            }
-        }
-        if (*left == 0) {
-            break;
-        }
-        left++;
-        right++;
-    }
-    if (diff == 0) {
-        diff = secondaryDiff;
-    }
-    return diff;
-}
-#endif
 
 #ifndef NDEBUG
 /*
@@ -666,8 +543,6 @@ Rbc_Dtoa(interp, value)
     return stringRep;
 }
 
-#if HAVE_UTF
-
 #undef fopen
 /*
  *--------------------------------------------------------------
@@ -697,8 +572,6 @@ Rbc_OpenUtfFile(fileName, mode)
     Tcl_DStringFree(&dString);
     return f;
 }
-
-#endif /* HAVE_UTF */
 
 /*
  *--------------------------------------------------------------

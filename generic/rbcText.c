@@ -49,7 +49,7 @@ DrawTextLayout(display, drawable, gc, font, x, y, textPtr)
 
     fragPtr = textPtr->fragArr;
     for (i = 0; i < textPtr->nFrags; i++, fragPtr++) {
-#if HAVE_UTF
+#if HAVE_UTF_BUG
         Tk_DrawChars(display, drawable, gc, font, fragPtr->text, fragPtr->count, x + fragPtr->x, y + fragPtr->y);
 #else
         XDrawString(display, drawable, gc, x + fragPtr->x, y + fragPtr->y, fragPtr->text, fragPtr->count);

@@ -592,7 +592,6 @@ GetWindowId(tkwin)
 
     Tk_MakeWindowExist(tkwin);
     window = Tk_WindowId(tkwin);
-#if (TK_MAJOR_VERSION > 4)
     if (Tk_IsTopLevel(tkwin)) {
         Window parent;
 
@@ -602,7 +601,6 @@ GetWindowId(tkwin)
         }
         window = parent;
     }
-#endif /* TK_MAJOR_VERSION > 4 */
     return window;
 }
 
@@ -1631,98 +1629,6 @@ Rbc_ReparentWindow(display, window, newParent, x, y)
 
 #endif /* WIN32 */
 
-#if (TK_MAJOR_VERSION == 4)
-static int initialized = FALSE;
-static Tcl_HashTable windowTable;
-
-/*
- *--------------------------------------------------------------
- *
- * Rbc_SetWindowInstanceData --
- *
- *      TODO: Description
- *
- * Results:
- *      TODO: Results
- *
- * Side effects:
- *      TODO: Side Effects
- *
- *--------------------------------------------------------------
- */
-void
-Rbc_SetWindowInstanceData(tkwin, instanceData)
-    Tk_Window tkwin;
-    ClientData instanceData;
-{
-    Tcl_HashEntry *hPtr;
-    int isNew;
-
-    if (!initialized) {
-        Tcl_InitHashTable(&windowTable, TCL_ONE_WORD_KEYS);
-        initialized = TRUE;
-    }
-    hPtr = Tcl_CreateHashEntry(&windowTable, (char *)tkwin, &isNew);
-    assert(isNew);
-    Tcl_SetHashValue(hPtr, instanceData);
-}
-
-/*
- *--------------------------------------------------------------
- *
- * Rbc_GetWindowInstanceData --
- *
- *      TODO: Description
- *
- * Results:
- *      TODO: Results
- *
- * Side effects:
- *      TODO: Side Effects
- *
- *--------------------------------------------------------------
- */
-ClientData
-Rbc_GetWindowInstanceData(tkwin)
-    Tk_Window tkwin;
-{
-    Tcl_HashEntry *hPtr;
-
-    hPtr = Tcl_FindHashEntry(&windowTable, (char *)tkwin);
-    if (hPtr == NULL) {
-        return NULL;
-    }
-    return Tcl_GetHashValue(hPtr);
-}
-
-/*
- *--------------------------------------------------------------
- *
- * Rbc_DeleteWindowInstanceData --
- *
- *      TODO: Description
- *
- * Results:
- *      TODO: Results
- *
- * Side effects:
- *      TODO: Side Effects
- *
- *--------------------------------------------------------------
- */
-void
-Rbc_DeleteWindowInstanceData(tkwin)
-    Tk_Window tkwin;
-{
-    Tcl_HashEntry *hPtr;
-
-    hPtr = Tcl_FindHashEntry(&windowTable, (char *)tkwin);
-    assert(hPtr);
-    Tcl_DeleteHashEntry(&windowTable, hPtr);
-}
-
-#else
-
 /*
  *--------------------------------------------------------------
  *
@@ -1792,6 +1698,4 @@ Rbc_DeleteWindowInstanceData(tkwin)
     Tk_Window tkwin;
 {
 }
-
-#endif
 

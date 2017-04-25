@@ -439,7 +439,7 @@ uninstall-binaries:
 	done
 
 .PHONY: all binaries clean depend distclean doc install libraries test \
-	tags depend tclsh wish depends
+	tags depend tclsh wish dep.mk
 
 tags:
 	ctags $$(scripts/get_all_headers.tcl) generic/*.c
@@ -450,7 +450,7 @@ depend:
 		-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include-fixed \
 			$(INCLUDES) generic/*.c
 
-.dep.mk:
+dep.mk: $(PKG_SOURCES)
 	makedepend -f- $(DEFS) \
 	-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include \
 		-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include-fixed \

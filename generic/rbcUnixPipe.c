@@ -20,30 +20,7 @@
 
 #include "rbcWait.h"
 
-#if (TCL_MAJOR_VERSION == 7)
-typedef pid_t Tcl_Pid;
-
-#define FILEHANDLER_USES_TCLFILES 1
-
-static int
-Tcl_GetChannelHandle(channel, direction, clientDataPtr)
-    Tcl_Channel channel;
-    int direction;
-    ClientData *clientDataPtr;
-{
-    Tcl_File file;
-
-    file = Tcl_GetChannelFile(channel, direction);
-    if (file == NULL) {
-	return TCL_ERROR;
-    }
-    *clientDataPtr = (ClientData)Tcl_GetFileInfo(file, NULL);
-    return TCL_OK;
-}
-
-#else
 typedef int Tcl_File;
-#endif /* TCL_MAJOR_VERSION == 7 */
 
 /*
  *----------------------------------------------------------------------
@@ -226,9 +203,7 @@ CloseFile(fd)
     if ((fd == 0) || (fd == 1) || (fd == 2)) {
 	return 0;		/* Don't close stdin, stdout or stderr. */
     }
-#if (TCL_MAJOR_VERSION > 7)
     Rbc_DeleteFileHandler(fd);
-#endif
     return close(fd);
 }
 
@@ -1100,11 +1075,7 @@ Rbc_CreatePipeline(interp, argc, argv, pidArrayPtr, inPipePtr,
     if (pidPtr != NULL) {
 	for (i = 0; i < nPids; i++) {
 	    if (pidPtr[i] != -1) {
-#if (TCL_MAJOR_VERSION == 7)
-		Tcl_DetachPids(1, &pidPtr[i]);
-#else
 		Tcl_DetachPids(1, (Tcl_Pid *)&pidPtr[i]);
-#endif
 	    }
 	}
 	ckfree(pidPtr);

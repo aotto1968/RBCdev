@@ -44,7 +44,6 @@
 
 #ifndef NO_HTEXT
 #include "rbcChain.h"
-//#include "rbcHash.h"
 #include "rbcTile.h"
  
 #include <sys/stat.h>
@@ -4462,9 +4461,7 @@ TextCmd(clientData, interp, argc, argv)
 	htPtr, XA_STRING);
     Tk_CreateEventHandler(tkwin, ExposureMask | StructureNotifyMask,
 	TextEventProc, htPtr);
-#if (TK_MAJOR_VERSION > 4)
     Rbc_SetWindowInstanceData(tkwin, htPtr);
-#endif
     /*
      * -----------------------------------------------------------------
      *

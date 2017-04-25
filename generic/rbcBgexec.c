@@ -41,12 +41,7 @@
 #include "rbcWait.h"
 #include "rbcSwitch.h"
 
-#if (TCL_MAJOR_VERSION == 7)
-#define FILEHANDLER_USES_TCLFILES 1
-#else
 typedef int Tcl_File;
-#endif
-
 static Tcl_CmdProc BgexecCmd;
 
 #ifdef WIN32
@@ -56,10 +51,6 @@ typedef struct {
 } Process;
 #else
 typedef int Process;
-#endif
-
-#if (TCL_VERSION_NUMBER <  _VERSION(8,1,0)) 
-typedef void *Tcl_Encoding;	/* Make up dummy type for encoding.  */
 #endif
 
 #define ENCODING_ASCII		((Tcl_Encoding)NULL)
@@ -282,10 +273,8 @@ typedef struct {
 				 * whenever data is read from the
 				 * pipe. */
 
-#if (TCL_MAJOR_VERSION >= 8)
     Tcl_Obj **objv;		/*  */
     int objc;			/*  */
-#endif
 
     int flags;			
 
@@ -676,7 +665,6 @@ InitSink(bgPtr, sinkPtr, name, encoding)
 	(sinkPtr->echo)) {
 	sinkPtr->flags |= SINK_NOTIFY;
     }
-#if (TCL_MAJOR_VERSION >= 8)
     if (sinkPtr->updateCmd != NULL) {
 	Tcl_Obj **objArr;
 	char **p;
@@ -695,7 +683,6 @@ InitSink(bgPtr, sinkPtr, name, encoding)
 	sinkPtr->objv = objArr;
 	sinkPtr->objc = count + 1;
     }
-#endif
     ResetSink(sinkPtr);
 }
 
@@ -720,7 +707,6 @@ FreeSinkBuffer(sinkPtr)
     }
     sinkPtr->fd = -1;
     sinkPtr->file = (Tcl_File)NULL;
-#if (TCL_MAJOR_VERSION >= 8)
     if (sinkPtr->objv != NULL) {
 	register int i;
 
@@ -729,7 +715,6 @@ FreeSinkBuffer(sinkPtr)
 	}
 	ckfree(sinkPtr->objv);
     }
-#endif
 }
 
 
@@ -892,19 +877,11 @@ CloseSink(interp, sinkPtr)
 	     * with the contents of the buffer.  
 	     */
 	    GetSinkData(sinkPtr, &data, &length);
-#if (TCL_VERSION_NUMBER <  _VERSION(8,1,0)) 
-	    data[length] = '\0';
-	    if (Tcl_SetVar(interp, sinkPtr->doneVar, data, 
-			   TCL_GLOBAL_ONLY) == NULL) {
-		Rbc_BackgroundError(interp);
-	    }
-#else
 	    if (Tcl_SetVar2Ex(interp, sinkPtr->doneVar, NULL, 
 			      Tcl_NewByteArrayObj(data, length),
 			      (TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG)) == NULL) {
 		Rbc_BackgroundError(interp);
 	    }
-#endif
 	}
 #if WINDEBUG
 	PurifyPrintf("CloseSink %s: done\n", sinkPtr->name);
@@ -942,20 +919,8 @@ CookSink(interp, sinkPtr)
 	/* No translation needed. */
 	sinkPtr->mark = sinkPtr->fill; 
     } else if (sinkPtr->encoding == ENCODING_ASCII) { /* ascii */
-#if (TCL_VERSION_NUMBER <  _VERSION(8,1,0)) 
-	/* Convert NUL bytes to question marks. */
-	srcPtr = sinkPtr->byteArr + sinkPtr->mark;
-	endPtr = sinkPtr->byteArr + sinkPtr->fill;
-	while (srcPtr < endPtr) {
-	    if (*srcPtr == '\0') {
-		*srcPtr = '?';
-	    }
-	    srcPtr++;
-	}
-#endif /* < 8.1.0 */
 	/* One-to-one translation. mark == fill. */
 	sinkPtr->mark = sinkPtr->fill;
-#if (TCL_VERSION_NUMBER >= _VERSION(8,1,0)) 
     } else { /* unicode. */
 	int nSrcCooked, nCooked;
 	int result;
@@ -1016,7 +981,6 @@ CookSink(interp, sinkPtr)
 	    *destPtr++ = *srcPtr++;
 	}
 	sinkPtr->fill = sinkPtr->mark + nLeftOver;
-#endif /* >= 8.1.0  */
     }
 #ifdef WIN32
     /* 
@@ -1194,72 +1158,6 @@ KillProcess(Process proc, int signal)
 
 #endif /* WIN32 */
 
-#if (TCL_VERSION_NUMBER < _VERSION(8,1,0)) 
-
-STATIC void
-NotifyOnUpdate(interp, sinkPtr, data, nBytes)
-    Tcl_Interp *interp;
-    Sink *sinkPtr;
-    unsigned char *data;
-    int nBytes;
-{
-    char save;
-
-#if WINDEBUG_0
-    PurifyPrintf("read %s\n", data);
-#endif
-    if (data[0] == '\0') {
-	return;
-    }
-    save = data[nBytes];
-    data[nBytes] = '\0';
-    if (sinkPtr->echo) {
-	Tcl_Channel channel;
-	
-	channel = Tcl_GetStdChannel(TCL_STDERR);
-	if (channel == NULL) {
-	    Tcl_AppendResult(interp, "can't get stderr channel", (char *)NULL);
-	    Rbc_BackgroundError(interp);
-	    sinkPtr->echo = FALSE;
-	} else {
-	    Tcl_Write(channel, data, nBytes);
-	    if (save == '\n') {
-		Tcl_Write(channel, "\n", 1);
-	    }
-	    Tcl_Flush(channel);
-	}
-    }
-    if (sinkPtr->updateCmd != NULL) {
-	Tcl_DString dString;
-	int result;
-	register char **p;
-
-	Tcl_DStringInit(&dString);
-	for (p = sinkPtr->updateCmd; *p != NULL; p++) {
-	    Tcl_DStringAppendElement(&dString, *p);
-	}
-	Tcl_DStringAppendElement(&dString, data);
-	result = Tcl_GlobalEval(interp, Tcl_DStringValue(&dString));
-	Tcl_DStringFree(&dString);
-	if (result != TCL_OK) {
-	    Rbc_BackgroundError(interp);
-	}
-    }
-    if (sinkPtr->updateVar != NULL) {
-	int flags;
-	char *result;
-
-	flags = (TCL_GLOBAL_ONLY | TCL_LEAVE_ERR_MSG);
-	result = Tcl_SetVar(interp, sinkPtr->updateVar, data, flags);
-	if (result == NULL) {
-	    Rbc_BackgroundError(interp);
-	}
-    }
-    data[nBytes] = save;
-}
-
-#else 
-
 STATIC void
 NotifyOnUpdate(interp, sinkPtr, data, nBytes)
     Tcl_Interp *interp;
@@ -1316,8 +1214,6 @@ NotifyOnUpdate(interp, sinkPtr, data, nBytes)
     }
     Tcl_DecrRefCount(objPtr);
 }
-
-#endif /* < 8.1.0 */
 
 STATIC int
 CollectData(bgPtr, sinkPtr)
@@ -1504,11 +1400,7 @@ DestroyBackgroundInfo(bgPtr)
 #ifdef WIN32
 	    Tcl_DetachPids(1, (Tcl_Pid *)&bgPtr->procArr[i].pid);
 # else
-#   if (TCL_MAJOR_VERSION == 7)
-	    Tcl_DetachPids(1, &bgPtr->procArr[i]);
-#   else
 	    Tcl_DetachPids(1, (Tcl_Pid *)bgPtr->procArr[i]);
-#   endif /* TCL_MAJOR_VERSION == 7 */
 #endif /* WIN32 */
 	}
     }
@@ -1938,12 +1830,10 @@ BgexecCmd(clientData, interp, argc, argv)
 	if (strcmp(bgPtr->outputEncodingName, "binary") == 0) {
 	    encoding = ENCODING_BINARY;
 	} else {
-#if (TCL_VERSION_NUMBER >= _VERSION(8,1,0)) 
 	    encoding = Tcl_GetEncoding(interp, bgPtr->outputEncodingName);
 	    if (encoding == NULL) {
 		goto error;
 	    }
-#endif
 	}
     }
     InitSink(bgPtr, &bgPtr->sink1, "stdout", encoding);
@@ -1951,12 +1841,10 @@ BgexecCmd(clientData, interp, argc, argv)
 	if (strcmp(bgPtr->errorEncodingName, "binary") == 0) {
 	    encoding = ENCODING_BINARY;
 	} else {
-#if (TCL_VERSION_NUMBER >= _VERSION(8,1,0)) 
 	    encoding = Tcl_GetEncoding(interp, bgPtr->errorEncodingName);
 	    if (encoding == NULL) {
 		goto error;
 	    }
-#endif
 	}
     }
     InitSink(bgPtr, &bgPtr->sink2, "stderr", encoding);
@@ -2035,12 +1923,7 @@ BgexecCmd(clientData, interp, argc, argv)
 
 	    /* Return the output of the pipeline. */
 	    GetSinkData(&bgPtr->sink1, &data, &length);
-#if (TCL_VERSION_NUMBER <  _VERSION(8,1,0)) 
-	    data[length] = '\0';
-	    Tcl_SetResult(interp, data, TCL_VOLATILE);
-#else
 	    Tcl_SetObjResult(interp, Tcl_NewByteArrayObj(data, length));
-#endif
 	}
 	/* Clean up resources used. */
 	DestroyBackgroundInfo(bgPtr);

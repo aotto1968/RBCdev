@@ -589,16 +589,16 @@ nQkAOw==
 }
 
 
-if { $tcl_platform(platform) == "windows" } {
+if { $::tcl_platform(platform) == "windows" } {
     if { $tk_version >= 8.3 } {
-	set cursor "@[file join $rbc_library treeview.cur]"
+	set cursor "@[file join $::rbc_library treeview.cur]"
     } else {
 	set cursor "size_we"
     }
     option add *Hiertable.ResizeCursor [list $cursor]
 } else {
     option add *Hiertable.ResizeCursor \
-	"@$rbc_library/treeview.xbm $rbc_library/treeview_m.xbm black white"
+	"@$::rbc_library/treeview.xbm $::rbc_library/treeview_m.xbm black white"
 }
 
 # Standard Motif bindings:
@@ -747,7 +747,7 @@ bind HiertableEditor <Tab> {
     # nothing
 }
 
-if {![string compare $tcl_platform(platform) "macintosh"]} {
+if {![string compare $::tcl_platform(platform) "macintosh"]} {
     bind HiertableEditor <Command-KeyPress> {
 	# nothing
     }
@@ -755,7 +755,7 @@ if {![string compare $tcl_platform(platform) "macintosh"]} {
 
 # On Windows, paste is done using Shift-Insert.  Shift-Insert already
 # generates the <<Paste>> event, so we don't need to do anything here.
-if { [string compare $tcl_platform(platform) "windows"] != 0 } {
+if { [string compare $::tcl_platform(platform) "windows"] != 0 } {
     bind HiertableEditor <Insert> {
 	catch {rbc::Hiertable::Insert %W [selection get -displayof %W]}
     }
@@ -903,7 +903,7 @@ if 0 {
     # w -		The entry window in which the cursor is to move.
     # start -	Position at which to start search.
     
-    if {![string compare $tcl_platform(platform) "windows"]}  {
+    if {![string compare $::tcl_platform(platform) "windows"]}  {
 	proc rbc::Hiertable::NextWord {w start} {
 	    set pos [tcl_endOfWord [$w get] [$w index $start]]
 	    if {$pos >= 0} {

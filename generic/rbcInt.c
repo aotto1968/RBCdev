@@ -13,12 +13,14 @@
 #include "rbcInt.h"
 
 #ifndef RBC_LIBRARY
-#ifdef WIN32
-#define RBC_LIBRARY  "c:/Program Files/Tcl/lib/rbc"
-#else
-#define RBC_LIBRARY "unknown"
+# ifdef WIN32
+#   define RBC_LIBRARY  "c:/Program Files/Tcl/lib/rbc"
+# else
+#   define RBC_LIBRARY "unknown"
+# endif
 #endif
-#endif
+
+Tcl_Obj *rbcEmptyStringObjPtr;
 
 #ifdef WIN32
 /*
@@ -99,9 +101,13 @@ Rbc_Init (interp)
         return TCL_ERROR;
     }
 
+    rbcEmptyStringObjPtr = Tcl_NewStringObj("", -1);
+
     if (Tcl_PkgProvide(interp, "rbc", "0.1") == TCL_ERROR) {
         return TCL_ERROR;
     }
+
+    Rbc_RegisterArrayObj(interp);
 
     Tcl_Namespace *nsPtr;
     nsPtr = Tcl_CreateNamespace(interp, "rbc", NULL, NULL);
@@ -158,9 +164,22 @@ Rbc_Init (interp)
         return TCL_ERROR;
     }
 
+    if (Tcl_Export(interp, nsPtr, "tree", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "treeview", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "hiertable", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
     Rbc_VectorInit(interp);
     Rbc_GraphInit(interp);
     Rbc_WinopInit(interp);
+    Rbc_InitEpsCanvasItem(interp);
     // Rbc_BusyInit(interp);
     Rbc_HtextInit(interp);
     Rbc_BitmapInit(interp);
@@ -168,7 +187,8 @@ Rbc_Init (interp)
     Rbc_BgexecInit(interp);
     Rbc_ContainerInit(interp);
     Rbc_HierboxInit(interp);
-    Rbc_InitEpsCanvasItem(interp);
+    Rbc_TreeInit(interp);
+    Rbc_TreeViewInit(interp);
 
     return TCL_OK;
 }

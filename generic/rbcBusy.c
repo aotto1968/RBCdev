@@ -536,9 +536,7 @@ CreateBusy(interp, tkRef)
     busyPtr->cursor = None;
     busyPtr->isBusy = FALSE;
     Tk_SetClass(tkBusy, "Busy");
-#if (TK_MAJOR_VERSION > 4)
     Rbc_SetWindowInstanceData(tkBusy, busyPtr);
-#endif
     winPtr = (Tk_FakeWin *) tkRef;
     if (winPtr->flags & TK_REPARENTED) {
         /*
@@ -574,10 +572,8 @@ CreateBusy(interp, tkRef)
         parent = (Window) Tk_GetHWND(parent);
 #endif
     }
-MVvar("tkBusy<%p>, parent<%ui>, TRUE<%d>", tkBusy, (unsigned int)parent, TRUE);
-M0
+//MVvar("tkBusy<%p>, parent<%ui>, TRUE<%d>", tkBusy, (unsigned int)parent, TRUE);
     Rbc_MakeTransparentWindowExist(tkBusy, parent, TRUE);
-M1
 
 #if BUSYDEBUG
     PurifyPrintf("menubar1: width=%d, height=%d\n", busyPtr->width,

@@ -1535,10 +1535,8 @@ Rbc_FontToPostScript(tokenPtr, font)
     Tcl_Interp *interp = tokenPtr->interp;
     char *fontName;
     double pointSize;
-#if (TK_MAJOR_VERSION > 4)
     Tk_Uid family;
     register int i;
-#endif /* TK_MAJOR_VERSION > 4 */
 
     fontName = Tk_NameOfFont(font);
     pointSize = 12.0;
@@ -1572,7 +1570,6 @@ Rbc_FontToPostScript(tokenPtr, font)
             return;
         }
     }
-#if (TK_MAJOR_VERSION > 4)
 
     /*
      * Otherwise do a quick test to see if it's a PostScript font.
@@ -1596,8 +1593,6 @@ Rbc_FontToPostScript(tokenPtr, font)
         }
     }
 
-#endif /* TK_MAJOR_VERSION > 4 */
-
     /*
      * Can't find it. Try to use the current point size.
      */
@@ -1605,10 +1600,8 @@ Rbc_FontToPostScript(tokenPtr, font)
     pointSize = 12.0;
 
 #ifndef  WIN32
-#if (TK_MAJOR_VERSION > 4)
     /* Can you believe what I have to go through to get an XFontStruct? */
     fontPtr = XLoadQueryFont(Tk_Display(tokenPtr->tkwin), Tk_NameOfFont(font));
-#endif
     if (fontPtr != NULL) {
         unsigned long fontProp;
 
@@ -1616,9 +1609,7 @@ Rbc_FontToPostScript(tokenPtr, font)
             pointSize = (double)fontProp / 10.0;
         }
         fontName = XFontStructToPostScript(tokenPtr->tkwin, fontPtr);
-#if (TK_MAJOR_VERSION > 4)
         XFreeFont(Tk_Display(tokenPtr->tkwin), fontPtr);
-#endif /* TK_MAJOR_VERSION > 4 */
     }
 #endif /* !WIN32 */
     if ((fontName == NULL) || (fontName[0] == '\0')) {
@@ -1654,9 +1645,7 @@ TextLayoutToPostScript(tokenPtr, x, y, textPtr)
     TextFragment *fragPtr;
     int i;
     unsigned char c;
-#if HAVE_UTF
     Tcl_UniChar ch;
-#endif
     int limit;
 
     limit = PSTOKEN_BUFSIZ - 4; /* High water mark for the scratch
@@ -1679,7 +1668,6 @@ TextLayoutToPostScript(tokenPtr, x, y, textPtr)
                 Rbc_AppendToPostScript(tokenPtr, dst, (char *)NULL);
                 count = 0;
             }
-#if HAVE_UTF
             /*
              * INTL: For now we just treat the characters as binary
              * data and display the lower byte.  Eventually this should
@@ -1687,9 +1675,6 @@ TextLayoutToPostScript(tokenPtr, x, y, textPtr)
              */
             src += Tcl_UtfToUniChar(src, &ch);
             c = (unsigned char)(ch & 0xff);
-#else
-            c = *src++;
-#endif
 
             if ((c == '\\') || (c == '(') || (c == ')')) {
                 /*

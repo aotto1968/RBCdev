@@ -20,13 +20,15 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 set saved [pwd]
+
+#set tcl_traceExec 1
 
 #rbc::rbcdebug 100
 
@@ -67,6 +69,9 @@ hiertable .h  -hideroot no -width 0 \
 .h column configure treeView -text View
 .h column insert 0 mtime atime gid 
 .h column insert end nlink mode type ctime uid ino size dev
+# >>> BUG: missing column
+.h column insert end blksize blocks
+# <<<
 .h column configure uid -background \#eaeaff -relief raised -bd 1
 .h column configure mtime -hide no -bg \#ffeaea -relief raised -bd 1
 .h column configure size gid nlink uid ino dev -justify right -edit yes
@@ -130,11 +135,11 @@ proc DoFind { dir path } {
 	    lappend fileList $entry 
 	} else {
 	    if 0 {
-	    if { $info(type) == "file" } {
-		set info(type) @fileImage
-	    } else {
-		set info(type) ""
-	    }
+              if { $info(type) == "file" } {
+                  set info(type) @fileImage
+              } else {
+                  set info(type) ""
+              }
 	    }
 	    set info(mtime) [clock format $info(mtime) -format "%b %d, %Y"]
 	    set info(atime) [clock format $info(atime) -format "%b %d, %Y"]
@@ -161,35 +166,27 @@ proc Find { dir } {
     return $fileList
 }
 
-proc GetAbsolutePath { dir } {
-    set saved [pwd]
-    cd $dir
-    set path [pwd] 
-    cd $saved
-    return $path
-}
-
-set top [GetAbsolutePath ..]
+set top [file normalize ..]
 set trim "$top"
 
 .h configure -separator "/" -trim $trim
 
 set count 0
-.h entry configure root -label [file tail [GetAbsolutePath $top]] 
+.h entry configure root -label [file tail [file normalize $top]] 
 .h configure -bg grey90
 regsub -all {\.\./*} [Find $top] {} fileList
 puts "$count entries"
-eval .h insert end $fileList
+.h insert end {*}$fileList
 .h configure -bg white
 
 focus .h
 
 set nodes [.h find -glob -name *.c]
-eval .h entry configure $nodes -foreground green4
+.h entry configure {*}$nodes -foreground green4
 set nodes [.h find -glob -name *.h]
-eval .h entry configure $nodes -foreground cyan4
+.h entry configure {*}$nodes -foreground cyan4
 set nodes [.h find -glob -name *.o]
-eval .h entry configure $nodes -foreground red4
+.h entry configure {*}$nodes -foreground red4
 
 cd $saved
 #rbcdebug 100

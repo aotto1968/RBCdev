@@ -117,7 +117,7 @@ proc GetAbsolutePath { dir } {
 .h configure -bg grey90
 update
 regsub -all {\.\./*} [Find $top] {} fileList
-eval .h insert end $fileList
+.h insert end {*}$fileList
 .h configure -bg white
 
 .h find -glob -name *.gif -exec { 

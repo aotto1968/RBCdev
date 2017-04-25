@@ -139,6 +139,8 @@
 #define TRUE 	1
 #define FALSE 	0
 
+extern Tcl_Obj *rbcEmptyStringObjPtr;
+
 /*
  * The macro below is used to modify a "char" value (e.g. by casting
  * it to an unsigned character) so that it can be used safely with
@@ -626,6 +628,19 @@ void Rbc_UpdateScrollbar _ANSI_ARGS_((Tcl_Interp *interp,
 int Rbc_ReparentWindow _ANSI_ARGS_((Display *display, Window window,
                                     Window newParent, int x, int y));
 
+// rbcArrayObj.c
+int Rbc_GetArrayFromObj _ANSI_ARGS_((Tcl_Interp *interp, Tcl_Obj *objPtr, Tcl_HashTable **tablePtrPtr));
+Tcl_Obj *Rbc_NewArrayObj _ANSI_ARGS_((int objc, Tcl_Obj *objv[]));
+void Rbc_RegisterArrayObj _ANSI_ARGS_((Tcl_Interp *interp));
+int Rbc_IsArrayObj _ANSI_ARGS_((Tcl_Obj *obj));
+
+// rbcUtil.c
+int Rbc_DictionaryCompare _ANSI_ARGS_(( char *left, char *right ));
+#ifndef HAVE_STRTOLOWER
+  void strtolower _ANSI_ARGS_((char *s));
+#endif
+
+
 #if defined(HAVE_JPEGLIB_H) || defined(HAVE_IJL_H)
 # define HAVE_JPEG 1
 int Rbc_JPEGToPhoto _ANSI_ARGS_((Tcl_Interp *interp, char *fileName,
@@ -643,20 +658,11 @@ int Rbc_JPEGToPhoto _ANSI_ARGS_((Tcl_Interp *interp, char *fileName,
 #undef TILE_MAINWINDOW
 
 #ifdef WIN32
-#if (TCL_MAJOR_VERSION == 8)  && (TCL_MINOR_VERSION == 0)
+# define NO_DDE		1
 #else
-#define NO_DDE		1
-#endif
-#else
-#define NO_DDE		1
-#define NO_PRINTER	1
+# define NO_DDE		1
+# define NO_PRINTER	1
 #endif /* WIN32 */
-
-#if (TCL_MAJOR_VERSION == 7)
-#define NO_TREE		1
-#define NO_ARRAY	1
-#define NO_TREEVIEW	1
-#endif
 
 #ifndef NO_BUSY
 Tcl_AppInitProc Rbc_BusyInit;
@@ -690,6 +696,12 @@ Tcl_AppInitProc Rbc_ContainerInit;
 #endif
 #ifndef NO_HIERBOX
 Tcl_AppInitProc Rbc_HierboxInit;
+#endif
+#ifndef NO_TREE
+Tcl_AppInitProc Rbc_TreeInit;
+#endif
+#ifndef NO_TREEVIEW
+Tcl_AppInitProc Rbc_TreeViewInit;
 #endif
 
 char *RbcStrdup _ANSI_ARGS_((CONST char *ptr));

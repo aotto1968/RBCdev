@@ -1,10 +1,17 @@
+
+TGT=${1/blt/rbc}
+
+if [[ "$1" != "$TGT" ]] ; then
+  mv $1 $TGT
+fi
+
 sed -i '
 
 s/Blt/Rbc/g
 s/blt/rbc/g
 s/BLT/RBC/g
 s/Rbc_Hash/Tcl_Hash/g
-s/Rbc_InitHash/Tcl_InitHash/g
+s/Rbc_InitHashTable\>/Tcl_InitHashTable/g
 s/Rbc_FindHash/Tcl_FindHash/g
 s/Rbc_SetHash/Tcl_SetHash/g
 s/Rbc_NextHash/Tcl_NextHash/g
@@ -20,5 +27,7 @@ s/blt::/rbc::/g
 s/RBC_ONE_WORD_KEYS/TCL_ONE_WORD_KEYS/g
 s/RBC_STRING_KEYS/TCL_STRING_KEYS/g
 
-' $1
+' $TGT
+
+ls -ltr | tail -1
 
