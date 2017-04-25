@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 set saved [pwd]
@@ -67,6 +67,7 @@ hiertable .h  -width 0\
 .h column configure treeView -text "View"
 .h column insert 0 mtime atime gid 
 .h column insert end nlink mode type ctime uid ino size dev
+.h column insert end blksize blocks
 .h column configure uid -background \#eaeaff 
 .h column configure mtime -hide no -bg \#ffeaea 
 .h column configure size gid nlink uid ino dev -justify right

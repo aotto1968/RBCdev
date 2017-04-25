@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 option add *graph.Element.ScaleSymbols true
@@ -33,12 +33,12 @@ option add *graph.Element.ScaleSymbols true
 set tcl_precision 15
 
 # Make and fill small vectors
-vector x y
+vector create x y
 x seq 10 0 -0.5 
 y expr sin(x^3)
 x expr x*x
 x sort y
-vector x2 y1 y2 y3
+vector create x2 y1 y2 y3
 
 # make and fill (x only) large vectors
 x populate x2 10

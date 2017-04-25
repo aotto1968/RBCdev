@@ -72,12 +72,19 @@ rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil
 rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c rbcHierbox.c rbcTreeView.c rbcObjConfig.c
 rbcPool.c rbcTree.c rbcArrayObj.c rbcTreeViewCmd.c rbcTreeViewColumn.c rbcTreeViewStyle.c rbcTreeCmd.c rbcNsUtil.c rbcTreeViewEdit.c])
 
-TEA_ADD_HEADERS([])
+TEA_ADD_HEADERS([ generic/rbcBind.h generic/rbcChain.h generic/rbcGrAxis.h generic/rbcGrElem.h generic/rbcGrLegd.h generic/rbcGraph.h
+generic/rbcImage.h generic/rbcList.h generic/rbcParse.h generic/rbcPs.h generic/rbcSwitch.h generic/rbcText.h generic/rbcTile.h
+generic/rbcTkInt.h generic/rbcWin.h generic/rbcWinConfig.h generic/debug.h generic/rbcTable.h generic/rbcMath.h generic/rbcVector.h
+generic/rbcWait.h generic/rbcTree.h generic/rbcTreeView.h generic/rbcObjConfig.h generic/rbcInt.h generic/rbcPool.h generic/rbc.h
+generic/rbcNsUtil.h ])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([])
 TEA_ADD_CFLAGS([])
 TEA_ADD_STUB_SOURCES([])
-TEA_ADD_TCL_SOURCES([library/graph.tcl library/rbcCanvEps.pro library/rbcGraph.pro])
+TEA_ADD_TCL_SOURCES([ library/rbcCanvEps.pro library/rbcGraph.pro library/hierbox.tcl library/tabnotebook.tcl library/tabset.tcl
+library/tclIndex library/treeview.cur library/treeview_m.xbm library/treeview.tcl library/treeview.xbm library/ZoomStack.itcl
+library/dd_protocols/dd-color.tcl library/dd_protocols/dd-file.tcl library/dd_protocols/dd-number.tcl library/dd_protocols/dd-text.tcl
+library/dd_protocols/tclIndex library/graph.tcl library/dnd.tcl library/hiertable.tcl library/dragdrop.tcl ])
 
 #--------------------------------------------------------------------
 # __CHANGE__
@@ -121,10 +128,10 @@ AC_SUBST(CLEANFILES)
 #--------------------------------------------------------------------
 
 TEA_PUBLIC_TCL_HEADERS
-TEA_PRIVATE_TCL_HEADERS
+#TEA_PRIVATE_TCL_HEADERS
 
 TEA_PUBLIC_TK_HEADERS
-TEA_PRIVATE_TK_HEADERS
+#TEA_PRIVATE_TK_HEADERS
 TEA_PATH_X
 
 # -----------------------------------------------------------------------
@@ -148,8 +155,6 @@ AC_CHECK_HEADERS(setjmp.h)
 
 #debugging
 #AC_CHECK_HEADERS([execinfo.h])
-
-AC_DEFINE([HAVE_UTF],[1],[utf8 support by default])
 
 # -----------------------------------------------------------------------
 #

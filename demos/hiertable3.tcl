@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 set saved [pwd]
@@ -41,7 +41,7 @@ foreach f [glob ./images/mini-*.gif] {
 option add *Hiertable.ScrollTile  yes
 #option add *Hiertable.Column.background grey90
 option add *Hiertable.titleShadow { grey80 }
-option add *Hiertable.titleFont {*-helvetica-bold-r-*-*-11-*-*-*-*-*-*-*}
+option add *Hiertable.titleFont {*-helvetica-bold-r-*-*-18-*-*-*-*-*-*-*}
 
 hiertable .h  -width 0\
     -yscrollcommand { .vs set } \
