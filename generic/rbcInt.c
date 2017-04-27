@@ -95,7 +95,7 @@ Rbc_Init (interp)
 
     rbcEmptyStringObjPtr = Tcl_NewStringObj("", -1);
 
-    if (Tcl_PkgProvide(interp, "rbc", "0.1") == TCL_ERROR) {
+    if (Tcl_PkgProvide(interp, "rbc", "0.2") == TCL_ERROR) {
         return TCL_ERROR;
     }
 

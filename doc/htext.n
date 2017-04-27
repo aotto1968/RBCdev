@@ -59,12 +59,12 @@ Before a file or text string is parsed by the \fBhtext\fR widget,
 all the widget's current children are destroyed.  You can reload files or text 
 without worrying about unmapping or destroying each child window beforehand.
 .PP
-Setting the either the \fB\-filename\fR or \fB\-text\fR configuration option 
+Setting the either the \fB\-file\fR or \fB\-text\fR configuration option 
 will adjust the value of the other.  If both options are set, the file 
-takes precedence.  When a new file is read using the \fB\-filename\fR option,
+takes precedence.  When a new file is read using the \fB\-file\fR option,
 the value of the \fB\-text\fR option is reset to the empty string.  Likewise, 
 when the \fB\-text\fR option is set, the string representing the 
-\fB\-filename\fR option is cleared.
+\fB\-file\fR option is cleared.
 .SH FILE FORMAT
 The format of \fBhtext\fP text file is typically ASCII text.  
 Text enclosed by special double characters (by default, percent signs '%%') 
@@ -268,7 +268,7 @@ Sets the background of the htext widget to \fIcolor\fR.  This default is
 Specifies the cursor for the htext widget.  The default cursor is 
 \f(CWpencil\fR.
 .TP
-\fB\-filename\fR \fIfileName\fR
+\fB\-file\fR \fIfileName\fR
 Specifies a \fBhtext\fP file to be displayed in the window. 
 If the value is the empty string, the \fB\-text\fR option is used instead.
 See the section 

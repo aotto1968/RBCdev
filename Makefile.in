@@ -85,7 +85,8 @@ pkgdatadir	= $(datadir)/$(PKG_DIR)
 pkglibdir	= $(libdir)/$(PKG_DIR)
 pkgincludedir	= $(includedir)/$(PKG_DIR)
 
-top_builddir	= .
+top_builddir	= @top_builddir@
+abs_top_builddir = @abs_top_builddir@
 
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
@@ -128,8 +129,8 @@ TK_SRC_DIR	= @TK_SRC_DIR@
 #========================================================================
 
 #EXTRA_PATH	= $(top_builddir):$(TCL_BIN_DIR)
-EXTRA_PATH	= $(top_builddir):$(TCL_BIN_DIR):$(TK_BIN_DIR)
-TCLLIBPATH	= $(top_builddir)
+EXTRA_PATH	= $(abs_top_builddir):$(TCL_BIN_DIR):$(TK_BIN_DIR)
+TCLLIBPATH	= $(abs_top_builddir)
 TCLSH_ENV	= TCL_LIBRARY=`@CYGPATH@ $(TCL_SRC_DIR)/library`
 PKG_ENV		= @LD_LIBRARY_PATH_VAR@="$(EXTRA_PATH):$(@LD_LIBRARY_PATH_VAR@)" \
 		  PATH="$(EXTRA_PATH):$(PATH)" \
@@ -439,7 +440,7 @@ uninstall-binaries:
 	done
 
 .PHONY: all binaries clean depend distclean doc install libraries test \
-	tags depend tclsh wish dep.mk
+	tags depend tclsh wish dep.mk tkcon demo
 
 tags:
 	ctags $$(scripts/get_all_headers.tcl) generic/*.c
@@ -461,6 +462,12 @@ tclsh:
 
 wish:
 	$(WISH) $(ARGS)
+
+tkcon:
+	$(WISH) scripts/tkcon.tcl
+
+demo:
+	$(WISH) demos/tour.tcl
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
