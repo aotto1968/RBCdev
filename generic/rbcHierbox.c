@@ -218,7 +218,7 @@
 #define DEF_HIERBOX_ACTIVE_STIPPLE	"gray25"
 #define DEF_HIERBOX_ALLOW_DUPLICATES	"yes"
 #define DEF_HIERBOX_BACKGROUND		RGB_WHITE
-#define DEF_HIERBOX_BORDERWIDTH	STD_BORDERWIDTH
+#define DEF_HIERBOX_BORDERWIDTH	        STD_BORDERWIDTH
 #define DEF_HIERBOX_COMMAND		(char *)NULL
 #define DEF_HIERBOX_CURSOR		(char *)NULL
 #define DEF_HIERBOX_DASHES		"dot"
@@ -5170,14 +5170,14 @@ HierboxCmd(clientData, interp, argc, argv)
     /*
      * Invoke a procedure to initialize various bindings on hierbox
      * entries.  If the procedure doesn't already exist, source it
-     * from "$rbc_library/rbcHierbox.tcl".  We deferred sourcing the file
-     * until now so that the variable $rbc_library could be set within a
+     * from "$::rbc::library/rbcHierbox.tcl".  We deferred sourcing the file
+     * until now so that the variable $::rbc::library could be set within a
      * script.
      */
-    if (!Tcl_GetCommandInfo(interp, "rbc::Hierbox::Init", &cmdInfo)) {
+    if (!Tcl_GetCommandInfo(interp, "::rbc::Hierbox::Init", &cmdInfo)) {
 	static char initCmd[] =
 	{
-	    "source [file join $rbc_library hierbox.tcl]"
+	    "source [file join $::rbc::library hierbox.tcl]"
 	};
 	if (Tcl_GlobalEval(interp, initCmd) != TCL_OK) {
 	    char info[200];
@@ -5187,7 +5187,7 @@ HierboxCmd(clientData, interp, argc, argv)
 	    goto error;
 	}
     }
-    if (Tcl_VarEval(interp, "rbc::Hierbox::Init ", argv[1], (char *)NULL)
+    if (Tcl_VarEval(interp, "::rbc::Hierbox::Init ", argv[1], (char *)NULL)
 	!= TCL_OK) {
 	goto error;
     }
@@ -8410,7 +8410,7 @@ int
 Rbc_HierboxInit(interp)
     Tcl_Interp *interp;
 {
-    if (Tcl_CreateCommand(interp, "rbc::hierbox", HierboxCmd,
+    if (Tcl_CreateCommand(interp, "::rbc::hierbox", HierboxCmd,
           (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL) == NULL) {
         return TCL_ERROR;
     }

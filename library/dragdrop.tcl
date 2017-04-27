@@ -31,45 +31,44 @@
 #
 # ======================================================================
 
-if { $::tcl_version >= 8.0 } {
-    set cmd rbc::drag&drop
-} else {
-    set cmd drag&drop
-}
-for { set i 1 } { $i <= 5 } { incr i } {
-    bind RbcDrag&DropButton$i <ButtonPress-$i>  [list $cmd drag %W %X %Y]
-    bind RbcDrag&DropButton$i <B$i-Motion>	  [list $cmd drag %W %X %Y]
-    bind RbcDrag&DropButton$i <ButtonRelease-$i> [list $cmd drop %W %X %Y]
-}
+namespace eval Drag&Drop {
 
-# ----------------------------------------------------------------------
-#
-# Drag&DropInit --
-#
-#	Invoked from C whenever a new drag&drop source is created.
-#	Sets up the default bindings for the drag&drop source.
-#
-#	<ButtonPress-?>	 Starts the drag operation.
-#	<B?-Motion>	 Updates the drag.
-#	<ButtonRelease-?> Drop the data on the target.
-#
-# Arguments:	
-#	widget		source widget
-#	button		Mouse button used to activate drag.
-#	cmd		"dragdrop" or "rbc::dragdrop"
-#
-# ----------------------------------------------------------------------
+  for { set i 1 } { $i <= 5 } { incr i } {
+      bind RbcDrag&DropButton$i <ButtonPress-$i>    [list ::rbc::drag&drop drag %W %X %Y]
+      bind RbcDrag&DropButton$i <B$i-Motion>	    [list ::rbc::drag&drop drag %W %X %Y]
+      bind RbcDrag&DropButton$i <ButtonRelease-$i>  [list ::rbc::drag&drop drop %W %X %Y]
+  }
 
-proc rbc::Drag&DropInit { widget button } {
-    set tagList {}
-    if { $button > 0 } {
-	lappend tagList RbcDrag&DropButton$button
-    }
-    foreach tag [bindtags $widget] {
-	if { ![string match RbcDrag&DropButton* $tag] } {
-	    lappend tagList $tag
-	}
-    }
-    bindtags $widget $tagList
+  # ----------------------------------------------------------------------
+  #
+  # Drag&DropInit --
+  #
+  #	Invoked from C whenever a new drag&drop source is created.
+  #	Sets up the default bindings for the drag&drop source.
+  #
+  #	<ButtonPress-?>	 Starts the drag operation.
+  #	<B?-Motion>	 Updates the drag.
+  #	<ButtonRelease-?> Drop the data on the target.
+  #
+  # Arguments:	
+  #	widget		source widget
+  #	button		Mouse button used to activate drag.
+  #	cmd		"dragdrop" or "::rbc::dragdrop"
+  #
+  # ----------------------------------------------------------------------
+
+  proc ObjInit { widget button } {
+      set tagList {}
+      if { $button > 0 } {
+          lappend tagList RbcDrag&DropButton$button
+      }
+      foreach tag [bindtags $widget] {
+          if { ![string match RbcDrag&DropButton* $tag] } {
+              lappend tagList $tag
+          }
+      }
+      bindtags $widget $tagList
+  }
+
+# namespace eval Drag&Drop
 }
-

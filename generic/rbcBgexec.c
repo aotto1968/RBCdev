@@ -1961,7 +1961,7 @@ int
 Rbc_BgexecInit(interp)
     Tcl_Interp *interp;
 {
-    if (Tcl_CreateCommand(interp, "rbc::bgexec", BgexecCmd,
+    if (Tcl_CreateCommand(interp, "::rbc::bgexec", BgexecCmd,
           (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL) == NULL) {
         return TCL_ERROR;
     }

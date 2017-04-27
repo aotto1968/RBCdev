@@ -41,12 +41,11 @@ foreach f [glob ./images/mini-*.gif] {
 option add *Hierbox.ScrollTile  yes
 
 option add *xHierbox.openCommand	{
-    set path /home/gah/src/blt/%P
-    if { [file isdirectory $path] } {
-	cd $path
+    if { [file isdirectory ..] } {
+	cd ..
 	set files [glob -nocomplain * */. ]
 	if { $files != "" } {
-	    eval %W insert -at %n end $files
+	    %W insert -at %n end {*}$files
 	}
     }
 }
@@ -66,7 +65,7 @@ image create photo closeFolder2 -file images/close2.gif
 option add *Hierbox.activeIcons "closeFolder2 openFolder2"
 
 hierbox .h  \
-    -activebackground blue \
+    -activebackground lightblue \
     -yscrollcommand { .vs set } \
     -xscrollcommand { .hs set } 
 
@@ -127,7 +126,7 @@ regsub -all {\.\./*} [Find $top] {} fileList
 focus .h
 
 set nodes [.h find -glob -name *.c]
-eval .h entry configure $nodes -labelcolor red 
+.h entry configure {*}$nodes -labelcolor red 
 
 cd $saved
 

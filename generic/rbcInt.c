@@ -12,14 +12,6 @@
 
 #include "rbcInt.h"
 
-#ifndef RBC_LIBRARY
-# ifdef WIN32
-#   define RBC_LIBRARY  "c:/Program Files/Tcl/lib/rbc"
-# else
-#   define RBC_LIBRARY "unknown"
-# endif
-#endif
-
 Tcl_Obj *rbcEmptyStringObjPtr;
 
 #ifdef WIN32
@@ -110,9 +102,12 @@ Rbc_Init (interp)
     Rbc_RegisterArrayObj(interp);
 
     Tcl_Namespace *nsPtr;
-    nsPtr = Tcl_CreateNamespace(interp, "rbc", NULL, NULL);
+    nsPtr = Tcl_FindNamespace(interp, "rbc", NULL, TCL_GLOBAL_ONLY);
     if (nsPtr == NULL) {
-	    return TCL_ERROR;
+      nsPtr = Tcl_CreateNamespace(interp, "rbc", NULL, NULL);
+      if (nsPtr == NULL) {
+        return TCL_ERROR;
+      }
     }
 
     if (Tcl_Export(interp, nsPtr, "vector", 0) != TCL_OK) {
@@ -180,9 +175,24 @@ Rbc_Init (interp)
         return TCL_ERROR;
     }
 
+    if (Tcl_Export(interp, nsPtr, "tabnotebook", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "tabset", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "drag&drop", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
+    if (Tcl_Export(interp, nsPtr, "dnd", 0) != TCL_OK) {
+        return TCL_ERROR;
+    }
+
     Rbc_VectorInit(interp);
     Rbc_GraphInit(interp);
-    Rbc_WinopInit(interp);
     Rbc_InitEpsCanvasItem(interp);
     // Rbc_BusyInit(interp);
     Rbc_HtextInit(interp);
@@ -194,6 +204,11 @@ Rbc_Init (interp)
     Rbc_TreeInit(interp);
     Rbc_TreeViewInit(interp);
     Rbc_SplineInit(interp);
+    Rbc_TabnotebookInit(interp);
+    Rbc_TabsetInit(interp);
+    Rbc_WinopInit(interp);
+    Rbc_DragDropInit(interp);
+    Rbc_DndInit(interp);
 
     return TCL_OK;
 }

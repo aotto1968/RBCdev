@@ -70,7 +70,8 @@ TEA_ADD_SOURCES([rbcAlloc.c rbcBind.c rbcBusy.c rbcCanvEps.c rbcChain.c rbcColor
 rbcGrElem.c rbcGrGrid.c rbcGrHairs.c rbcGrLegd.c rbcGrLine.c rbcGrMarker.c rbcGrMisc.c rbcGrPen.c rbcGrPs.c rbcImage.c rbcInt.c
 rbcList.c rbcParse.c rbcPs.c rbcSpline.c rbcSwitch.c rbcText.c rbcTile.c rbcUtil.c rbcVecMath.c rbcVecObjCmd.c rbcVector.c
 rbcWindow.c rbcWinop.c rbcHtext.c rbcBitmap.c rbcTable.c rbcBgexec.c rbcContainer.c rbcHierbox.c rbcTreeView.c rbcObjConfig.c
-rbcPool.c rbcTree.c rbcArrayObj.c rbcTreeViewCmd.c rbcTreeViewColumn.c rbcTreeViewStyle.c rbcTreeCmd.c rbcNsUtil.c rbcTreeViewEdit.c])
+rbcPool.c rbcTree.c rbcArrayObj.c rbcTreeViewCmd.c rbcTreeViewColumn.c rbcTreeViewStyle.c rbcTreeCmd.c rbcNsUtil.c rbcTreeViewEdit.c
+rbcTabnotebook.c rbcTabset.c rbcDragdrop.c])
 
 TEA_ADD_HEADERS([ generic/rbcBind.h generic/rbcChain.h generic/rbcGrAxis.h generic/rbcGrElem.h generic/rbcGrLegd.h generic/rbcGraph.h
 generic/rbcImage.h generic/rbcList.h generic/rbcParse.h generic/rbcPs.h generic/rbcSwitch.h generic/rbcText.h generic/rbcTile.h
@@ -113,7 +114,7 @@ if test "${TEA_PLATFORM}" = "windows" ; then
 else
     # Ensure no empty else clauses
     :
-    TEA_ADD_SOURCES([rbcUnixImage.c rbcUnixPipe.c])
+    TEA_ADD_SOURCES([rbcUnixImage.c rbcUnixPipe.c rbcUnixDnd.c])
     #TEA_ADD_LIBS([-lsuperfly])
 fi
 AC_SUBST(CLEANFILES)

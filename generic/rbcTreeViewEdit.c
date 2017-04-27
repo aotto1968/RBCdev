@@ -1288,9 +1288,11 @@ ApplyOp(tbPtr, interp, objc, objv)
 
 	columnPtr = tbPtr->columnPtr;
 	objPtr = Tcl_NewStringObj(tbPtr->string, -1);
-	if (Rbc_TreeSetValueByKey(interp, tvPtr->tree, entryPtr->node, 
-		columnPtr->key, objPtr) != TCL_OK) {
-	    Tcl_DecrRefCount(objPtr);
+        Tcl_IncrRefCount(objPtr);
+        int ret = Rbc_TreeSetValueByKey(interp, tvPtr->tree, entryPtr->node, 
+                    columnPtr->key, objPtr);
+        Tcl_DecrRefCount(objPtr);
+	if (ret != TCL_OK) {
 	    return TCL_ERROR;
 	}
 	entryPtr->flags |= ENTRY_DIRTY;

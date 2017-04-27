@@ -945,7 +945,7 @@ UnlinkWindow(winPtr)
  *      to an ancestor.  Otherwise, Tk becomes confused
  *      about which Toplevel turns on focus for the window.
  *      Right now this is done at the Tcl layer.  For example,
- *      see rbc::CreateTearoff in tabset.tcl.
+ *      see ::rbc::CreateTearoff in tabset.tcl.
  *
  * Results:
  *      None.
@@ -997,7 +997,7 @@ int x, y;
  *      to an ancestor.  Otherwise, Tk becomes confused
  *      about which Toplevel turns on focus for the window.
  *      Right now this is done at the Tcl layer.  For example,
- *      see rbc::CreateTearoff in tabset.tcl.
+ *      see ::rbc::CreateTearoff in tabset.tcl.
  *
  * Results:
  *      None.

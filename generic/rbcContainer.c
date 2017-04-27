@@ -1680,7 +1680,7 @@ int
 Rbc_ContainerInit(interp)
     Tcl_Interp *interp;
 {
-    if (Tcl_CreateCommand(interp, "rbc::container", ContainerCmd,
+    if (Tcl_CreateCommand(interp, "::rbc::container", ContainerCmd,
           (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL) == NULL) {
         return TCL_ERROR;
     }

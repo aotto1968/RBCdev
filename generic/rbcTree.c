@@ -2096,6 +2096,9 @@ Rbc_TreeDeleteEventHandler(
     Rbc_TreeNotifyEventProc *proc,
     ClientData clientData)
 {
+  if (clientPtr == NULL) {
+    return;
+  } else {
     Rbc_ChainLink *linkPtr;
     EventHandler *notifyPtr;
 
@@ -2112,6 +2115,7 @@ Rbc_TreeDeleteEventHandler(
 	    return;
 	}
     }
+  }
 }
 
 /*

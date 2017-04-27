@@ -108,7 +108,7 @@ in the interpreter on standard error.
 The following Tcl variables are either set or used by RBC at various times
 in its execution:
 .TP 15
-\fBrbc_library\fR
+\fBrbc_library\fR or \fB::rbc::library\fR
 This variable contains the name of a directory containing a library
 of Tcl scripts and other files related to RBC.  Currently, this 
 directory contains the \fBdrag&drop\fR protocol scripts and the 

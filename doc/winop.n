@@ -26,15 +26,33 @@
 .SH NAME
 winop \- Perform assorted window operations
 .SH SYNOPSIS
+\fBwinop changes\fR ?\fIwindow\fR?...
+.sp
+\fBwinop colormap\fR ?\fIwindow\fR?...
+.sp
+\fBwinop convolve\fR ?\fIsrcPhoto destPhoto filter\fR?...
+.sp
+\fBwinop image\fR ?\fIargs\fR?...
+.sp
 \fBwinop lower\fR ?\fIwindow\fR?...
 .sp
 \fBwinop map\fR ?\fIwindow\fR?...
 .sp
 \fBwinop move \fIwindow x y\fR
 .sp
+\fBwinop quantize \fIsrcPhoto destPhoto ?nColors?\fR
+.sp
+\fBwinop query \fI\fR
+.sp
 \fBwinop raise\fR ?\fIwindow\fR?...
 .sp
-\fBwinop snap \fIwindow photoName\fR
+\fBwinop readjpeg\fR ?\fIfileName photoName\fR?...
+.sp
+\fBwinop subsample\fR ?\fIsrcPhoto destPhoto ?horzFilter vertFilter?\fR...
+.sp
+\fBwinop snap \fIwindow photoName ?width height?\fR
+.sp
+\fBwinop subsample \fIsrcPhoto destPhoto x y width height ?horzFilter? ?vertFilter?\fR
 .sp
 \fBwinop unmap\fR ?\fIwindow\fR?...
 .sp

@@ -1248,7 +1248,7 @@ Rbc_BusyInit(interp)
     BusyInterpData *dataPtr;
 
     dataPtr = GetBusyInterpData(interp);
-    Tcl_CreateCommand(interp, "rbc::busy", BusyCmd, (ClientData)dataPtr, (Tcl_CmdDeleteProc *)NULL);
+    Tcl_CreateCommand(interp, "::rbc::busy", BusyCmd, (ClientData)dataPtr, (Tcl_CmdDeleteProc *)NULL);
 
     return TCL_OK;
 }

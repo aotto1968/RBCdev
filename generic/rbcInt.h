@@ -14,12 +14,12 @@
 #define _RBCINT
 
 #ifdef WIN32
-#define STRICT
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#undef STRICT
-#undef WIN32_LEAN_AND_MEAN
-#include <windowsx.h>
+# define STRICT
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+# undef STRICT
+# undef WIN32_LEAN_AND_MEAN
+# include <windowsx.h>
 #endif /* WIN32 */
 
 #define USE_NON_CONST
@@ -51,24 +51,24 @@
 */
 
 #ifdef WIN32
-#ifndef EXPORT
-#if defined(_MSC_VER) || defined(__BORLANDC__)
-#define EXPORT __declspec(dllexport)
-#else
-#define EXPORT
-#endif /* _MSC_VER || __BORLANDC__ */
-#endif /* EXPORT */
+# ifndef EXPORT
+#   if defined(_MSC_VER) || defined(__BORLANDC__)
+#     define EXPORT __declspec(dllexport)
+#   else
+#     define EXPORT
+#   endif /* _MSC_VER || __BORLANDC__ */
+# endif /* EXPORT */
 
 /* Misc. definitions */
-#define	NO_CUTBUFFER	1
-#define NO_TILESCROLLBAR	1
-#define NO_DND		1
+# define  NO_CUTBUFFER	        1
+# define  NO_TILESCROLLBAR	1
+# define  NO_DND		1
 
-#ifndef __GNUC__
-#ifdef O_NONBLOCK
-#define O_NONBLOCK	1
-#endif
-#endif /* __GNUC__ */
+# ifndef __GNUC__
+#   ifdef O_NONBLOCK
+#     define O_NONBLOCK	1
+#   endif
+# endif /* __GNUC__ */
 #endif /* WIN32 */
 
 #include "rbc.h"
@@ -673,9 +673,6 @@ Tcl_AppInitProc Rbc_GraphInit;
 #ifndef NO_VECTOR
 Tcl_AppInitProc Rbc_VectorInit;
 #endif
-#ifndef NO_WINOP
-Tcl_AppInitProc Rbc_WinopInit;
-#endif
 #ifndef NO_SPLINE
 Tcl_AppInitProc Rbc_SplineInit;
 #endif
@@ -702,6 +699,21 @@ Tcl_AppInitProc Rbc_TreeInit;
 #endif
 #ifndef NO_TREEVIEW
 Tcl_AppInitProc Rbc_TreeViewInit;
+#endif
+#ifndef NO_TABNOTEBOOK
+Tcl_AppInitProc Rbc_TabnotebookInit;
+#endif
+#ifndef NO_TABSET
+Tcl_AppInitProc Rbc_TabsetInit;
+#endif
+#ifndef NO_WINOP
+Tcl_AppInitProc Rbc_WinopInit;
+#endif
+#ifndef NO_DRAGDROP
+Tcl_AppInitProc Rbc_DragDropInit;
+#endif
+#ifndef NO_DND
+Tcl_AppInitProc Rbc_DndInit;
 #endif
 
 char *RbcStrdup _ANSI_ARGS_((CONST char *ptr));

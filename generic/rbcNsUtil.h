@@ -25,8 +25,6 @@
 #ifndef RBC_NS_UTIL_H
 #define RBC_NS_UTIL_H 1
 
-#define HAVE_NAMESPACES 1
-
 #ifndef TCL_NAMESPACE_ONLY
 #define TCL_NAMESPACE_ONLY TCL_GLOBAL_ONLY
 #endif

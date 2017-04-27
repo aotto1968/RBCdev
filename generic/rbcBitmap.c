@@ -1382,7 +1382,7 @@ int
 Rbc_BitmapInit(interp)
     Tcl_Interp *interp;
 {
-    if (Tcl_CreateCommand(interp, "rbc::bitmap", BitmapCmd, 
+    if (Tcl_CreateCommand(interp, "::rbc::bitmap", BitmapCmd, 
           (ClientData)GetBitmapInterpData(interp), 
             (Tcl_CmdDeleteProc *)NULL) == NULL) {
         return TCL_ERROR;

@@ -16,14 +16,14 @@ foreach { option value } $configOptions {
     option add *$resName.$option $value
 }
 
-vector xValues
+vector create xValues
 xValues set { 
     0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 
 }
 
 for { set i 0 } { $i < 10 } { incr i } {
     set vecName "y${i}"
-    vector ${vecName}(10)
+    vector create ${vecName}(10)
     $vecName variable x
     set x(:) [expr $i*50.0+10.0]
 }

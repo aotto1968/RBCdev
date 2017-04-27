@@ -4491,7 +4491,7 @@ int
 Rbc_HtextInit(interp)
     Tcl_Interp *interp;
 {
-  if (Tcl_CreateCommand(interp, "rbc::htext", TextCmd, 
+  if (Tcl_CreateCommand(interp, "::rbc::htext", TextCmd, 
         (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL) == NULL) {
       return TCL_ERROR;
   }

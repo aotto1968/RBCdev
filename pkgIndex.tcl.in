@@ -1,25 +1,26 @@
-proc LoadRBC { dir } {
-  # This package always requires Tk
-  package require Tk
-  load [file join $dir @PKG_LIB_FILE@] Rbc
-  # Library files are in a subdirectory during builds/tests
-  if { [file exists [file join $dir graph.tcl]] } {
-    set ::rbc_library $dir
-  } elseif { [file exists [file join $dir library graph.tcl]] } {
-    set ::rbc_library [file join $dir library]
-  } else {
-    error "LoadRBC: unable to find library file ´graph.tcl´"
-  }
-  foreach f [glob [file join $::rbc_library *.tcl]] {
-      # rbcHierbox.tcl load in rbcHierbox.c
-      # treeview.tcl load in rbcTreeView.c
-    switch -glob $f {
-      *rbcHierbox.tcl   {}
-      *treeview.tcl     {}
-      default           {
-        source $f
-      }
+
+namespace eval ::rbc {
+
+  variable library
+
+  proc pkgIndex { dir } {
+    # This package always requires Tk
+    package require Tk
+    namespace eval :: load [file join $dir @PKG_LIB_FILE@] Rbc
+    set dir [file normalize $dir]
+    # Library files are in a subdirectory during builds/tests
+    if { [file exists [file join $dir graph.tcl]] } {
+      set ::rbc_library $dir
+    } elseif { [file exists [file join $dir library graph.tcl]] } {
+      set ::rbc_library [file join $dir library]
+    } else {
+      error "LoadRBC: unable to find library file ´graph.tcl´"
+    }
+    variable library $::rbc_library
+    foreach f [glob [file join $::rbc_library *.tcl]] {
+      namespace eval ::rbc source $f
     }
   }
 }
-package ifneeded @PACKAGE_NAME@ @PACKAGE_VERSION@ [list LoadRBC $dir]
+
+package ifneeded @PACKAGE_NAME@ @PACKAGE_VERSION@ [list ::rbc::pkgIndex $dir]

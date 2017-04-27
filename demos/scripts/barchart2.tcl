@@ -55,7 +55,7 @@ if { $visual != "staticgray" && $visual != "grayscale" } {
     option add *quit.activeBackground	red2
 }
 
-vector X Y0 Y1 Y2 Y3 Y4
+vector create X Y0 Y1 Y2 Y3 Y4
 
 X set { 1 2 3 4 5 6 7 8 9 }
 Y0 set { 
@@ -87,14 +87,14 @@ Y4 set {
 set attributes { 
     "Load"	Y2	lightblue	pattern1
     "Other"	Y4	lightpink	pattern1
-    "Read In"	Y0	lightgoldenrod	pattern1
+    "ReadIn"	Y0	lightgoldenrod	pattern1
     "Setup"	Y1	lightyellow	pattern2
 }
 set attributes { 
-    "Load"	Y2	white	 	white3		""		0
+    "Load"	Y2	AntiqueWhite1	AntiqueWhite3	pattern3	0
     "Solve"	Y3	cyan1		cyan3		pattern2 	1
     "zOther"	Y4	lightpink1	lightpink3 	pattern1	1
-    "Read In"	Y0	lightgoldenrod1	lightgoldenrod3 pattern1	1
+    "ReadIn"	Y0	lightgoldenrod1	lightgoldenrod3 pattern1	1
     "Setup"	Y1	lightyellow1	lightyellow3	pattern2	1
 }
      
@@ -116,16 +116,16 @@ Rbc_ClosestPoint $graph
 
 $graph marker bind all <B2-Motion> {
     set coords [%W invtransform %x %y]
-    catch { %W marker configure [%W marker get current] -coords $coords }
+    catch {%W marker configure [%W marker get current] -coords $coords}
 }
 
 $graph marker bind all <Enter> {
     set marker [%W marker get current]
-    catch { %W marker configure $marker -bg green}
+    catch {%W marker configure $marker -bg green}
 }
 
 $graph marker bind all <Leave> {
     set marker [%W marker get current]
-    catch { %W marker configure $marker -bg ""}
+    catch {%W marker configure $marker -bg ""}
 }
 

@@ -3188,6 +3188,7 @@ for (i=0;i<objc;i++) {
     objc -= 3, objv += 3;
 
     listObjPtr = Tcl_NewListObj(0, (Tcl_Obj **)NULL);
+    Tcl_IncrRefCount(listObjPtr);
     while (objc > 0) {
 	path = Tcl_GetString(objv[0]);
 	objv++, objc--;
@@ -3279,6 +3280,7 @@ for (i=0;i<objc;i++) {
     tvPtr->flags |= (TV_LAYOUT | TV_SCROLL | TV_DIRTY | TV_RESORT);
     Rbc_TreeViewEventuallyRedraw(tvPtr);
     Tcl_SetObjResult(interp, listObjPtr);
+    Tcl_DecrRefCount(listObjPtr);
     return TCL_OK;
 
   error:
@@ -3375,6 +3377,7 @@ AddOp(tvPtr, interp, objc, objv)
 
     /* Process sections of path ?options? */
     listObjPtr = Tcl_NewListObj(0, (Tcl_Obj **)NULL);
+    Tcl_IncrRefCount(listObjPtr);
     while (objc > 0) {
 	path = Tcl_GetString(objv[0]);
 	objv++, objc--;
@@ -3462,6 +3465,7 @@ AddOp(tvPtr, interp, objc, objv)
     tvPtr->flags |= (TV_LAYOUT | TV_SCROLL | TV_DIRTY | TV_RESORT);
     Rbc_TreeViewEventuallyRedraw(tvPtr);
     Tcl_SetObjResult(interp, listObjPtr);
+    Tcl_DecrRefCount(listObjPtr);
     return TCL_OK;
 
   error:

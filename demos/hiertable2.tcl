@@ -44,9 +44,8 @@ option add *Hiertable.titleShadow { grey80 }
 option add *Hiertable.titleFont {*-helvetica-bold-r-*-*-11-*-*-*-*-*-*-*}
 
 option add *xHiertable.openCommand	{
-    set path /home/gah/src/blt/%P
-    if { [file isdirectory $path] } {
-	cd $path
+    if { [file isdirectory ..] } {
+	cd ..
 	set files [glob -nocomplain * */. ]
 	if { $files != "" } {
 	    eval %W insert -at %n end $files

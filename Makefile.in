@@ -46,7 +46,7 @@ PKG_STUB_OBJECTS = @PKG_STUB_OBJECTS@
 # this package that need to be installed, if any.
 #========================================================================
 
-PKG_TCL_SOURCES = @PKG_TCL_SOURCES@
+PKG_TCL_SOURCES = @PKG_TCL_SOURCES@ 
 
 #========================================================================
 # This is a list of public header files to be installed, if any.
@@ -97,7 +97,7 @@ PACKAGE_NAME	= @PACKAGE_NAME@
 PACKAGE_VERSION	= @PACKAGE_VERSION@
 CC		= @CC@
 CFLAGS_DEFAULT	= @CFLAGS_DEFAULT@
-CFLAGS_WARNING	= @CFLAGS_WARNING@ -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast -Werror
+CFLAGS_WARNING	= @CFLAGS_WARNING@ -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
 EXEEXT		= @EXEEXT@
 LDFLAGS_DEFAULT	= @LDFLAGS_DEFAULT@
 MAKE_LIB	= @MAKE_LIB@
@@ -445,7 +445,7 @@ tags:
 	ctags $$(scripts/get_all_headers.tcl) generic/*.c
 
 depend:
-	makedepend $(DEPENDTARGET) $(DEFS) \
+	makedepend -f- $(DEPENDTARGET) $(DEFS) \
 	-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include \
 		-I/usr/lib64/gcc/x86_64-suse-linux/4.8/include-fixed \
 			$(INCLUDES) generic/*.c

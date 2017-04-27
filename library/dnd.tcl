@@ -31,68 +31,72 @@
 #
 # ======================================================================
 
-set cmd rbc::dnd
-for { set i 1 } { $i <= 5 } { incr i } {
-    bind RbcDndButton$i <ButtonPress-$i>  [list $cmd select %W %X %Y %t]
-    bind RbcDndButton$i <B$i-Motion>	  [list $cmd drag %W %X %Y]
-    bind RbcDndButton$i <ButtonRelease-$i> [list $cmd drop %W %X %Y]
-}
+namespace eval ::rbc::Dnd {
 
-# ----------------------------------------------------------------------
-#
-# DndInit --
-#
-#	Invoked from C whenever a new drag&drop source is created.
-#	Sets up the default bindings for the drag&drop source.
-#
-#	<ButtonPress-?>	 Starts the drag operation.
-#	<B?-Motion>	 Updates the drag.
-#	<ButtonRelease-?> Drop the data on the target.
-#
-# Arguments:	
-#	widget		source widget
-#	button		Mouse button used to activate drag.
-#	cmd		"dragdrop" or "rbc::dragdrop"
-#
-# ----------------------------------------------------------------------
+  for { set i 1 } { $i <= 5 } { incr i } {
+      bind RbcDndButton$i <ButtonPress-$i>    [list ::rbc::dnd select %W %X %Y %t]
+      bind RbcDndButton$i <B$i-Motion>	      [list ::rbc::dnd drag %W %X %Y]
+      bind RbcDndButton$i <ButtonRelease-$i>  [list ::rbc::dnd drop %W %X %Y]
+  }
 
-proc rbc::DndInit { widget button } {
-    set tagList {}
-    if { $button > 0 } {
-	lappend tagList RbcDndButton$button
-    }
-    foreach tag [bindtags $widget] {
-	if { ![string match RbcDndButton* $tag] } {
-	    lappend tagList $tag
-	}
-    }
-    bindtags $widget $tagList
-}
+  # ----------------------------------------------------------------------
+  #
+  # Dnd::ObjInit --
+  #
+  #	Invoked from C whenever a new drag&drop source is created.
+  #	Sets up the default bindings for the drag&drop source.
+  #
+  #	<ButtonPress-?>	 Starts the drag operation.
+  #	<B?-Motion>	 Updates the drag.
+  #	<ButtonRelease-?> Drop the data on the target.
+  #
+  # Arguments:	
+  #	widget		source widget
+  #	button		Mouse button used to activate drag.
+  #	cmd		"dragdrop" or "::rbc::dragdrop"
+  #
+  # ----------------------------------------------------------------------
 
-proc rbc::DndStdDrop { widget args } {
-    array set info $args
-    set fmt [lindex $info(formats) 0]
-    dnd pull $widget $fmt 
-    return 0
-}
+  proc ObjInit { widget button } {
+      set tagList {}
+      if { $button > 0 } {
+          lappend tagList RbcDndButton$button
+      }
+      foreach tag [bindtags $widget] {
+          if { ![string match RbcDndButton* $tag] } {
+              lappend tagList $tag
+          }
+      }
+      bindtags $widget $tagList
+  }
 
-proc rbc::PrintInfo { array } {
-    upvar $array state
+  proc StdDrop { widget args } {
+      array set info $args
+      set fmt [lindex $info(formats) 0]
+      dnd pull $widget $fmt 
+      return 0
+  }
 
-    parray state
-    if { $info(state) & 0x01 } {
-	puts "Shift-Drop"
-    }
-    if { $info(state) & 0x02 } {
-	puts "CapsLock-Drop"
-    }
-    if { $info(state) & 0x04 } {
-	puts "Control-Drop"
-    }
-    if { $info(state) & 0x08 } {
-	puts "Alt-Drop"
-    }
-    if { $info(state) & 0x10 } {
-	puts "NumLock-Drop"
-    }
+  proc PrintInfo { array } {
+      upvar $array state
+
+      parray state
+      if { $info(state) & 0x01 } {
+          puts "Shift-Drop"
+      }
+      if { $info(state) & 0x02 } {
+          puts "CapsLock-Drop"
+      }
+      if { $info(state) & 0x04 } {
+          puts "Control-Drop"
+      }
+      if { $info(state) & 0x08 } {
+          puts "Alt-Drop"
+      }
+      if { $info(state) & 0x10 } {
+          puts "NumLock-Drop"
+      }
+  }
+
+# namespace eval ::rbc::Dnd
 }

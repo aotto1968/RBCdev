@@ -49,11 +49,12 @@ DrawTextLayout(display, drawable, gc, font, x, y, textPtr)
 
     fragPtr = textPtr->fragArr;
     for (i = 0; i < textPtr->nFrags; i++, fragPtr++) {
-#if HAVE_UTF_BUG
-        Tk_DrawChars(display, drawable, gc, font, fragPtr->text, fragPtr->count, x + fragPtr->x, y + fragPtr->y);
+
+#ifdef HAVE_XFT
+    XDrawString(display, drawable, gc, x + fragPtr->x, y + fragPtr->y, fragPtr->text, fragPtr->count);
 #else
-        XDrawString(display, drawable, gc, x + fragPtr->x, y + fragPtr->y, fragPtr->text, fragPtr->count);
-#endif /*HAVE_UTF*/
+    Tk_DrawChars(display, drawable, gc, font, fragPtr->text, fragPtr->count, x + fragPtr->x, y + fragPtr->y);
+#endif
     }
 }
 
@@ -571,7 +572,7 @@ Rbc_CreateTextBitmap(tkwin, textPtr, tsPtr, bmWidthPtr, bmHeightPtr)
         /* Replace the text pixmap with a rotated one */
 
         rotBitmap = Rbc_RotateBitmap(tkwin, bitmap, width, height,
-                                     tsPtr->theta, bmWidthPtr, bmHeightPtr);
+                                    tsPtr->theta, bmWidthPtr, bmHeightPtr);
         assert(rotBitmap);
         if (rotBitmap != None) {
             Tk_FreePixmap(display, bitmap);

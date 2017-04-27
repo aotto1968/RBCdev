@@ -121,7 +121,7 @@ Rbc_VectorInit(interp)
     VectorInterpData *dataPtr; /* Interpreter-specific data. */
 
     dataPtr = Rbc_VectorGetInterpData(interp);
-    Tcl_CreateObjCommand(interp, "rbc::vector", VectorObjCmd, dataPtr, NULL);
+    Tcl_CreateObjCommand(interp, "::rbc::vector", VectorObjCmd, dataPtr, NULL);
 
     return TCL_OK;
 }
@@ -2020,6 +2020,7 @@ VectorVarTrace(clientData, interp, part1, part2, flags)
     VectorObject *vPtr = clientData;
     int first, last;
     int varFlags;
+    Tcl_Obj *obj;
 
     static char message[MAX_ERR_MSG + 1];
 
@@ -2088,14 +2089,18 @@ VectorVarTrace(clientData, interp, part1, part2, flags)
                 value = (*indexProc)((Rbc_Vector *) vPtr);
             }
             objPtr = Tcl_NewDoubleObj(value);
-            if (Tcl_SetVar2Ex(interp, part1, part2, objPtr, varFlags) == NULL) {
-                Tcl_DecrRefCount(objPtr);
+            Tcl_IncrRefCount(objPtr);
+            obj = Tcl_SetVar2Ex(interp, part1, part2, objPtr, varFlags);
+            Tcl_DecrRefCount(objPtr);
+            if (obj == NULL) {
                 goto error;
             }
         } else {
             objPtr = Rbc_GetValues(vPtr, first, last);
-            if (Tcl_SetVar2Ex(interp, part1, part2, objPtr, varFlags) == NULL) {
-                Tcl_DecrRefCount(objPtr);
+            Tcl_IncrRefCount(objPtr);
+            obj = Tcl_SetVar2Ex(interp, part1, part2, objPtr, varFlags);
+            Tcl_DecrRefCount(objPtr);
+            if (obj == NULL) {
                 goto error;
             }
         }

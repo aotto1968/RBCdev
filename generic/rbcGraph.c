@@ -2326,9 +2326,9 @@ Rbc_GraphInit(interp)
     rbcXAxisUid = (Rbc_Uid)Tk_GetUid("X");
     rbcYAxisUid = (Rbc_Uid)Tk_GetUid("Y");
 
-    Tcl_CreateCommand(interp, "rbc::graph", GraphCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-    Tcl_CreateCommand(interp, "rbc::barchart", BarchartCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-    Tcl_CreateCommand(interp, "rbc::stripchart", StripchartCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
+    Tcl_CreateCommand(interp, "::rbc::graph", GraphCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
+    Tcl_CreateCommand(interp, "::rbc::barchart", BarchartCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
+    Tcl_CreateCommand(interp, "::rbc::stripchart", StripchartCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
     return TCL_OK;
 }
 

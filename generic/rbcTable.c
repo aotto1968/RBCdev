@@ -4955,7 +4955,7 @@ int
 Rbc_TableInit(interp)
     Tcl_Interp *interp;
 {
-    if (Tcl_CreateCommand(interp, "rbc::table", TableCmd,
+    if (Tcl_CreateCommand(interp, "::rbc::table", TableCmd,
           (ClientData)GetTableInterpData(interp), 
             (Tcl_CmdDeleteProc *)NULL) == NULL) {
         return TCL_ERROR;

@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 # Create a tabnotebook widget.  
@@ -65,7 +65,7 @@ set image [image create photo -file ./images/mini-book1.gif]
 
 # 1. The widget must be a child of the tabnotebook.
 
-set image [image create photo -file ./images/blt98.gif]
+set image [image create photo -file ./images/rbc98.gif]
 label .tnb.label -image $image -relief sunken -bd 2
 
 # 2. Use the -window option to embed the widget.

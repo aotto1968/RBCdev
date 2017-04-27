@@ -20,10 +20,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 proc SortColumn { column } {
@@ -94,7 +94,7 @@ proc Find { tree parent dir } {
 	    set node [$tree insert $parent -label $name]
 	} else {
 	    if { $info(type) == "file" } {
-		set info(type) [list @rbc::tv::normalOpenFolder $name]
+		set info(type) [list @::rbc::TreeView::normalOpenFolder $name]
 	    } else {
 		set info(type) ""
 	    }
@@ -158,7 +158,7 @@ treeview .t \
 .t column configure mtime -hide no -bg \#ffeaea -relief raised
 .t column configure size gid nlink uid ino dev -justify left -edit yes
 .t column configure size type -justify left -edit yes
-.t column configure treeView -hide no -edit no -icon rbc::tv::normalOpenFolder
+.t column configure treeView -hide no -edit no -icon ::rbc::TreeView::normalOpenFolder
 focus .t
 
 scrollbar .vs -orient vertical -command { .t yview }
@@ -205,7 +205,7 @@ pack .top.sbar -side right -fill y
     -showvalue yes 
 
 .t style combobox combo \
-    -icon rbc::tv::normalOpenFolder
+    -icon ::rbc::TreeView::normalOpenFolder
 
 .t column configure uid -style combo
 .t column configure gid -style check 

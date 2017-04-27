@@ -140,7 +140,7 @@ static Rbc_CustomOption labelOption =
 
 #define DEF_TV_ACTIVE_FOREGROUND	"black"
 #define DEF_TV_ACTIVE_ICONS \
-	"rbc::tv::activeOpenFolder rbc::tv::activeCloseFolder"
+	"::rbc::TreeView::activeOpenFolder ::rbc::TreeView::activeCloseFolder"
 #define DEF_TV_ACTIVE_RELIEF	"flat"
 #define DEF_TV_ACTIVE_STIPPLE	"gray25"
 #define DEF_TV_ALLOW_DUPLICATES	"yes"
@@ -163,7 +163,7 @@ static Rbc_CustomOption labelOption =
 #define DEF_TV_FOCUS_HIGHLIGHT_BACKGROUND	STD_NORMAL_BACKGROUND
 #define DEF_TV_FOCUS_HIGHLIGHT_COLOR		"black"
 #define DEF_TV_FOCUS_HIGHLIGHT_WIDTH		"2"
-#define DEF_TV_ICONS "rbc::tv::normalOpenFolder rbc::tv::normalCloseFolder"
+#define DEF_TV_ICONS "::rbc::TreeView::normalOpenFolder ::rbc::TreeView::normalCloseFolder"
 #define DEF_TV_VLINE_COLOR	RGB_GREY50
 #define DEF_TV_VLINE_MONO	STD_NORMAL_FG_MONO
 #define DEF_TV_LINESPACING	"0"
@@ -2228,7 +2228,7 @@ TreeTraceProc(
     TreeViewEntry *entryPtr;
     TreeViewValue *valuePtr, *nextPtr, *lastPtr;
     
-MVvar("entryTable→find<%p>",node)
+//MVvar("entryTable→find<%p>",node)
     hPtr = Tcl_FindHashEntry(&tvPtr->entryTable, (char *)node);
     if (hPtr == NULL) {
 	return TCL_OK;		/* Not a node that we're interested in. */
@@ -5063,6 +5063,41 @@ Rbc_TreeViewSelectCmdProc(ClientData clientData)
  * --------------------------------------------------------------
  */
 /* ARGSUSED */
+/*
+#define MQ_CST const char*
+static MQ_CST printName (
+  Tcl_Obj * Obj
+)
+{
+  return (Obj->typePtr ? Obj->typePtr->name : "unknown");
+}
+
+/// \brief helper to print a \e Tcl_Obj
+static MQ_CST printObj (
+  const char *header,
+  Tcl_Obj * Obj
+)
+{
+  char *buf = ckalloc (206);
+  int len;
+  MQ_CST name = printName (Obj);
+
+  // fill the buf and get the len back
+  len = snprintf (buf, 206, "%s: obj<%p>, refCount<%i>, type<%s>, string<%s>",
+                  header, Obj, Obj->refCount, name, Tcl_GetString (Obj));
+
+  // add additional ...
+  if (len > 206)
+#if defined(_MSC_VER)
+    strcat_s (buf + 200, 6, " ...");
+#else
+    strcat (buf + 200, " ...");
+#endif
+
+  return buf;
+}
+*/
+
 static int
 TreeViewObjCmd(clientData, interp, objc, objv)
     ClientData clientData;	/* Main window associated with interpreter. */
@@ -5090,23 +5125,30 @@ TreeViewObjCmd(clientData, interp, objc, objv)
     /*
      * Invoke a procedure to initialize various bindings on treeview
      * entries.  If the procedure doesn't already exist, source it
-     * from "$rbc_library/treeview.tcl".  We deferred sourcing the
-     * file until now so that the variable $rbc_library could be set
+     * from "$::rbc::library/treeview.tcl".  We deferred sourcing the
+     * file until now so that the variable $::rbc::library could be set
      * within a script.
      */
-    if (!Tcl_GetCommandInfo(interp, "rbc::tv::Initialize", &cmdInfo)) {
-	char cmd[200];
-	sprintf(cmd, "set className %s\n\
-source [file join $rbc_library treeview.tcl]\n\
-unset className\n", className);
-	if (Tcl_GlobalEval(interp, cmd) != TCL_OK) {
-	    char info[200];
+    if (!Tcl_GetCommandInfo(interp, "::rbc::TreeView::ClassInit", &cmdInfo)) {
+      char cmd[200] = "source [file join $::rbc::library treeview.tcl]";
+      if (Tcl_GlobalEval(interp, cmd) != TCL_OK) {
+        goto error;
+      }
+    }
+    initObjv[0] = Tcl_NewStringObj("::rbc::TreeView::ClassInit", -1);
+    initObjv[1] = Tcl_NewStringObj(className,-1);
+    Tcl_IncrRefCount(initObjv[1]);
+    Tcl_IncrRefCount(initObjv[0]);
+    int ret = Tcl_EvalObjv(interp, 2, initObjv, TCL_EVAL_GLOBAL);
+    Tcl_DecrRefCount(initObjv[1]);
+    Tcl_DecrRefCount(initObjv[0]);
+    if (ret != TCL_OK) {
+      char info[200];
 
-	    sprintf(info, "\n    (while loading bindings for %.50s)", 
-		    Tcl_GetString(objv[0]));
-	    Tcl_AddErrorInfo(interp, info);
-	    goto error;
-	}
+      sprintf(info, "\n    (while loading bindings for %.50s)", 
+              Tcl_GetString(objv[0]));
+      Tcl_AddErrorInfo(interp, info);
+      goto error;
     }
     /* 
      * Initialize the widget's configuration options here. The options
@@ -5139,16 +5181,16 @@ unset className\n", className);
     /*
      * Invoke a procedure to initialize various bindings on treeview
      * entries.  If the procedure doesn't already exist, source it
-     * from "$rbc_library/treeview.tcl".  We deferred sourcing the
-     * file until now so that the variable $rbc_library could be set
+     * from "$::rbc::library/treeview.tcl".  We deferred sourcing the
+     * file until now so that the variable $::rbc::library could be set
      * within a script.
      */
-    initObjv[0] = Tcl_NewStringObj("rbc::tv::Initialize", -1);
+    initObjv[0] = Tcl_NewStringObj("::rbc::TreeView::ObjInit", -1);
     initObjv[1] = objv[1];
-    if (Tcl_EvalObjv(interp, 2, initObjv, TCL_EVAL_GLOBAL) != TCL_OK) {
-	goto error;
-    }
+    Tcl_IncrRefCount(initObjv[0]);
+    ret = Tcl_EvalObjv(interp, 2, initObjv, TCL_EVAL_GLOBAL);
     Tcl_DecrRefCount(initObjv[0]);
+    if (ret != TCL_OK) goto error;
     Tcl_SetObjResult(interp, Tcl_NewStringObj(Tk_PathName(tvPtr->tkwin), -1));
     return TCL_OK;
   error:
@@ -5159,10 +5201,10 @@ unset className\n", className);
 int
 Rbc_TreeViewInit(Tcl_Interp *interp)
 {
-    if (Tcl_CreateObjCommand(interp, "rbc::treeview", TreeViewObjCmd, NULL, NULL) == NULL) {
+    if (Tcl_CreateObjCommand(interp, "::rbc::treeview", TreeViewObjCmd, NULL, NULL) == NULL) {
 	return TCL_ERROR;
     }
-    if (Tcl_CreateObjCommand(interp, "rbc::hiertable", TreeViewObjCmd, NULL, NULL) == NULL) {
+    if (Tcl_CreateObjCommand(interp, "::rbc::hiertable", TreeViewObjCmd, NULL, NULL) == NULL) {
 	return TCL_ERROR;
     }
     return TCL_OK;

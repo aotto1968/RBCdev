@@ -2,7 +2,6 @@
 
 package require rbc
 
-
 # --------------------------------------------------------------------------
 # Starting with Tcl 8.x, the RNC commands are stored in their own 
 # namespace called "rbc".  The idea is to prevent name clashes with
@@ -22,10 +21,10 @@ package require rbc
 #    table . .g -resize both
 #
 # --------------------------------------------------------------------------
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 if { ([info exists tcl_platform]) && ($tcl_platform(platform) == "windows") } {
@@ -180,4 +179,4 @@ table . \
     4,0 .blueScale \
     4,1 .blueSample 
 
-eval table configure . [winfo children .] -fill both
+table configure . {*}[winfo children .] -fill both

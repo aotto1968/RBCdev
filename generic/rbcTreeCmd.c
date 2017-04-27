@@ -556,6 +556,7 @@ StringToNode(
     int result;
 
     objPtr = Tcl_NewStringObj(string, -1);
+    Tcl_IncrRefCount(objPtr);
     result = GetNode(cmdPtr, objPtr, &node);
     Tcl_DecrRefCount(objPtr);
     if (result != TCL_OK) {
@@ -3090,6 +3091,7 @@ InsertOp(
 	register char **p;
 	char *key;
 	Tcl_Obj *objPtr;
+        int ret;
 
 	for (p = data.dataPairs; *p != NULL; p++) {
 	    key = *p;
@@ -3100,9 +3102,10 @@ InsertOp(
 		goto error;
 	    }
 	    objPtr = Tcl_NewStringObj(*p, -1);
-	    if (Rbc_TreeSetValue(interp, cmdPtr->tree, child, key, objPtr) 
-		!= TCL_OK) {
-		Tcl_DecrRefCount(objPtr);
+            Tcl_IncrRefCount(objPtr);
+	    ret = Rbc_TreeSetValue(interp, cmdPtr->tree, child, key, objPtr);
+            Tcl_DecrRefCount(objPtr);
+	    if (ret != TCL_OK) {
 		goto error;
 	    }
 	}
@@ -4310,6 +4313,7 @@ TagNamesOp(
     Tcl_Obj *listObjPtr, *objPtr;
 
     listObjPtr = Tcl_NewListObj(0, (Tcl_Obj **) NULL);
+    Tcl_IncrRefCount(listObjPtr);
     objPtr = Tcl_NewStringObj("all", -1);
     Tcl_ListObjAppendElement(interp, listObjPtr, objPtr);
     if (objc == 3) {
@@ -4355,6 +4359,7 @@ TagNamesOp(
 	Tcl_DeleteHashTable(&uniqTable);
     }
     Tcl_SetObjResult(interp, listObjPtr);
+    Tcl_DecrRefCount(listObjPtr);
     return TCL_OK;
  error:
     Tcl_DecrRefCount(listObjPtr);
@@ -5698,15 +5703,15 @@ ExitCmd(
 int
 Rbc_TreeInit(Tcl_Interp *interp)
 {
-    if (Tcl_CreateObjCommand(interp, "rbc::util::compare", CompareDictionaryCmd, NULL, NULL) == NULL) {
+    if (Tcl_CreateObjCommand(interp, "::rbc::util::compare", CompareDictionaryCmd, NULL, NULL) == NULL) {
         return TCL_ERROR;
     }
 
-    if (Tcl_CreateObjCommand(interp, "rbc::util::exit", ExitCmd, NULL, NULL) == NULL) {
+    if (Tcl_CreateObjCommand(interp, "::rbc::util::exit", ExitCmd, NULL, NULL) == NULL) {
         return TCL_ERROR;
     }
 
-    if (Tcl_CreateObjCommand(interp, "rbc::tree", TreeObjCmd, GetTreeCmdInterpData(interp), NULL) == NULL) {
+    if (Tcl_CreateObjCommand(interp, "::rbc::tree", TreeObjCmd, GetTreeCmdInterpData(interp), NULL) == NULL) {
         return TCL_ERROR;
     }
     return TCL_OK;

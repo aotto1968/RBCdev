@@ -22,10 +22,9 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 image create photo bgTile -file ./images/smblue_rock.gif

@@ -22,10 +22,9 @@ package require rbc
 #
 # --------------------------------------------------------------------------
 
-if { $tcl_version >= 8.0 } {
-    namespace import rbc::*
-    namespace import -force rbc::tile::*
-}
+namespace import rbc::*
+cd [file dirname [info script]]
+
 source scripts/demo.tcl
 
 image create photo bgTile -file ./images/smblue_rock.gif
@@ -59,7 +58,7 @@ foreach label { there bunky another test of a widget } {
     set id [.t insert end -text $label]
 }
 
-set img [image create photo -file ./images/blt98.gif]
+set img [image create photo -file ./images/rbc98.gif]
 .t tab configure $id -image label2 -tile $img
 
 table . \
