@@ -34,6 +34,7 @@ DESCRIPTION
        and variables to the application's interpreter.
 
 COMPOSITION COMMANDS
+
        The following commands are  added  to  the  interpreter  from  the  RBC
        library:
 
@@ -78,6 +79,7 @@ COMPOSITION COMMANDS
                       also used to create scrolled windows of Tk widgets.
 
 PLOTTING COMMANDS
+
        graph          A 2D plotting widget.  Plots two variable data in a win-
                       dow with an optional legend and annotations.   It has of
                       several  components; coordinate axes, crosshairs, a leg-
@@ -110,6 +112,7 @@ PLOTTING COMMANDS
                       tags.
 
 MISCELLANEOUS COMMANDS
+
        vector         Creates a vector of floating point values.  The vector's
                       components  can  be manipulated in three ways: through a
                       Tcl array variable, a Tcl command, or the C API.
