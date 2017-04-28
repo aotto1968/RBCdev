@@ -100,56 +100,30 @@ typedef struct {
 #endif /*WIN32*/
 #define DEF_TEXTBOX_SIDE		"left"
 
+#define OTOFFSET TreeViewTextBox
 static Rbc_ConfigSpec textBoxSpecs[] =
 {
-    {RBC_CONFIG_BORDER, "-activebackground", "activeBackground", 
-	"ActiveBackground", DEF_STYLE_ACTIVE_BACKGROUND, 
-	Rbc_Offset(TreeViewTextBox, activeBorder), 0},
-    {RBC_CONFIG_SYNONYM, "-activebg", "activeBackground", 
-	(char *)NULL, (char *)NULL, 0, 0},
-    {RBC_CONFIG_SYNONYM, "-activefg", "activeFackground", 
-	(char *)NULL, (char *)NULL, 0, 0},
-    {RBC_CONFIG_COLOR, "-activeforeground", "activeForeground", 
-	"ActiveForeground", DEF_STYLE_ACTIVE_FOREGROUND, 
-	Rbc_Offset(TreeViewTextBox, activeFgColor), 0},
-    {RBC_CONFIG_BORDER, "-background", "background", "Background",
-	(char *)NULL, Rbc_Offset(TreeViewTextBox, border), RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_SYNONYM, "-bg", "background", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_CURSOR, "-cursor", "cursor", "Cursor",
-	DEF_TEXTBOX_CURSOR, Rbc_Offset(TreeViewTextBox, cursor), 0},
-    {RBC_CONFIG_SYNONYM, "-fg", "foreground", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_FONT, "-font", "font", "Font",
-	(char *)NULL, Rbc_Offset(TreeViewTextBox, font), 
-        RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_COLOR, "-foreground", "foreground", "Foreground",
-	(char *)NULL, Rbc_Offset(TreeViewTextBox, fgColor),RBC_CONFIG_NULL_OK },
-    {RBC_CONFIG_DISTANCE, "-gap", "gap", "Gap",
-	DEF_STYLE_GAP, Rbc_Offset(TreeViewTextBox, gap), 
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_BORDER, "-highlightbackground", "highlightBackground",
-	"HighlightBackground", DEF_STYLE_HIGHLIGHT_BACKGROUND, 
-        Rbc_Offset(TreeViewTextBox, highlightBorder), RBC_CONFIG_COLOR_ONLY},
-    {RBC_CONFIG_COLOR, "-highlightforeground", "highlightForeground", 
-	"HighlightForeground", DEF_STYLE_HIGHLIGHT_FOREGROUND, 
-	 Rbc_Offset(TreeViewTextBox, highlightFgColor), 0},
-    {RBC_CONFIG_SYNONYM, "-highlightbg", "highlightBackground", 
-	(char *)NULL, (char *)NULL, 0, 0},
-    {RBC_CONFIG_SYNONYM, "-highlightfg", "highlightForeground", 
-	(char *)NULL, (char *)NULL, 0, 0},
-    {RBC_CONFIG_CUSTOM, "-icon", "icon", "Icon",
-	(char *)NULL, Rbc_Offset(TreeViewTextBox, icon), 
-	RBC_CONFIG_NULL_OK, &rbcTreeViewIconOption},
-    {RBC_CONFIG_STRING, "-key", "key", "key",
-	(char *)NULL, Rbc_Offset(TreeViewTextBox, key), 
-	RBC_CONFIG_NULL_OK, 0},
-    {RBC_CONFIG_SIDE, "-side", "side", "side",
-	DEF_TEXTBOX_SIDE, Tk_Offset(TreeViewTextBox, side),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_END, (char *)NULL, (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, 0}
+    {RBC_CONFIG_BORDER  , "-activebackground"   , "activeBackground"   , "ActiveBackground"   , DEF_STYLE_ACTIVE_BACKGROUND   , Ot_Offset(activeBorder)    , 0}                          ,
+    {RBC_CONFIG_SYNONYM , "-activebg"           , "activeBackground"   , (char *)NULL         , (char *)NULL                  , 0                          , 0}                          ,
+    {RBC_CONFIG_SYNONYM , "-activefg"           , "activeFackground"   , (char *)NULL         , (char *)NULL                  , 0                          , 0}                          ,
+    {RBC_CONFIG_COLOR   , "-activeforeground"   , "activeForeground"   , "ActiveForeground"   , DEF_STYLE_ACTIVE_FOREGROUND   , Ot_Offset(activeFgColor)   , 0}                          ,
+    {RBC_CONFIG_BORDER  , "-background"         , "background"         , "Background"         , (char *)NULL                  , Ot_Offset(border)          , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_SYNONYM , "-bg"                 , "background"         , (char *)NULL         , (char *)NULL                  , 0                          , 0}                          ,
+    {RBC_CONFIG_CURSOR  , "-cursor"             , "cursor"             , "Cursor"             , DEF_TEXTBOX_CURSOR            , Ot_Offset(cursor)          , 0}                          ,
+    {RBC_CONFIG_SYNONYM , "-fg"                 , "foreground"         , (char *)NULL         , (char *)NULL                  , 0                          , 0}                          ,
+    {RBC_CONFIG_FONT    , "-font"               , "font"               , "Font"               , (char *)NULL                  , Ot_Offset(font)            , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_COLOR   , "-foreground"         , "foreground"         , "Foreground"         , (char *)NULL                  , Ot_Offset(fgColor)         , RBC_CONFIG_NULL_OK }         ,
+    {RBC_CONFIG_DISTANCE, "-gap"                , "gap"                , "Gap"                , DEF_STYLE_GAP                 , Ot_Offset(gap)             , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_BORDER  , "-highlightbackground", "highlightBackground", "HighlightBackground", DEF_STYLE_HIGHLIGHT_BACKGROUND, Ot_Offset(highlightBorder) , RBC_CONFIG_COLOR_ONLY}      ,
+    {RBC_CONFIG_COLOR   , "-highlightforeground", "highlightForeground", "HighlightForeground", DEF_STYLE_HIGHLIGHT_FOREGROUND, Ot_Offset(highlightFgColor), 0}                          ,
+    {RBC_CONFIG_SYNONYM , "-highlightbg"        , "highlightBackground", (char *)NULL         , (char *)NULL                  , 0                          , 0}                          ,
+    {RBC_CONFIG_SYNONYM , "-highlightfg"        , "highlightForeground", (char *)NULL         , (char *)NULL                  , 0                          , 0}                          ,
+    {RBC_CONFIG_CUSTOM  , "-icon"               , "icon"               , "Icon"               , (char *)NULL                  , Ot_Offset(icon)            , RBC_CONFIG_NULL_OK          , &rbcTreeViewIconOption}     ,
+    {RBC_CONFIG_STRING  , "-key"                , "key"                , "key"                , (char *)NULL                  , Ot_Offset(key)             , RBC_CONFIG_NULL_OK          , 0}                          ,
+    {RBC_CONFIG_SIDE    , "-side"               , "side"               , "side"               , DEF_TEXTBOX_SIDE              , Tk_Offset(TreeViewTextBox  , side)                       , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_END     , (char *)NULL          , (char *)NULL         , (char *)NULL         , (char *)NULL                  , 0                          , 0}
 };
+#undef OTOFFSET
 
 typedef struct {
     int refCount;		/* Usage reference count. */
@@ -1950,12 +1924,16 @@ Rbc_TreeViewFreeStyle(tvPtr, stylePtr)
     fprint(f(stderr, "Rbc_TreeViewFreeStyle %s count=%d\n", stylePtr->name,
 	    stylePtr->refCount);
 #endif
-    /* Remove the style from the hash table so that it's name can be used.*/
-    /* If no cell is using the style, remove it.*/
+
+    /* Remove the style from the hash table so that it's name can be used. */
+    /* If no cell is using the style, remove it. */
+
     if ((stylePtr->refCount <= 0) && !(stylePtr->flags & STYLE_USER)) {
+
 #ifdef notdef
 	fprintf(stderr, "freeing %s\n", stylePtr->name);
 #endif
+
 	rbcTreeViewIconOption.clientData = tvPtr;
 	Rbc_FreeObjOptions(stylePtr->classPtr->specsPtr, (char *)stylePtr, 
 		   tvPtr->display, 0);
@@ -2642,17 +2620,17 @@ StyleUnsetOp(tvPtr, interp, objc, objv)
  *---------------------------------------------------------------------- 
  */
 static Rbc_OpSpec styleOps[] = {
-    {"activate", 1, (Rbc_Op)StyleActivateOp, 3, 5,"entry column",},
-    {"cget", 2, (Rbc_Op)StyleCgetOp, 5, 5, "styleName option",},
-    {"checkbox", 2, (Rbc_Op)StyleCheckBoxOp, 4, 0, "styleName options...",},
-    {"combobox", 3, (Rbc_Op)StyleComboBoxOp, 4, 0, "styleName options...",},
-    {"configure", 3, (Rbc_Op)StyleConfigureOp, 4, 0, "styleName options...",},
-    {"forget", 1, (Rbc_Op)StyleForgetOp, 3, 0, "styleName...",},
-    {"highlight", 1, (Rbc_Op)StyleHighlightOp, 5, 5, "styleName boolean",},
-    {"names", 1, (Rbc_Op)StyleNamesOp, 3, 3, "",}, 
-    {"set", 1, (Rbc_Op)StyleSetOp, 6, 6, "key styleName tagOrId...",},
-    {"textbox", 1, (Rbc_Op)StyleTextBoxOp, 4, 0, "styleName options...",},
-    {"unset", 1, (Rbc_Op)StyleUnsetOp, 5, 5, "key tagOrId",},
+    {"activate" , 1, (Rbc_Op)StyleActivateOp , 3, 5,"entry column"             ,},
+    {"cget"     , 2, (Rbc_Op)StyleCgetOp     , 5, 5, "styleName option"        ,},
+    {"checkbox" , 2, (Rbc_Op)StyleCheckBoxOp , 4, 0, "styleName options..."    ,},
+    {"combobox" , 3, (Rbc_Op)StyleComboBoxOp , 4, 0, "styleName options..."    ,},
+    {"configure", 3, (Rbc_Op)StyleConfigureOp, 4, 0, "styleName options..."    ,},
+    {"forget"   , 1, (Rbc_Op)StyleForgetOp   , 3, 0, "styleName..."            ,},
+    {"highlight", 1, (Rbc_Op)StyleHighlightOp, 5, 5, "styleName boolean"       ,},
+    {"names"    , 1, (Rbc_Op)StyleNamesOp    , 3, 3, ""                        ,}, 
+    {"set"      , 1, (Rbc_Op)StyleSetOp      , 6, 6, "key styleName tagOrId...",},
+    {"textbox"  , 1, (Rbc_Op)StyleTextBoxOp  , 4, 0, "styleName options..."    ,},
+    {"unset"    , 1, (Rbc_Op)StyleUnsetOp    , 5, 5, "key tagOrId"             ,},
 };
 
 static int nStyleOps = sizeof(styleOps) / sizeof(Rbc_OpSpec);
@@ -2676,3 +2654,4 @@ Rbc_TreeViewStyleOp(tvPtr, interp, objc, objv)
     return result;
 }
 
+// vim: nowrap

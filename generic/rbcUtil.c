@@ -1122,3 +1122,39 @@ usage:
     }
     return specPtr->proc;
 }
+
+int
+Rbc_InitFromProc(
+    Tcl_Interp *  interp,
+    const char*   proc,
+    const char*   file,
+    const char*   arg
+) {
+    Tcl_CmdInfo cmdInfo;
+    Tcl_Obj *initObjv[2];
+
+    if (!Tcl_GetCommandInfo(interp, proc, &cmdInfo)) {
+      char cmd[200];
+      snprintf(cmd,200,"source [file join $::rbc::library %s]",file);
+      cmd[200-1] = '\0';
+      if (Tcl_GlobalEval(interp, cmd) != TCL_OK) {
+        return TCL_OK;
+      }
+    }
+    initObjv[0] = Tcl_NewStringObj(proc, -1);
+    initObjv[1] = Tcl_NewStringObj(arg,-1);
+    Tcl_IncrRefCount(initObjv[1]);
+    Tcl_IncrRefCount(initObjv[0]);
+    int ret = Tcl_EvalObjv(interp, 2, initObjv, TCL_EVAL_GLOBAL);
+    Tcl_DecrRefCount(initObjv[1]);
+    Tcl_DecrRefCount(initObjv[0]);
+    if (ret != TCL_OK) {
+      char info[200];
+
+      sprintf(info, "\n    (while loading bindings for %.50s)",arg);
+      Tcl_AddErrorInfo(interp, info);
+      return TCL_ERROR;
+    }
+    return TCL_OK;
+}
+

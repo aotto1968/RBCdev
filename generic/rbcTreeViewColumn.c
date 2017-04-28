@@ -75,6 +75,7 @@ enum SortTypeValues {
 #define DEF_COLUMN_EDIT			"yes"
 #define DEF_COLUMN_FONT			STD_FONT
 #define DEF_COLUMN_COMMAND		(char *)NULL
+#define DEF_COLUMN_FOREGROUND		(char *)NULL
 #define DEF_COLUMN_FORMAT_COMMAND	(char *)NULL
 #define DEF_COLUMN_HIDE			"no"
 #define DEF_COLUMN_JUSTIFY		"center"
@@ -86,7 +87,7 @@ enum SortTypeValues {
 #define DEF_COLUMN_STYLE		"text"
 #define DEF_COLUMN_TITLE_BACKGROUND	STD_NORMAL_BACKGROUND
 #define DEF_COLUMN_TITLE_BORDERWIDTH	STD_BORDERWIDTH
-#define DEF_COLUMN_TITLE_FONT		STD_FONT
+#define DEF_COLUMN_TITLE_FONT		STD_TITLE_FONT
 #define DEF_COLUMN_TITLE_FOREGROUND	STD_NORMAL_FOREGROUND
 #define DEF_COLUMN_TITLE_RELIEF		"raised"
 #define DEF_COLUMN_WEIGHT		"1.0"
@@ -126,113 +127,54 @@ extern Rbc_CustomOption rbcTreeViewUidOption;
 extern Rbc_CustomOption rbcTreeViewIconOption;
 static Rbc_TreeApplyProc SortApplyProc;
 
+#define OTOFFSET TreeViewColumn
+
 static Rbc_ConfigSpec columnSpecs[] =
 {
-    {RBC_CONFIG_BORDER, "-activetitlebackground", "activeTitleBackground", 
-	"Background", DEF_COLUMN_ACTIVE_TITLE_BG, 
-	Rbc_Offset(TreeViewColumn, activeTitleBorder), 0},
-    {RBC_CONFIG_COLOR, "-activetitleforeground", "activeTitleForeground", 
-	"Foreground", DEF_COLUMN_ACTIVE_TITLE_FG, 
-	Rbc_Offset(TreeViewColumn, activeTitleFgColor), 0},
-    {RBC_CONFIG_BORDER, "-background", "background", "Background",
-	DEF_COLUMN_BACKGROUND, Rbc_Offset(TreeViewColumn, border), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_SYNONYM, "-bd", "borderWidth", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_SYNONYM, "-bg", "background", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_CUSTOM, "-bindtags", "bindTags", "BindTags",
-	DEF_COLUMN_BIND_TAGS, Rbc_Offset(TreeViewColumn, tagsUid),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewUidOption},
-    {RBC_CONFIG_DISTANCE, "-borderwidth", "borderWidth", "BorderWidth",
-	DEF_COLUMN_BORDERWIDTH, Rbc_Offset(TreeViewColumn, borderWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_STRING, "-command", "command", "Command",
-	DEF_COLUMN_COMMAND, Rbc_Offset(TreeViewColumn, titleCmd),
-	RBC_CONFIG_DONT_SET_DEFAULT | RBC_CONFIG_NULL_OK}, 
-    {RBC_CONFIG_BOOLEAN, "-edit", "edit", "Edit",
-	DEF_COLUMN_STATE, Rbc_Offset(TreeViewColumn, editable), 
-        RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_BOOLEAN, "-hide", "hide", "Hide",
-	DEF_COLUMN_HIDE, Rbc_Offset(TreeViewColumn, hidden),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_CUSTOM, "-icon", "icon", "icon",
-	(char *)NULL, Rbc_Offset(TreeViewColumn, titleIcon),
-	RBC_CONFIG_DONT_SET_DEFAULT, &rbcTreeViewIconOption},
-    {RBC_CONFIG_JUSTIFY, "-justify", "justify", "Justify",
-	DEF_COLUMN_JUSTIFY, Rbc_Offset(TreeViewColumn, justify), 
-        RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DISTANCE, "-max", "max", "Max",
-	DEF_COLUMN_MAX, Rbc_Offset(TreeViewColumn, reqMax), 
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DISTANCE, "-min", "min", "Min",
-	DEF_COLUMN_MIN, Rbc_Offset(TreeViewColumn, reqMin), 
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_PAD, "-pad", "pad", "Pad",
-	DEF_COLUMN_PAD, Rbc_Offset(TreeViewColumn, pad), 
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_RELIEF, "-relief", "relief", "Relief",
-	DEF_COLUMN_RELIEF, Rbc_Offset(TreeViewColumn, relief), 
-        RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DASHES, "-ruledashes", "ruleDashes", "RuleDashes",
-	DEF_COLUMN_RULE_DASHES, Rbc_Offset(TreeViewColumn, ruleDashes),
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_STRING, "-sortcommand", "sortCommand", "SortCommand",
-	DEF_SORT_COMMAND, Rbc_Offset(TreeViewColumn, sortCmd), 
-	RBC_CONFIG_NULL_OK}, 
-    {RBC_CONFIG_STATE, "-state", "state", "State",
-	DEF_COLUMN_STATE, Rbc_Offset(TreeViewColumn, state), 
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_CUSTOM, "-style", "style", "Style",
-	DEF_COLUMN_STYLE, Rbc_Offset(TreeViewColumn, stylePtr), 
-        0, &styleOption},
-    {RBC_CONFIG_STRING, "-text", "text", "Text",
-	(char *)NULL, Rbc_Offset(TreeViewColumn, title), 0},
-    {RBC_CONFIG_STRING, "-title", "title", "Title",
-	(char *)NULL, Rbc_Offset(TreeViewColumn, title), 0},
-    {RBC_CONFIG_BORDER, "-titlebackground", "titleBackground", 
-	"TitleBackground", DEF_COLUMN_TITLE_BACKGROUND, 
-	Rbc_Offset(TreeViewColumn, titleBorder),0},
-    {RBC_CONFIG_DISTANCE, "-titleborderwidth", "BorderWidth", 
-	"TitleBorderWidth", DEF_COLUMN_TITLE_BORDERWIDTH, 
-	Rbc_Offset(TreeViewColumn, titleBorderWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_FONT, "-titlefont", "titleFont", "Font",
-	DEF_COLUMN_TITLE_FONT, Rbc_Offset(TreeViewColumn, titleFont), 0},
-    {RBC_CONFIG_COLOR, "-titleforeground", "titleForeground", "TitleForeground",
-	DEF_COLUMN_TITLE_FOREGROUND, 
-	Rbc_Offset(TreeViewColumn, titleFgColor), 0},
-    {RBC_CONFIG_RELIEF, "-titlerelief", "titleRelief", "TitleRelief",
-	DEF_COLUMN_TITLE_RELIEF, Rbc_Offset(TreeViewColumn, titleRelief), 
-        RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_SHADOW, "-titleshadow", "titleShadow", "TitleShadow",
-	(char *)NULL, Rbc_Offset(TreeViewColumn, titleShadow), 0},
-    {RBC_CONFIG_DOUBLE, "-weight", (char *)NULL, (char *)NULL,
-	DEF_COLUMN_WEIGHT, Rbc_Offset(TreeViewColumn, weight), 
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DISTANCE, "-width", "width", "Width",
-	DEF_COLUMN_WIDTH, Rbc_Offset(TreeViewColumn, reqWidth), 
-        RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_END, (char *)NULL, (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, 0}
+    {RBC_CONFIG_BORDER  , "-activetitlebackground", "activeTitleBackground", "Background"      , DEF_COLUMN_ACTIVE_TITLE_BG  , Ot_Offset(activeTitleBorder) , 0}                                               ,
+    {RBC_CONFIG_COLOR   , "-activetitleforeground", "activeTitleForeground", "Foreground"      , DEF_COLUMN_ACTIVE_TITLE_FG  , Ot_Offset(activeTitleFgColor), 0}                                               ,
+    {RBC_CONFIG_BORDER  , "-background"           , "background"           , "Background"      , DEF_COLUMN_BACKGROUND       , Ot_Offset(border)            , RBC_CONFIG_NULL_OK}                              ,
+    {RBC_CONFIG_SYNONYM , "-bd"                   , "borderWidth"          , (char *)NULL      , (char *)NULL                , 0                            , 0}                                               ,
+    {RBC_CONFIG_SYNONYM , "-bg"                   , "background"           , (char *)NULL      , (char *)NULL                , 0                            , 0}                                               ,
+    {RBC_CONFIG_CUSTOM  , "-bindtags"             , "bindTags"             , "BindTags"        , DEF_COLUMN_BIND_TAGS        , Ot_Offset(tagsUid)           , RBC_CONFIG_NULL_OK                               , &rbcTreeViewUidOption} ,
+    {RBC_CONFIG_DISTANCE, "-borderwidth"          , "borderWidth"          , "BorderWidth"     , DEF_COLUMN_BORDERWIDTH      , Ot_Offset(borderWidth)       , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_STRING  , "-command"              , "command"              , "Command"         , DEF_COLUMN_COMMAND          , Ot_Offset(titleCmd)          , RBC_CONFIG_DONT_SET_DEFAULT | RBC_CONFIG_NULL_OK}, 
+    {RBC_CONFIG_BOOLEAN , "-edit"                 , "edit"                 , "Edit"            , DEF_COLUMN_STATE            , Ot_Offset(editable)          , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_BOOLEAN , "-hide"                 , "hide"                 , "Hide"            , DEF_COLUMN_HIDE             , Ot_Offset(hidden)            , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_CUSTOM  , "-icon"                 , "icon"                 , "icon"            , (char *)NULL                , Ot_Offset(titleIcon)         , RBC_CONFIG_DONT_SET_DEFAULT                      , &rbcTreeViewIconOption},
+    {RBC_CONFIG_JUSTIFY , "-justify"              , "justify"              , "Justify"         , DEF_COLUMN_JUSTIFY          , Ot_Offset(justify)           , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_DISTANCE, "-max"                  , "max"                  , "Max"             , DEF_COLUMN_MAX              , Ot_Offset(reqMax)            , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_DISTANCE, "-min"                  , "min"                  , "Min"             , DEF_COLUMN_MIN              , Ot_Offset(reqMin)            , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_PAD     , "-pad"                  , "pad"                  , "Pad"             , DEF_COLUMN_PAD              , Ot_Offset(pad)               , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_RELIEF  , "-relief"               , "relief"               , "Relief"          , DEF_COLUMN_RELIEF           , Ot_Offset(relief)            , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_DASHES  , "-ruledashes"           , "ruleDashes"           , "RuleDashes"      , DEF_COLUMN_RULE_DASHES      , Ot_Offset(ruleDashes)        , RBC_CONFIG_NULL_OK}                              ,
+    {RBC_CONFIG_STRING  , "-sortcommand"          , "sortCommand"          , "SortCommand"     , DEF_SORT_COMMAND            , Ot_Offset(sortCmd)           , RBC_CONFIG_NULL_OK}                              , 
+    {RBC_CONFIG_STATE   , "-state"                , "state"                , "State"           , DEF_COLUMN_STATE            , Ot_Offset(state)             , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_CUSTOM  , "-style"                , "style"                , "Style"           , DEF_COLUMN_STYLE            , Ot_Offset(stylePtr)          , 0                                                , &styleOption}          ,
+    {RBC_CONFIG_STRING  , "-text"                 , "text"                 , "Text"            , (char *)NULL                , Ot_Offset(title)             , 0}                                               , 
+    {RBC_CONFIG_STRING  , "-title"                , "title"                , "Title"           , (char *)NULL                , Ot_Offset(title)             , 0}                                               ,
+    {RBC_CONFIG_BORDER  , "-titlebackground"      , "titleBackground"      , "TitleBackground" , DEF_COLUMN_TITLE_BACKGROUND , Ot_Offset(titleBorder)       , 0}                                               ,
+    {RBC_CONFIG_DISTANCE, "-titleborderwidth"     , "BorderWidth"          , "TitleBorderWidth", DEF_COLUMN_TITLE_BORDERWIDTH, Ot_Offset(titleBorderWidth)  , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_FONT    , "-titlefont"            , "titleFont"            , "Font"            , DEF_COLUMN_TITLE_FONT       , Ot_Offset(titleFont)         , 0}                                               ,
+    {RBC_CONFIG_COLOR   , "-titleforeground"      , "titleForeground"      , "TitleForeground" , DEF_COLUMN_TITLE_FOREGROUND , Ot_Offset(titleFgColor)      , 0}                                               ,
+    {RBC_CONFIG_RELIEF  , "-titlerelief"          , "titleRelief"          , "TitleRelief"     , DEF_COLUMN_TITLE_RELIEF     , Ot_Offset(titleRelief)       , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_SHADOW  , "-titleshadow"          , "titleShadow"          , "TitleShadow"     , (char *)NULL                , Ot_Offset(titleShadow)       , 0}                                               ,
+    {RBC_CONFIG_DOUBLE  , "-weight"               , (char *)NULL           , (char *)NULL      , DEF_COLUMN_WEIGHT           , Ot_Offset(weight)            , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_DISTANCE, "-width"                , "width"                , "Width"           , DEF_COLUMN_WIDTH            , Ot_Offset(reqWidth)          , RBC_CONFIG_DONT_SET_DEFAULT}                     ,
+    {RBC_CONFIG_END     , (char *)NULL            , (char *)NULL           , (char *)NULL      , (char *)NULL                , 0                            , 0}
 };
+#undef OTOFFSET
 
+#define OTOFFSET TreeView
 static Rbc_ConfigSpec sortSpecs[] =
 {
-    {RBC_CONFIG_STRING, "-command", "command", "Command",
-	DEF_SORT_COMMAND, Rbc_Offset(TreeView, sortCmd),
-	RBC_CONFIG_DONT_SET_DEFAULT | RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_CUSTOM, "-column", "column", "Column",
-	DEF_SORT_COLUMN, Rbc_Offset(TreeView, sortColumnPtr),
-	RBC_CONFIG_DONT_SET_DEFAULT, &columnOption},
-    {RBC_CONFIG_BOOLEAN, "-decreasing", "decreasing", "Decreasing",
-	DEF_SORT_DECREASING, Rbc_Offset(TreeView, sortDecreasing),
-        RBC_CONFIG_DONT_SET_DEFAULT}, 
-    {RBC_CONFIG_CUSTOM, "-mode", "mode", "Mode",
-	DEF_SORT_TYPE, Rbc_Offset(TreeView, sortType), 0, &typeOption},
-    {RBC_CONFIG_END, (char *)NULL, (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, 0}
+    {RBC_CONFIG_STRING , "-command"   , "command"   , "Command"   , DEF_SORT_COMMAND   , Ot_Offset(sortCmd)       , RBC_CONFIG_DONT_SET_DEFAULT | RBC_CONFIG_NULL_OK},
+    {RBC_CONFIG_CUSTOM , "-column"    , "column"    , "Column"    , DEF_SORT_COLUMN    , Ot_Offset(sortColumnPtr) , RBC_CONFIG_DONT_SET_DEFAULT                      , &columnOption},
+    {RBC_CONFIG_BOOLEAN, "-decreasing", "decreasing", "Decreasing", DEF_SORT_DECREASING, Ot_Offset(sortDecreasing), RBC_CONFIG_DONT_SET_DEFAULT}                     , 
+    {RBC_CONFIG_CUSTOM , "-mode"      , "mode"      , "Mode"      , DEF_SORT_TYPE      , Ot_Offset(sortType)      , 0                                                , &typeOption}  ,
+    {RBC_CONFIG_END    , (char *)NULL , (char *)NULL, (char *)NULL, (char *)NULL       , 0                        , 0}
 };
+#undef OTOFFSET
 
 static Rbc_TreeCompareNodesProc CompareNodes;
 static Rbc_TreeApplyProc SortApplyProc;
@@ -1583,6 +1525,27 @@ CompareEntries(a, b)
     tvPtr = (*e1PtrPtr)->tvPtr;
     obj1 = (*e1PtrPtr)->dataObjPtr;
     obj2 = (*e2PtrPtr)->dataObjPtr;
+
+    // MVvar("obj1<%p>, obj2<%p>",obj1,obj2);
+    //  OTBUG: hiertable1.tcl→1.sorting "View" (multiple click), 2. sorting "nlink"
+    //  ==64390== Invalid read of size 8
+    //  ==64390==    at 0x5372D40: Tcl_GetString (tclObj.c:1642)
+    //  ==64390==    by 0x7342187: CompareEntries (rbcTreeViewColumn.c:1587)
+    //  ==64390==    by 0x62D95A0: msort_with_tmp.part.0 (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x62D92F1: msort_with_tmp.part.0 (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x62D92F1: msort_with_tmp.part.0 (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x62D92F1: msort_with_tmp.part.0 (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x62D92F1: msort_with_tmp.part.0 (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x62D92F1: msort_with_tmp.part.0 (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x62D984B: qsort_r (in /lib64/libc-2.22.so)
+    //  ==64390==    by 0x734300D: Rbc_TreeViewSortFlatView (rbcTreeViewColumn.c:2013)
+    //  ==64390==    by 0x732877D: ComputeFlatLayout (rbcTreeView.c:3572)
+    //  ==64390==    by 0x73291C4: Rbc_TreeViewComputeLayout (rbcTreeView.c:3848)
+    //  ==64390==  Address 0x18 is not stack'd, malloc'd or (recently) free'd
+    //
+    // solved… rbcEmptyStringObjPtr, initialized in Rbc_Init had no
+    //         Tcl_IncrRefCount
+
     s1 = Tcl_GetString(obj1);
     s2 = Tcl_GetString(obj2);
     result = 0;
@@ -2041,3 +2004,4 @@ Rbc_TreeViewSortTreeView(tvPtr)
     tvPtr->viewIsDecreasing = tvPtr->sortDecreasing;
 }
 
+// vim: nowrap

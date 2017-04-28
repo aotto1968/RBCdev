@@ -192,255 +192,109 @@ static Rbc_CustomOption labelOption =
 #define DEF_TV_TRIMLEFT		""
 #define DEF_TV_WIDTH		"200"
 
+#define OTOFFSET TreeView
 Rbc_ConfigSpec rbcTreeViewButtonSpecs[] =
 {
-    {RBC_CONFIG_BORDER, "-activebackground", "activeBackground", "Background",
-	DEF_BUTTON_ACTIVE_BACKGROUND, Rbc_Offset(TreeView, button.activeBorder),
-	0},
-    {RBC_CONFIG_SYNONYM, "-activebg", "activeBackground", (char *)NULL, 
-	(char *)NULL, 0, 0},
-    {RBC_CONFIG_SYNONYM, "-activefg", "activeForeground", (char *)NULL, 
-	(char *)NULL, 0, 0},
-    {RBC_CONFIG_COLOR, "-activeforeground", "activeForeground", "Foreground",
-	DEF_BUTTON_ACTIVE_FOREGROUND, 
-	Rbc_Offset(TreeView, button.activeFgColor), 0},
-    {RBC_CONFIG_BORDER, "-background", "background", "Background",
-	DEF_BUTTON_NORMAL_BACKGROUND, Rbc_Offset(TreeView, button.border), 0},
-    {RBC_CONFIG_SYNONYM, "-bd", "borderWidth", (char *)NULL, (char *)NULL, 0, 
-	0},
-    {RBC_CONFIG_SYNONYM, "-bg", "background", (char *)NULL, (char *)NULL, 0, 0},
-    {RBC_CONFIG_DISTANCE, "-borderwidth", "borderWidth", "BorderWidth",
-	DEF_BUTTON_BORDERWIDTH, Rbc_Offset(TreeView, button.borderWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_RELIEF, "-closerelief", "closeRelief", "Relief",
-	DEF_BUTTON_CLOSE_RELIEF, Rbc_Offset(TreeView, button.closeRelief),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_SYNONYM, "-fg", "foreground", (char *)NULL, (char *)NULL, 0, 0},
-    {RBC_CONFIG_COLOR, "-foreground", "foreground", "Foreground",
-	DEF_BUTTON_NORMAL_FOREGROUND, Rbc_Offset(TreeView, button.fgColor), 0},
-    {RBC_CONFIG_CUSTOM, "-images", "images", "Icons",
-	(char *)NULL, Rbc_Offset(TreeView, button.icons), RBC_CONFIG_NULL_OK, 
-	&rbcTreeViewIconsOption},
-    {RBC_CONFIG_RELIEF, "-openrelief", "openRelief", "Relief",
-	DEF_BUTTON_OPEN_RELIEF, Rbc_Offset(TreeView, button.openRelief),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DISTANCE, "-size", "size", "Size", 
-	DEF_BUTTON_SIZE, Rbc_Offset(TreeView, button.reqSize), 0},
-    {RBC_CONFIG_END, (char *)NULL, (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, 0}
+    {RBC_CONFIG_BORDER          , "-activebackground"     , "activeBackground", "Background" , DEF_BUTTON_ACTIVE_BACKGROUND, Ot_Offset(button.activeBorder) , 0}                          ,
+    {RBC_CONFIG_SYNONYM         , "-activebg"             , "activeBackground", (char *)NULL , (char *)NULL                , 0                              , 0}                          ,
+    {RBC_CONFIG_SYNONYM         , "-activefg"             , "activeForeground", (char *)NULL , (char *)NULL                , 0                              , 0}                          ,
+    {RBC_CONFIG_COLOR           , "-activeforeground"     , "activeForeground", "Foreground" , DEF_BUTTON_ACTIVE_FOREGROUND, Ot_Offset(button.activeFgColor), 0}                          ,
+    {RBC_CONFIG_BORDER          , "-background"           , "background"      , "Background" , DEF_BUTTON_NORMAL_BACKGROUND, Ot_Offset(button.border)       , 0}                          ,
+    {RBC_CONFIG_SYNONYM         , "-bd"                   , "borderWidth"     , (char *)NULL , (char *)NULL                , 0                              , 0}                          ,
+    {RBC_CONFIG_SYNONYM         , "-bg"                   , "background"      , (char *)NULL , (char *)NULL                , 0                              , 0}                          ,
+    {RBC_CONFIG_DISTANCE        , "-borderwidth"          , "borderWidth"     , "BorderWidth", DEF_BUTTON_BORDERWIDTH      , Ot_Offset(button.borderWidth)  , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_RELIEF          , "-closerelief"          , "closeRelief"     , "Relief"     , DEF_BUTTON_CLOSE_RELIEF     , Ot_Offset(button.closeRelief)  , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_SYNONYM         , "-fg"                   , "foreground"      , (char *)NULL , (char *)NULL                , 0                              , 0}                          , 
+    {RBC_CONFIG_COLOR           , "-foreground"           , "foreground"      , "Foreground" , DEF_BUTTON_NORMAL_FOREGROUND, Ot_Offset(button.fgColor)      , 0}                          ,
+    {RBC_CONFIG_CUSTOM          , "-images"               , "images"          , "Icons"      , (char *)NULL                , Ot_Offset(button.icons)        , RBC_CONFIG_NULL_OK          , &rbcTreeViewIconsOption},
+    {RBC_CONFIG_RELIEF          , "-openrelief"           , "openRelief"      , "Relief"     , DEF_BUTTON_OPEN_RELIEF      , Ot_Offset(button.openRelief)   , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_DISTANCE        , "-size"                 , "size"            , "Size"       , DEF_BUTTON_SIZE             , Ot_Offset(button.reqSize)      , 0}                          , {RBC_CONFIG_END         , (char *)NULL, (char *)NULL, (char *)NULL                , (char *)NULL       , 0              , 0}
 };
+#undef OTOFFSET
 
+#define OTOFFSET TreeViewEntry
 Rbc_ConfigSpec rbcTreeViewEntrySpecs[] =
 {
-    {RBC_CONFIG_CUSTOM, "-activeicons", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, activeIcons),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewIconsOption},
-    {RBC_CONFIG_CUSTOM, "-bindtags", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, tagsUid),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewUidOption},
-    {RBC_CONFIG_CUSTOM, "-button", (char *)NULL, (char *)NULL,
-	DEF_TV_BUTTON, Rbc_Offset(TreeViewEntry, flags),
-	RBC_CONFIG_DONT_SET_DEFAULT, &buttonOption},
-    {RBC_CONFIG_CUSTOM, "-closecommand", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, closeCmd),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewUidOption},
-    {RBC_CONFIG_CUSTOM, "-data", (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, RBC_CONFIG_NULL_OK, &rbcTreeViewDataOption},
-    {RBC_CONFIG_SYNONYM, "-fg", "foreground", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_FONT, "-font", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, font), 0},
-    {RBC_CONFIG_COLOR, "-foreground", "foreground", (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, color), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_DISTANCE, "-height", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, reqHeight),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_CUSTOM, "-icons", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, icons),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewIconsOption},
-    {RBC_CONFIG_CUSTOM, "-label", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, labelUid), 0, 
-	&labelOption},
-    {RBC_CONFIG_CUSTOM, "-opencommand", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, openCmd),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewUidOption},
-    {RBC_CONFIG_SHADOW, "-shadow", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, shadow),
-	RBC_CONFIG_NULL_OK | RBC_CONFIG_COLOR_ONLY},
-    {RBC_CONFIG_SHADOW, "-shadow", (char *)NULL, (char *)NULL,
-	(char *)NULL, Rbc_Offset(TreeViewEntry, shadow),
-	RBC_CONFIG_NULL_OK | RBC_CONFIG_MONO_ONLY},
-    {RBC_CONFIG_END, (char *)NULL, (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, 0}
+    {RBC_CONFIG_CUSTOM  , "-activeicons" , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(activeIcons)      , RBC_CONFIG_NULL_OK                         , &rbcTreeViewIconsOption}                   ,
+    {RBC_CONFIG_CUSTOM  , "-bindtags"    , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(tagsUid)          , RBC_CONFIG_NULL_OK                         , &rbcTreeViewUidOption}                     ,
+    {RBC_CONFIG_CUSTOM  , "-button"      , (char *)NULL, (char *)NULL, DEF_TV_BUTTON, Ot_Offset(flags)            , RBC_CONFIG_DONT_SET_DEFAULT                , &buttonOption}                             ,
+    {RBC_CONFIG_CUSTOM  , "-closecommand", (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(closeCmd)         , RBC_CONFIG_NULL_OK                         , &rbcTreeViewUidOption}                     ,
+    {RBC_CONFIG_CUSTOM  , "-data"        , (char *)NULL, (char *)NULL, (char *)NULL , 0                           , RBC_CONFIG_NULL_OK                         , &rbcTreeViewDataOption}                    ,
+    {RBC_CONFIG_SYNONYM , "-fg"          , "foreground", (char *)NULL, (char *)NULL , 0                           , 0}                                         ,
+    {RBC_CONFIG_FONT    , "-font"        , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(font)             , 0}                                         ,
+    {RBC_CONFIG_COLOR   , "-foreground"  , "foreground", (char *)NULL, (char *)NULL , Ot_Offset(color)            , RBC_CONFIG_NULL_OK}                        ,
+    {RBC_CONFIG_DISTANCE, "-height"      , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(reqHeight)        , RBC_CONFIG_DONT_SET_DEFAULT}               ,
+    {RBC_CONFIG_CUSTOM  , "-icons"       , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(icons)            , RBC_CONFIG_NULL_OK                         , &rbcTreeViewIconsOption}                   ,
+    {RBC_CONFIG_CUSTOM  , "-label"       , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(labelUid)         , 0                                          , &labelOption}                              ,
+    {RBC_CONFIG_CUSTOM  , "-opencommand" , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(openCmd)          , RBC_CONFIG_NULL_OK                         , &rbcTreeViewUidOption}                     ,
+    {RBC_CONFIG_SHADOW  , "-shadow"      , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(shadow)           , RBC_CONFIG_NULL_OK | RBC_CONFIG_COLOR_ONLY},
+    {RBC_CONFIG_SHADOW  , "-shadow"      , (char *)NULL, (char *)NULL, (char *)NULL , Ot_Offset(shadow)           , RBC_CONFIG_NULL_OK | RBC_CONFIG_MONO_ONLY} ,
+    {RBC_CONFIG_END     , (char *)NULL   , (char *)NULL, (char *)NULL, (char *)NULL , 0                           , 0}
 };
+#undef OTOFFSET
 
+
+#define OTOFFSET TreeView
 Rbc_ConfigSpec rbcTreeViewSpecs[] =
 {
-    {RBC_CONFIG_CUSTOM, "-activeicons", "activeIcons", "Icons",
-	DEF_TV_ACTIVE_ICONS, Rbc_Offset(TreeView, activeIcons),
-	RBC_CONFIG_NULL_OK, &rbcTreeViewIconsOption},
-    {RBC_CONFIG_BITFLAG, 
-	"-allowduplicates", "allowDuplicates", "AllowDuplicates",
-	DEF_TV_ALLOW_DUPLICATES, Rbc_Offset(TreeView, flags),
-	RBC_CONFIG_DONT_SET_DEFAULT, (Rbc_CustomOption *)TV_ALLOW_DUPLICATES},
-    {RBC_CONFIG_BITFLAG, "-autocreate", "autoCreate", "AutoCreate",
-	DEF_TV_MAKE_PATH, Rbc_Offset(TreeView, flags),
-	RBC_CONFIG_DONT_SET_DEFAULT, (Rbc_CustomOption *)TV_FILL_ANCESTORS},
-    {RBC_CONFIG_BORDER, "-background", "background", "Background",
-	DEF_TV_BACKGROUND, Rbc_Offset(TreeView, border), 0},
-    {RBC_CONFIG_SYNONYM, "-bd", "borderWidth", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_SYNONYM, "-bg", "background", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_DISTANCE, "-borderwidth", "borderWidth", "BorderWidth",
-	DEF_TV_BORDERWIDTH, Rbc_Offset(TreeView, borderWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_CUSTOM, "-button", "button", "Button",
-	DEF_TV_BUTTON, Rbc_Offset(TreeView, buttonFlags),
-	RBC_CONFIG_DONT_SET_DEFAULT, &buttonOption},
-    {RBC_CONFIG_STRING, "-closecommand", "closeCommand", "CloseCommand",
-	(char *)NULL, Rbc_Offset(TreeView, closeCmd), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_ACTIVE_CURSOR, "-cursor", "cursor", "Cursor",
-	(char *)NULL, Rbc_Offset(TreeView, cursor), RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_DASHES, "-dashes", "dashes", "Dashes",
-	DEF_TV_DASHES, Rbc_Offset(TreeView, dashes),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_BITFLAG, "-exportselection", "exportSelection",
-	"ExportSelection", DEF_TV_EXPORT_SELECTION, 
-	Rbc_Offset(TreeView, flags), RBC_CONFIG_DONT_SET_DEFAULT, 
-	(Rbc_CustomOption *)TV_SELECT_EXPORT},
-    {RBC_CONFIG_SYNONYM, "-fg", "foreground", (char *)NULL, (char *)NULL, 
-	0, 0},
-    {RBC_CONFIG_BOOLEAN, "-flat", "flat", "Flat",
-	DEF_TV_FLAT, Rbc_Offset(TreeView, flatView),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DASHES, "-focusdashes", "focusDashes", "FocusDashes",
-	DEF_TV_FOCUS_DASHES, Rbc_Offset(TreeView, focusDashes),
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_COLOR, 
-	"-focusforeground", "focusForeground", "FocusForeground",
-	DEF_TV_FOCUS_FOREGROUND, Rbc_Offset(TreeView, focusColor),
-	RBC_CONFIG_COLOR_ONLY},
-    {RBC_CONFIG_COLOR, 
-	"-focusforeground", "focusForeground", "FocusForeground",
-	DEF_TV_FOCUS_FG_MONO, Rbc_Offset(TreeView, focusColor),
-	RBC_CONFIG_MONO_ONLY},
-    {RBC_CONFIG_FONT, "-font", "font", "Font",
-	DEF_TV_FONT, Rbc_Offset(TreeView, font), 0},
-    {RBC_CONFIG_COLOR, "-foreground", "foreground", "Foreground",
-	DEF_TV_TEXT_COLOR, Rbc_Offset(TreeView, fgColor),
-	RBC_CONFIG_COLOR_ONLY},
-    {RBC_CONFIG_COLOR, "-foreground", "foreground", "Foreground",
-	DEF_TV_TEXT_MONO, Rbc_Offset(TreeView, fgColor), 
-	RBC_CONFIG_MONO_ONLY},
-    {RBC_CONFIG_DISTANCE, "-height", "height", "Height",
-	DEF_TV_HEIGHT, Rbc_Offset(TreeView, reqHeight),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_BITFLAG, "-hideleaves", "hideLeaves", "HideLeaves",
-	DEF_TV_HIDE_LEAVES, Rbc_Offset(TreeView, flags),
-	RBC_CONFIG_DONT_SET_DEFAULT, (Rbc_CustomOption *)TV_HIDE_LEAVES},
-    {RBC_CONFIG_BITFLAG, "-hideroot", "hideRoot", "HideRoot",
-	DEF_TV_HIDE_ROOT, Rbc_Offset(TreeView, flags),
-	RBC_CONFIG_DONT_SET_DEFAULT, (Rbc_CustomOption *)TV_HIDE_ROOT},
-    {RBC_CONFIG_COLOR, "-highlightbackground", "highlightBackground",
-	"HighlightBackground", DEF_TV_FOCUS_HIGHLIGHT_BACKGROUND, 
-        Rbc_Offset(TreeView, highlightBgColor), 0},
-    {RBC_CONFIG_COLOR, "-highlightcolor", "highlightColor", "HighlightColor",
-	DEF_TV_FOCUS_HIGHLIGHT_COLOR, Rbc_Offset(TreeView, highlightColor), 0},
-    {RBC_CONFIG_PIXELS, "-highlightthickness", "highlightThickness",
-	"HighlightThickness", DEF_TV_FOCUS_HIGHLIGHT_WIDTH, 
-	Rbc_Offset(TreeView, highlightWidth), RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_CUSTOM, "-icons", "icons", "Icons",
-	DEF_TV_ICONS, Rbc_Offset(TreeView, icons), 
-	RBC_CONFIG_NULL_OK, &rbcTreeViewIconsOption},
-    {RBC_CONFIG_BORDER, "-nofocusselectbackground", "noFocusSelectBackground",
-	"NoFocusSelectBackground", DEF_TV_SELECT_BACKGROUND, 
-	Rbc_Offset(TreeView, selOutFocusBorder), TK_CONFIG_NULL_OK},
-    {RBC_CONFIG_COLOR, "-nofocusselectforeground", "noFocusSelectForeground", 
-	"NoFocusSelectForeground", DEF_TV_SELECT_FOREGROUND, 
-	Rbc_Offset(TreeView, selOutFocusFgColor), TK_CONFIG_NULL_OK},
-    {RBC_CONFIG_COLOR, "-linecolor", "lineColor", "LineColor",
-	DEF_TV_VLINE_COLOR, Rbc_Offset(TreeView, lineColor),
-	RBC_CONFIG_COLOR_ONLY},
-    {RBC_CONFIG_COLOR, "-linecolor", "lineColor", "LineColor",
-	DEF_TV_VLINE_MONO, Rbc_Offset(TreeView, lineColor),
-	RBC_CONFIG_MONO_ONLY},
-    {RBC_CONFIG_DISTANCE, "-linespacing", "lineSpacing", "LineSpacing",
-	DEF_TV_LINESPACING, Rbc_Offset(TreeView, leader),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_DISTANCE, "-linewidth", "lineWidth", "LineWidth",
-	DEF_TV_LINEWIDTH, Rbc_Offset(TreeView, lineWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_BITFLAG, "-newtags", "newTags", "NewTags",
-	DEF_TV_NEW_TAGS, Rbc_Offset(TreeView, flags),
-	RBC_CONFIG_DONT_SET_DEFAULT, (Rbc_CustomOption *)TV_NEW_TAGS},
-    {RBC_CONFIG_STRING, "-opencommand", "openCommand", "OpenCommand",
-	(char *)NULL, Rbc_Offset(TreeView, openCmd), RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_RELIEF, "-relief", "relief", "Relief",
-	DEF_TV_RELIEF, Rbc_Offset(TreeView, relief), 0},
-    {RBC_CONFIG_CURSOR, "-resizecursor", "resizeCursor", "ResizeCursor",
-	DEF_TV_RESIZE_CURSOR, Rbc_Offset(TreeView, resizeCursor), 0},
-    {RBC_CONFIG_CUSTOM, "-scrollmode", "scrollMode", "ScrollMode",
-	DEF_TV_SCROLL_MODE, Rbc_Offset(TreeView, scrollMode),
-	RBC_CONFIG_DONT_SET_DEFAULT, &scrollmodeOption},
-    {RBC_CONFIG_BORDER, "-selectbackground", "selectBackground", "Foreground",
-	DEF_TV_SELECT_BACKGROUND, Rbc_Offset(TreeView, selInFocusBorder), 0},
-    {RBC_CONFIG_DISTANCE, 
-	"-selectborderwidth", "selectBorderWidth", "BorderWidth",
-	DEF_TV_SELECT_BORDERWIDTH, Rbc_Offset(TreeView, selBorderWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_STRING, "-selectcommand", "selectCommand", "SelectCommand",
-	(char *)NULL, Rbc_Offset(TreeView, selectCmd), RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_COLOR, "-selectforeground", "selectForeground", "Background",
-	DEF_TV_SELECT_FOREGROUND, Rbc_Offset(TreeView, selInFocusFgColor), 0},
-    {RBC_CONFIG_CUSTOM, "-selectmode", "selectMode", "SelectMode",
-	DEF_TV_SELECT_MODE, Rbc_Offset(TreeView, selectMode),
-	RBC_CONFIG_DONT_SET_DEFAULT, &selectmodeOption},
-    {RBC_CONFIG_RELIEF, "-selectrelief", "selectRelief", "Relief",
-	DEF_TV_SELECT_RELIEF, Rbc_Offset(TreeView, selRelief),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_CUSTOM, "-separator", "separator", "Separator",
-	(char *)NULL, Rbc_Offset(TreeView, pathSep), RBC_CONFIG_NULL_OK, 
-	&separatorOption},
-    {RBC_CONFIG_BITFLAG, "-showtitles", "showTitles", "ShowTitles",
-	DEF_TV_SHOW_TITLES, Rbc_Offset(TreeView, flags), 0,
-        (Rbc_CustomOption *)TV_SHOW_COLUMN_TITLES},
-    {RBC_CONFIG_BITFLAG, "-sortselection", "sortSelection", "SortSelection",
-	DEF_TV_SORT_SELECTION, Rbc_Offset(TreeView, flags), 
-        RBC_CONFIG_DONT_SET_DEFAULT, (Rbc_CustomOption *)TV_SELECT_SORTED},
-    {RBC_CONFIG_STRING, "-takefocus", "takeFocus", "TakeFocus",
-	DEF_TV_TAKE_FOCUS, Rbc_Offset(TreeView, takeFocus), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_CUSTOM, "-tree", "tree", "Tree", 
-	(char *)NULL, Rbc_Offset(TreeView, tree), RBC_CONFIG_NULL_OK, 
-	&rbcTreeViewTreeOption},
-    {RBC_CONFIG_STRING, "-trim", "trim", "Trim",
-	DEF_TV_TRIMLEFT, Rbc_Offset(TreeView, trimLeft), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_DISTANCE, "-width", "width", "Width",
-	DEF_TV_WIDTH, Rbc_Offset(TreeView, reqWidth),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_STRING, 
-	"-xscrollcommand", "xScrollCommand", "ScrollCommand",
-	(char *)NULL, Rbc_Offset(TreeView, xScrollCmdPrefix), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_DISTANCE, 
-	"-xscrollincrement", "xScrollIncrement", "ScrollIncrement",
-	DEF_TV_SCROLL_INCREMENT, Rbc_Offset(TreeView, xScrollUnits),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_STRING, 
-        "-yscrollcommand", "yScrollCommand", "ScrollCommand",
-	(char *)NULL, Rbc_Offset(TreeView, yScrollCmdPrefix), 
-	RBC_CONFIG_NULL_OK},
-    {RBC_CONFIG_DISTANCE, 
-	"-yscrollincrement", "yScrollIncrement", "ScrollIncrement",
-	DEF_TV_SCROLL_INCREMENT, Rbc_Offset(TreeView, yScrollUnits),
-	RBC_CONFIG_DONT_SET_DEFAULT},
-    {RBC_CONFIG_END, (char *)NULL, (char *)NULL, (char *)NULL,
-	(char *)NULL, 0, 0}
+    {RBC_CONFIG_CUSTOM       , "-activeicons"            , "activeIcons"            , "Icons"                  , DEF_TV_ACTIVE_ICONS              , Ot_Offset(activeIcons)       , RBC_CONFIG_NULL_OK          , &rbcTreeViewIconsOption}                  ,
+    {RBC_CONFIG_BITFLAG      , "-allowduplicates"        , "allowDuplicates"        , "AllowDuplicates"        , DEF_TV_ALLOW_DUPLICATES          , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_ALLOW_DUPLICATES}  ,
+    {RBC_CONFIG_BITFLAG      , "-autocreate"             , "autoCreate"             , "AutoCreate"             , DEF_TV_MAKE_PATH                 , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_FILL_ANCESTORS}    ,
+    {RBC_CONFIG_BORDER       , "-background"             , "background"             , "Background"             , DEF_TV_BACKGROUND                , Ot_Offset(border)            , 0}                          ,
+    {RBC_CONFIG_SYNONYM      , "-bd"                     , "borderWidth"            , (char *)NULL             , (char *)NULL                     , 0                            , 0}                          ,
+    {RBC_CONFIG_SYNONYM      , "-bg"                     , "background"             , (char *)NULL             , (char *)NULL                     , 0                            , 0}                          ,
+    {RBC_CONFIG_DISTANCE     , "-borderwidth"            , "borderWidth"            , "BorderWidth"            , DEF_TV_BORDERWIDTH               , Ot_Offset(borderWidth)       , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_CUSTOM       , "-button"                 , "button"                 , "Button"                 , DEF_TV_BUTTON                    , Ot_Offset(buttonFlags)       , RBC_CONFIG_DONT_SET_DEFAULT , &buttonOption}                            ,
+    {RBC_CONFIG_STRING       , "-closecommand"           , "closeCommand"           , "CloseCommand"           , (char *)NULL                     , Ot_Offset(closeCmd)          , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_ACTIVE_CURSOR, "-cursor"                 , "cursor"                 , "Cursor"                 , (char *)NULL                     , Ot_Offset(cursor)            , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_DASHES       , "-dashes"                 , "dashes"                 , "Dashes"                 , DEF_TV_DASHES                    , Ot_Offset(dashes)            , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_BITFLAG      , "-exportselection"        , "exportSelection"        , "ExportSelection"        , DEF_TV_EXPORT_SELECTION          , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_SELECT_EXPORT}     ,
+    {RBC_CONFIG_SYNONYM      , "-fg"                     , "foreground"             , (char *)NULL             , (char *)NULL                     , 0                            , 0}                          ,
+    {RBC_CONFIG_BOOLEAN      , "-flat"                   , "flat"                   , "Flat"                   , DEF_TV_FLAT                      , Ot_Offset(flatView)          , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_DASHES       , "-focusdashes"            , "focusDashes"            , "FocusDashes"            , DEF_TV_FOCUS_DASHES              , Ot_Offset(focusDashes)       , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_COLOR        , "-focusforeground"        , "focusForeground"        , "FocusForeground"        , DEF_TV_FOCUS_FOREGROUND          , Ot_Offset(focusColor)        , RBC_CONFIG_COLOR_ONLY}      ,
+    {RBC_CONFIG_COLOR        , "-focusforeground"        , "focusForeground"        , "FocusForeground"        , DEF_TV_FOCUS_FG_MONO             , Ot_Offset(focusColor)        , RBC_CONFIG_MONO_ONLY}       ,
+    {RBC_CONFIG_FONT         , "-font"                   , "font"                   , "Font"                   , DEF_TV_FONT                      , Ot_Offset(font)              , 0}                          ,
+    {RBC_CONFIG_COLOR        , "-foreground"             , "foreground"             , "Foreground"             , DEF_TV_TEXT_COLOR                , Ot_Offset(fgColor)           , RBC_CONFIG_COLOR_ONLY}      ,
+    {RBC_CONFIG_COLOR        , "-foreground"             , "foreground"             , "Foreground"             , DEF_TV_TEXT_MONO                 , Ot_Offset(fgColor)           , RBC_CONFIG_MONO_ONLY}       ,
+    {RBC_CONFIG_DISTANCE     , "-height"                 , "height"                 , "Height"                 , DEF_TV_HEIGHT                    , Ot_Offset(reqHeight)         , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_BITFLAG      , "-hideleaves"             , "hideLeaves"             , "HideLeaves"             , DEF_TV_HIDE_LEAVES               , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_HIDE_LEAVES}       ,
+    {RBC_CONFIG_BITFLAG      , "-hideroot"               , "hideRoot"               , "HideRoot"               , DEF_TV_HIDE_ROOT                 , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_HIDE_ROOT}         ,
+    {RBC_CONFIG_COLOR        , "-highlightbackground"    , "highlightBackground"    , "HighlightBackground"    , DEF_TV_FOCUS_HIGHLIGHT_BACKGROUND, Ot_Offset(highlightBgColor)  , 0}                          ,
+    {RBC_CONFIG_COLOR        , "-highlightcolor"         , "highlightColor"         , "HighlightColor"         , DEF_TV_FOCUS_HIGHLIGHT_COLOR     , Ot_Offset(highlightColor)    , 0}                          ,
+    {RBC_CONFIG_PIXELS       , "-highlightthickness"     , "highlightThickness"     , "HighlightThickness"     , DEF_TV_FOCUS_HIGHLIGHT_WIDTH     , Ot_Offset(highlightWidth)    , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_CUSTOM       , "-icons"                  , "icons"                  , "Icons"                  , DEF_TV_ICONS                     , Ot_Offset(icons)             , RBC_CONFIG_NULL_OK          , &rbcTreeViewIconsOption}                  ,
+    {RBC_CONFIG_BORDER       , "-nofocusselectbackground", "noFocusSelectBackground", "NoFocusSelectBackground", DEF_TV_SELECT_BACKGROUND         , Ot_Offset(selOutFocusBorder) , TK_CONFIG_NULL_OK}          ,
+    {RBC_CONFIG_COLOR        , "-nofocusselectforeground", "noFocusSelectForeground", "NoFocusSelectForeground", DEF_TV_SELECT_FOREGROUND         , Ot_Offset(selOutFocusFgColor), TK_CONFIG_NULL_OK}          ,
+    {RBC_CONFIG_COLOR        , "-linecolor"              , "lineColor"              , "LineColor"              , DEF_TV_VLINE_COLOR               , Ot_Offset(lineColor)         , RBC_CONFIG_COLOR_ONLY}      ,
+    {RBC_CONFIG_COLOR        , "-linecolor"              , "lineColor"              , "LineColor"              , DEF_TV_VLINE_MONO                , Ot_Offset(lineColor)         , RBC_CONFIG_MONO_ONLY}       ,
+    {RBC_CONFIG_DISTANCE     , "-linespacing"            , "lineSpacing"            , "LineSpacing"            , DEF_TV_LINESPACING               , Ot_Offset(leader)            , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_DISTANCE     , "-linewidth"              , "lineWidth"              , "LineWidth"              , DEF_TV_LINEWIDTH                 , Ot_Offset(lineWidth)         , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_BITFLAG      , "-newtags"                , "newTags"                , "NewTags"                , DEF_TV_NEW_TAGS                  , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_NEW_TAGS}          ,
+    {RBC_CONFIG_STRING       , "-opencommand"            , "openCommand"            , "OpenCommand"            , (char *)NULL                     , Ot_Offset(openCmd)           , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_RELIEF       , "-relief"                 , "relief"                 , "Relief"                 , DEF_TV_RELIEF                    , Ot_Offset(relief)            , 0}                          ,
+    {RBC_CONFIG_CURSOR       , "-resizecursor"           , "resizeCursor"           , "ResizeCursor"           , DEF_TV_RESIZE_CURSOR             , Ot_Offset(resizeCursor)      , 0}                          ,
+    {RBC_CONFIG_CUSTOM       , "-scrollmode"             , "scrollMode"             , "ScrollMode"             , DEF_TV_SCROLL_MODE               , Ot_Offset(scrollMode)        , RBC_CONFIG_DONT_SET_DEFAULT , &scrollmodeOption}                        ,
+    {RBC_CONFIG_BORDER       , "-selectbackground"       , "selectBackground"       , "Foreground"             , DEF_TV_SELECT_BACKGROUND         , Ot_Offset(selInFocusBorder)  , 0}                          ,
+    {RBC_CONFIG_DISTANCE     , "-selectborderwidth"      , "selectBorderWidth"      , "BorderWidth"            , DEF_TV_SELECT_BORDERWIDTH        , Ot_Offset(selBorderWidth)    , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_STRING       , "-selectcommand"          , "selectCommand"          , "SelectCommand"          , (char *)NULL                     , Ot_Offset(selectCmd)         , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_COLOR        , "-selectforeground"       , "selectForeground"       , "Background"             , DEF_TV_SELECT_FOREGROUND         , Ot_Offset(selInFocusFgColor) , 0}                          ,
+    {RBC_CONFIG_CUSTOM       , "-selectmode"             , "selectMode"             , "SelectMode"             , DEF_TV_SELECT_MODE               , Ot_Offset(selectMode)        , RBC_CONFIG_DONT_SET_DEFAULT , &selectmodeOption}                        ,
+    {RBC_CONFIG_RELIEF       , "-selectrelief"           , "selectRelief"           , "Relief"                 , DEF_TV_SELECT_RELIEF             , Ot_Offset(selRelief)         , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_CUSTOM       , "-separator"              , "separator"              , "Separator"              , (char *)NULL                     , Ot_Offset(pathSep)           , RBC_CONFIG_NULL_OK          , &separatorOption}                         ,
+    {RBC_CONFIG_BITFLAG      , "-showtitles"             , "showTitles"             , "ShowTitles"             , DEF_TV_SHOW_TITLES               , Ot_Offset(flags)             , 0                           , (Rbc_CustomOption *)TV_SHOW_COLUMN_TITLES},
+    {RBC_CONFIG_BITFLAG      , "-sortselection"          , "sortSelection"          , "SortSelection"          , DEF_TV_SORT_SELECTION            , Ot_Offset(flags)             , RBC_CONFIG_DONT_SET_DEFAULT , (Rbc_CustomOption *)TV_SELECT_SORTED}     ,
+    {RBC_CONFIG_STRING       , "-takefocus"              , "takeFocus"              , "TakeFocus"              , DEF_TV_TAKE_FOCUS                , Ot_Offset(takeFocus)         , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_CUSTOM       , "-tree"                   , "tree"                   , "Tree"                   , (char *)NULL                     , Ot_Offset(tree)              , RBC_CONFIG_NULL_OK          , &rbcTreeViewTreeOption}                   ,
+    {RBC_CONFIG_STRING       , "-trim"                   , "trim"                   , "Trim"                   , DEF_TV_TRIMLEFT                  , Ot_Offset(trimLeft)          , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_DISTANCE     , "-width"                  , "width"                  , "Width"                  , DEF_TV_WIDTH                     , Ot_Offset(reqWidth)          , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_STRING       , "-xscrollcommand"         , "xScrollCommand"         , "ScrollCommand"          , (char *)NULL                     , Ot_Offset(xScrollCmdPrefix)  , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_DISTANCE     , "-xscrollincrement"       , "xScrollIncrement"       , "ScrollIncrement"        , DEF_TV_SCROLL_INCREMENT          , Ot_Offset(xScrollUnits)      , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_STRING       , "-yscrollcommand"         , "yScrollCommand"         , "ScrollCommand"          , (char *)NULL                     , Ot_Offset(yScrollCmdPrefix)  , RBC_CONFIG_NULL_OK}         ,
+    {RBC_CONFIG_DISTANCE     , "-yscrollincrement"       , "yScrollIncrement"       , "ScrollIncrement"        , DEF_TV_SCROLL_INCREMENT          , Ot_Offset(yScrollUnits)      , RBC_CONFIG_DONT_SET_DEFAULT},
+    {RBC_CONFIG_END          , (char *)NULL              , (char *)NULL             , (char *)NULL             , (char *)NULL                     , 0                            , 0}
 };
+#undef OTOFFSET
 
 /* Forward Declarations */
 static Rbc_TreeNotifyEventProc TreeEventProc;
@@ -1389,7 +1243,23 @@ Rbc_NodeToEntry(TreeView *tvPtr, Rbc_TreeNode node)
 //MVvar("entryTable→find<%p>",node)
     hPtr = Tcl_FindHashEntry(&tvPtr->entryTable, (char *)node);
     if (hPtr == NULL) {
-	abort();
+        // OTBUG [FreeEntry in Rbc_TreeViewCreateEntry] → "hiertable1.tcl" with missing column: blksize…
+        // rbc> make wish ARGS=demos/hiertable1.tcl DEBUG=valgrind
+        // ==33389==
+        // ==33389== Process terminating with default action of signal 6 (SIGABRT)
+        // ==33389==    at 0x67298D7: raise (in /lib64/libc-2.22.so)
+        // ==33389==    by 0x672ACA9: abort (in /lib64/libc-2.22.so)
+        // ==33389==    by 0x828B632: Rbc_NodeToEntry (rbcTreeView.c:1392)
+        // ==33389==    by 0x828CFBA: TreeEventProc (rbcTreeView.c:2119)
+        // ==33389==    by 0x8298F53: CheckEventHandlers (rbcTree.c:718)
+        // ==33389==    by 0x829901F: NotifyClients (rbcTree.c:762)
+        // ==33389==    by 0x82994E7: Rbc_TreeDeleteNode (rbcTree.c:984)
+        // ==33389==    by 0x829D69F: DeleteNode (rbcTreeViewCmd.c:125)
+        // ==33389==    by 0x82A431F: InsertOp (rbcTreeViewCmd.c:3290)
+        // ==33389==    by 0x82A7413: Rbc_TreeViewWidgetInstCmd (rbcTreeViewCmd.c:4925)
+        // ==33389==    by 0x522ED8E: Dispatch (tclBasic.c:4357)
+        // ==33389==    by 0x522EE1C: TclNRRunCallbacks (tclBasic.c:4390)
+	//abort();
 	return NULL;
     }
     return Tcl_GetHashValue(hPtr);
@@ -1402,6 +1272,9 @@ Rbc_TreeViewApply(
     TreeViewApplyProc *proc,	/* Procedure to call for each entry. */
     unsigned int flags)
 {
+    if (entryPtr == NULL) {
+      return TCL_OK;
+    }
     if ((flags & ENTRY_HIDDEN) && 
 	(Rbc_TreeViewEntryIsHidden(entryPtr))) {
 	return TCL_OK;		/* Hidden node. */
@@ -1479,8 +1352,8 @@ Rbc_TreeViewFirstChild(TreeViewEntry *entryPtr, unsigned int mask)
     for (node = Rbc_TreeFirstChild(entryPtr->node); node != NULL; 
 	 node = Rbc_TreeNextSibling(node)) {
 	entryPtr = Rbc_NodeToEntry(tvPtr, node);
-	if (((mask & ENTRY_HIDDEN) == 0) || 
-	    (!Rbc_TreeViewEntryIsHidden(entryPtr))) {
+	if ((entryPtr != NULL) && ( ((mask & ENTRY_HIDDEN) == 0) || 
+              (!Rbc_TreeViewEntryIsHidden(entryPtr)))) {
 	    return entryPtr;
 	}
     }
@@ -1496,8 +1369,8 @@ Rbc_TreeViewLastChild(TreeViewEntry *entryPtr, unsigned int mask)
     for (node = Rbc_TreeLastChild(entryPtr->node); node != NULL; 
 	 node = Rbc_TreePrevSibling(node)) {
 	entryPtr = Rbc_NodeToEntry(tvPtr, node);
-	if (((mask & ENTRY_HIDDEN) == 0) ||
-	    (!Rbc_TreeViewEntryIsHidden(entryPtr))) {
+	if ((entryPtr != NULL) && (((mask & ENTRY_HIDDEN) == 0) ||
+	    (!Rbc_TreeViewEntryIsHidden(entryPtr)))) {
 	    return entryPtr;
 	}
     }
@@ -1513,8 +1386,8 @@ Rbc_TreeViewNextSibling(TreeViewEntry *entryPtr, unsigned int mask)
     for (node = Rbc_TreeNextSibling(entryPtr->node); node != NULL; 
 	 node = Rbc_TreeNextSibling(node)) {
 	entryPtr = Rbc_NodeToEntry(tvPtr, node);
-	if (((mask & ENTRY_HIDDEN) == 0) ||
-	    (!Rbc_TreeViewEntryIsHidden(entryPtr))) {
+	if ((entryPtr != NULL) && (((mask & ENTRY_HIDDEN) == 0) ||
+	    (!Rbc_TreeViewEntryIsHidden(entryPtr)))) {
 	    return entryPtr;
 	}
     }
@@ -1530,8 +1403,8 @@ Rbc_TreeViewPrevSibling(TreeViewEntry *entryPtr, unsigned int mask)
     for (node = Rbc_TreePrevSibling(entryPtr->node); node != NULL; 
 	 node = Rbc_TreePrevSibling(node)) {
 	entryPtr = Rbc_NodeToEntry(tvPtr, node);
-	if (((mask & ENTRY_HIDDEN) == 0) ||
-	    (!Rbc_TreeViewEntryIsHidden(entryPtr))) {
+	if ((entryPtr != NULL) && (((mask & ENTRY_HIDDEN) == 0) ||
+	    (!Rbc_TreeViewEntryIsHidden(entryPtr)))) {
 	    return entryPtr;
 	}
     }
@@ -1817,6 +1690,9 @@ FreeEntry(TreeView *tvPtr, TreeViewEntry *entryPtr)
 {
     Tcl_HashEntry *hPtr;
 
+    if (entryPtr == NULL) {
+      return;
+    }
     if (entryPtr == tvPtr->activePtr) {
 	tvPtr->activePtr = Rbc_TreeViewParentEntry(entryPtr);
     }
@@ -2046,6 +1922,7 @@ Rbc_TreeViewCreateEntry(
 //MVvar("entryTable→create: tvPtr<%p> node<%p> name<%s>",tvPtr,node,node->label)
     hPtr = Tcl_CreateHashEntry(&tvPtr->entryTable, (char *)node, &isNew);
     if (isNew) {
+//printC("isNew")
 	/* Create the entry structure */
 	entryPtr = Rbc_PoolAllocItem(tvPtr->entryPool, sizeof(TreeViewEntry));
 	memset(entryPtr, 0, sizeof(TreeViewEntry));
@@ -2060,9 +1937,9 @@ Rbc_TreeViewCreateEntry(
     }
     if (Rbc_TreeViewConfigureEntry(tvPtr, entryPtr, objc, objv, flags) 
 	!= TCL_OK) {
-printC("Rbc_TreeViewConfigureEntry → ERROR !!")
+        // printC("Rbc_TreeViewConfigureEntry → ERROR !!")
         // do not freeEntry… code runs into "abort" later
-        // BUG "hiertable1.tcl" with missing column: blksize…
+        // OTBUG [FreeEntry] → "hiertable1.tcl" with missing column: blksize…
         // rbc> make wish ARGS=demos/hiertable1.tcl DEBUG=valgrind
         // ==33389==
         // ==33389== Process terminating with default action of signal 6 (SIGABRT)
@@ -2079,7 +1956,19 @@ printC("Rbc_TreeViewConfigureEntry → ERROR !!")
         // ==33389==    by 0x522ED8E: Dispatch (tclBasic.c:4357)
         // ==33389==    by 0x522EE1C: TclNRRunCallbacks (tclBasic.c:4390)
 
-	//FreeEntry(tvPtr, entryPtr);
+        // OTBUG [abort()…test] → "hiertable1.tcl" with missing column: blksize…
+        //  ==35949== Process terminating with default action of signal 6 (SIGABRT)
+        //  ==35949==    by 0x732503D: Rbc_TreeViewCreateEntry (rbcTreeView.c:2095)
+        //  ==35949==    by 0x733C6CA: InsertOp (rbcTreeViewCmd.c:3272)
+        //  ==35949==    by 0x733F928: Rbc_TreeViewWidgetInstCmd (rbcTreeViewCmd.c:4929)
+        //  ==35949==    by 0x5230D8E: Dispatch (tclBasic.c:4357)
+        //  ==35949==    by 0x5230E1C: TclNRRunCallbacks (tclBasic.c:4390)
+        //  ==35949==    by 0x5230539: Tcl_EvalObjv (tclBasic.c:4120)
+        //  ==35949==    by 0x5232DB2: TclEvalEx (tclBasic.c:5259)
+        //  ==35949==    by 0x535F4E7: Tcl_FSEvalFileEx (tclIOUtil.c:1826)
+        //  ==35949==    by 0x4E990A0: Tk_MainEx (tkMain.c:342)
+        //  ==35949==    by 0x400B6A: main (tkAppInit.c:78)
+	FreeEntry(tvPtr, entryPtr);
 	return TCL_ERROR;	/* Error configuring the entry. */
     }
     tvPtr->flags |= (TV_LAYOUT | TV_DIRTY | TV_RESORT);
@@ -2124,9 +2013,23 @@ TreeEventProc(ClientData clientData, Rbc_TreeNotifyEvent *eventPtr)
     node = Rbc_TreeGetNode(eventPtr->tree, eventPtr->inode);
     switch (eventPtr->type) {
     case TREE_NOTIFY_CREATE:
-//MVvar("TreeEventProc: tvPtr<%p> node<%p> name<%s>",tvPtr, node,node->label);
+        // MVvar("TreeEventProc[TREE_NOTIFY_CREATE]: tvPtr<%p> node<%p> name<%s>",tvPtr, node,node->label);
+
+        // OTBUG [abort()…test…TREE_NOTIFY_CREATE] → "hiertable1.tcl" with missing column: blksize…
+        // ==30101== Process terminating with default action of signal 6 (SIGABRT)
+        // ==30101==    by 0x73251D3: TreeEventProc (rbcTreeView.c:2128)
+        // ==30101==    by 0x733132E: CheckEventHandlers (rbcTree.c:718)
+        // ==30101==    by 0x73313FA: NotifyClients (rbcTree.c:762)
+        // ==30101==    by 0x7331635: Rbc_TreeCreateNode (rbcTree.c:857)
+        // ==30101==    by 0x733C692: InsertOp (rbcTreeViewCmd.c:3267)
+        // ==30101==    by 0x733F91D: Rbc_TreeViewWidgetInstCmd (rbcTreeViewCmd.c:4929)
+        // ==30101==    by 0x5230D8E: Dispatch (tclBasic.c:4357)
+        // ==30101==    by 0x5230E1C: TclNRRunCallbacks (tclBasic.c:4390)
+        // ==30101==    by 0x5230539: Tcl_EvalObjv (tclBasic.c:4120)
+        // ==30101==    by 0x5232DB2: TclEvalEx (tclBasic.c:5259)
 	return Rbc_TreeViewCreateEntry(tvPtr, node, 0, NULL, 0);
     case TREE_NOTIFY_DELETE:
+        // MVvar("TreeEventProc[TREE_NOTIFY_DELETE]: tvPtr<%p> node<%p> name<%s>",tvPtr, node,node->label);
 	/*  
 	 * Deleting the tree node triggers a call back to free the
 	 * treeview entry that is associated with it.
@@ -2140,7 +2043,9 @@ TreeEventProc(ClientData clientData, Rbc_TreeNotifyEvent *eventPtr)
 	    TreeViewEntry *entryPtr;
 
 	    entryPtr = Rbc_NodeToEntry(tvPtr, node);
-	    entryPtr->flags |= ENTRY_DIRTY;
+            if (entryPtr != NULL) {
+              entryPtr->flags |= ENTRY_DIRTY;
+            }
 	}
 	/*FALLTHRU*/
     case TREE_NOTIFY_MOVE:
@@ -5105,10 +5010,9 @@ TreeViewObjCmd(clientData, interp, objc, objv)
     int objc;			/* Number of arguments. */
     Tcl_Obj *CONST *objv;	/* Argument strings. */
 {
-    Tcl_CmdInfo cmdInfo;
-    Tcl_Obj *initObjv[2];
     TreeView *tvPtr;
     char *className;
+    char *objName;
     char *string;
 
     string = Tcl_GetString(objv[0]);
@@ -5118,6 +5022,7 @@ TreeViewObjCmd(clientData, interp, objc, objv)
 	return TCL_ERROR;
     }
     className = (string[0] == 'h') ? "Hiertable" : "TreeView";
+    objName = Tcl_GetStringFromObj(objv[1],NULL);
     tvPtr = CreateTreeView(interp, objv[1], className);
     if (tvPtr == NULL) {
 	goto error;
@@ -5129,25 +5034,8 @@ TreeViewObjCmd(clientData, interp, objc, objv)
      * file until now so that the variable $::rbc::library could be set
      * within a script.
      */
-    if (!Tcl_GetCommandInfo(interp, "::rbc::TreeView::ClassInit", &cmdInfo)) {
-      char cmd[200] = "source [file join $::rbc::library treeview.tcl]";
-      if (Tcl_GlobalEval(interp, cmd) != TCL_OK) {
-        goto error;
-      }
-    }
-    initObjv[0] = Tcl_NewStringObj("::rbc::TreeView::ClassInit", -1);
-    initObjv[1] = Tcl_NewStringObj(className,-1);
-    Tcl_IncrRefCount(initObjv[1]);
-    Tcl_IncrRefCount(initObjv[0]);
-    int ret = Tcl_EvalObjv(interp, 2, initObjv, TCL_EVAL_GLOBAL);
-    Tcl_DecrRefCount(initObjv[1]);
-    Tcl_DecrRefCount(initObjv[0]);
-    if (ret != TCL_OK) {
-      char info[200];
-
-      sprintf(info, "\n    (while loading bindings for %.50s)", 
-              Tcl_GetString(objv[0]));
-      Tcl_AddErrorInfo(interp, info);
+    if (Rbc_InitFromProc(interp, "::rbc::TreeView::ObjInit", 
+          "treeview.tcl", objName) != TCL_OK) {
       goto error;
     }
     /* 
@@ -5178,19 +5066,6 @@ TreeViewObjCmd(clientData, interp, objc, objv)
     Rbc_TreeViewUpdateColumnGCs(tvPtr, &tvPtr->treeColumn);
     Rbc_TreeViewUpdateStyleGCs(tvPtr, tvPtr->stylePtr);
 
-    /*
-     * Invoke a procedure to initialize various bindings on treeview
-     * entries.  If the procedure doesn't already exist, source it
-     * from "$::rbc::library/treeview.tcl".  We deferred sourcing the
-     * file until now so that the variable $::rbc::library could be set
-     * within a script.
-     */
-    initObjv[0] = Tcl_NewStringObj("::rbc::TreeView::ObjInit", -1);
-    initObjv[1] = objv[1];
-    Tcl_IncrRefCount(initObjv[0]);
-    ret = Tcl_EvalObjv(interp, 2, initObjv, TCL_EVAL_GLOBAL);
-    Tcl_DecrRefCount(initObjv[0]);
-    if (ret != TCL_OK) goto error;
     Tcl_SetObjResult(interp, Tcl_NewStringObj(Tk_PathName(tvPtr->tkwin), -1));
     return TCL_OK;
   error:
@@ -5207,5 +5082,22 @@ Rbc_TreeViewInit(Tcl_Interp *interp)
     if (Tcl_CreateObjCommand(interp, "::rbc::hiertable", TreeViewObjCmd, NULL, NULL) == NULL) {
 	return TCL_ERROR;
     }
+    /*
+     * Invoke a procedure to initialize various bindings on treeview
+     * entries.  If the procedure doesn't already exist, source it
+     * from "$::rbc::library/treeview.tcl".  We deferred sourcing the
+     * file until now so that the variable $::rbc::library could be set
+     * within a script.
+     */
+    if (Rbc_InitFromProc(interp, "::rbc::TreeView::ClassInit", 
+          "treeview.tcl", "Hiertable") != TCL_OK) {
+        return TCL_ERROR;
+    }
+    if (Rbc_InitFromProc(interp, "::rbc::TreeView::ClassInit", 
+          "treeview.tcl", "TreeView") != TCL_OK) {
+        return TCL_ERROR;
+    }
     return TCL_OK;
 }
+
+// vim: nowrap

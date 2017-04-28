@@ -39,11 +39,21 @@ foreach f [glob ./images/mini-*.gif] {
     lappend imageList [image create photo -file $f]
 }
 
-#option add *Hiertable.Tile	bgTexture
-#option add *Hiertable.Column.background grey90
-option add *Hiertable.ScrollTile  yes
-option add *Hiertable.titleShadow { grey80 }
-option add *Hiertable.titleFont {*-helvetica-bold-r-*-*-11-*-*-*-*-*-*-*}
+# Table config default
+option add *Hiertable.Tile	          bgTexture
+option add *Hiertable.ScrollTile          yes
+option add *Hiertable.titleShadow         { grey80 }
+option add *Hiertable.Font                { Courier 12 }
+option add *Hiertable.background          azure
+
+# Column config default
+option add *Hiertable.Column.titleFont    {Helvetica 16 bold}
+option add *Hiertable.Column.titleColor   green4
+option add *Hiertable.Column.titleShadow  green2
+option add *Hiertable.Column.background   green
+#option add *Hiertable.Column.titleRelief  ridge
+
+#option add *Hiertable.Entry.background   red
 
 option add *xHiertable.openCommand	{
     if { [file isdirectory ..] } {
@@ -62,17 +72,17 @@ option add *xHiertable.closeCommand {
 hiertable .h  -hideroot no -width 0 \
     -yscrollcommand { .vs set } \
     -xscrollcommand { .hs set }  \
-    -selectmode single -hideleaves false
-    
+    -selectmode single -hideleaves false \
+    -bg #FF0000
 
-.h column configure treeView -text View
+.h column configure treeView -text View 
 .h column insert 0 mtime atime gid 
 .h column insert end nlink mode type ctime uid ino size dev
-# >>> BUG: missing column
+# >>> BUG (solved): missing column
 .h column insert end blksize blocks
 # <<<
-.h column configure uid -background \#eaeaff -relief raised -bd 1
-.h column configure mtime -hide no -bg \#ffeaea -relief raised -bd 1
+.h column configure uid   -bg red -relief raised -bd 2
+.h column configure mtime -bg red -relief raised -bd 2 -hide no
 .h column configure size gid nlink uid ino dev -justify right -edit yes
 .h column configure treeView -hide no -edit no
 scrollbar .vs -orient vertical -command { .h yview }
@@ -165,6 +175,8 @@ proc Find { dir } {
     return $fileList
 }
 
+#set tcl_traceExec 1
+
 set top [file normalize ..]
 set trim "$top"
 
@@ -172,11 +184,11 @@ set trim "$top"
 
 set count 0
 .h entry configure root -label [file tail [file normalize $top]] 
-.h configure -bg grey90
 regsub -all {\.\./*} [Find $top] {} fileList
 puts "$count entries"
+#.h configure -bg grey10
 .h insert end {*}$fileList
-.h configure -bg white
+#.h configure -bg white
 
 focus .h
 
@@ -190,11 +202,13 @@ set nodes [.h find -glob -name *.o]
 cd $saved
 #rbcdebug 100
 
+if 0 {
 toplevel .top
 hiertable .top.h2 -tree .h -yscrollcommand { .top.sbar set }
 scrollbar .top.sbar -command { .top.h2 yview }
 pack .top.h2 -side left -expand yes -fill both
 pack .top.sbar -side right -fill y
+}
 
 .h column bind all <ButtonRelease-3> {
     %W configure -flat no
@@ -228,4 +242,20 @@ update
 if 1 {
     .s configure -command { .h entry configure 0 -height }
 }
+
+.h column configure type -bg BlanchedAlmond
+
+foreach {w b c} {
+    .h background Background
+    .h Column.background Background
+  } {
+  puts [format {%10s:%20s:%20s → %s} $w $b $c [option get $w $b $c]]
+}
+
+foreach {w o} {
+    .h -background
+  } {
+  puts [format {%10s:%20s → %s} $w $o [$w cget $o]]
+}
+
 

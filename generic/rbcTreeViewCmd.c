@@ -201,10 +201,12 @@ LastEntry(tvPtr, entryPtr, mask)
     next = Rbc_TreeLastChild(entryPtr->node);
     while (next != NULL) {
 	nextPtr = Rbc_NodeToEntry(tvPtr, next);
-	if ((nextPtr->flags & mask) != mask) {
-	    break;
-	}
-	entryPtr = nextPtr;
+        if (nextPtr != NULL) {
+          if ((nextPtr->flags & mask) != mask) {
+              break;
+          }
+          entryPtr = nextPtr;
+        }
 	next = Rbc_TreeLastChild(next);
     }
     return entryPtr;
@@ -3264,11 +3266,13 @@ for (i=0;i<objc;i++) {
 		 path, "\"", (char *)NULL);
 	    goto error;
 	}
+        // 1. create Node
 	node = Rbc_TreeCreateNode(tvPtr->tree, parent, *p, insertPos);
 //MVvar("Rbc_TreeCreateNode: tvPtr<%p>, node<%p>, name<%s>, pos<%i>",tvPtr,node,*p,insertPos);
 	if (node == NULL) {
 	    goto error;
 	}
+        // 2. create Entry
 	if (Rbc_TreeViewCreateEntry(tvPtr, node, count, options, 0) != TCL_OK) {
 	    goto error;
 	}
@@ -4874,37 +4878,37 @@ YViewOp(tvPtr, interp, objc, objv)
  */
 static Rbc_OpSpec treeViewOps[] =
 {
-    {"bbox", 2, (Rbc_Op)BboxOp, 3, 0, "tagOrId...",}, 
-    {"bind", 2, (Rbc_Op)BindOp, 3, 5, "tagName ?sequence command?",}, 
-    {"button", 2, (Rbc_Op)ButtonOp, 2, 0, "args",},
-    {"cget", 2, (Rbc_Op)CgetOp, 3, 3, "option",}, 
-    {"close", 2, (Rbc_Op)CloseOp, 2, 0, "?-recurse? tagOrId...",}, 
-    {"column", 3, (Rbc_Op)Rbc_TreeViewColumnOp, 2, 0, "oper args",}, 
-    {"configure", 3, (Rbc_Op)ConfigureOp, 2, 0, "?option value?...",},
-    {"curselection", 2, (Rbc_Op)CurselectionOp, 2, 2, "",},
-    {"delete", 1, (Rbc_Op)DeleteOp, 2, 0, "tagOrId ?tagOrId...?",}, 
-    {"edit", 2, (Rbc_Op)EditOp, 4, 6, "?-root|-test? x y",},
-    {"entry", 2, (Rbc_Op)EntryOp, 2, 0, "oper args",},
-    {"find", 2, (Rbc_Op)FindOp, 2, 0, "?flags...? ?first last?",}, 
-    {"focus", 2, (Rbc_Op)FocusOp, 3, 3, "tagOrId",}, 
-    {"get", 1, (Rbc_Op)GetOp, 2, 0, "?-full? tagOrId ?tagOrId...?",}, 
-    {"hide", 1, (Rbc_Op)HideOp, 2, 0, "?-exact? ?-glob? ?-regexp? ?-nonmatching? ?-name string? ?-full string? ?-data string? ?--? ?tagOrId...?",},
-    {"index", 3, (Rbc_Op)IndexOp, 3, 6, "?-at tagOrId? ?-path? string",},
-    {"insert", 3, (Rbc_Op)InsertOp, 3, 0, "?-at tagOrId? position label ?label...? ?option value?",},
-    {"move", 1, (Rbc_Op)MoveOp, 5, 5, "tagOrId into|before|after tagOrId",},
-    {"nearest", 1, (Rbc_Op)NearestOp, 4, 5, "x y ?varName?",}, 
-    {"open", 1, (Rbc_Op)OpenOp, 2, 0, "?-recurse? tagOrId...",}, 
-    {"range", 1, (Rbc_Op)RangeOp, 4, 5, "?-open? tagOrId tagOrId",},
-    {"scan", 2, (Rbc_Op)ScanOp, 5, 5, "dragto|mark x y",},
-    {"see", 3, (Rbc_Op)SeeOp, 3, 0, "?-anchor anchor? tagOrId",},
-    {"selection", 3, (Rbc_Op)SelectionOp, 2, 0, "oper args",},
-    {"show", 2, (Rbc_Op)ShowOp, 2, 0, "?-exact? ?-glob? ?-regexp? ?-nonmatching? ?-name string? ?-full string? ?-data string? ?--? ?tagOrId...?",},
-    {"sort", 2, (Rbc_Op)Rbc_TreeViewSortOp, 2, 0, "args",},
-    {"style", 2, (Rbc_Op)Rbc_TreeViewStyleOp, 2, 0, "args",},
-    {"tag", 2, (Rbc_Op)TagOp, 2, 0, "oper args",},
-    {"toggle", 2, (Rbc_Op)ToggleOp, 3, 3, "tagOrId",},
-    {"xview", 1, (Rbc_Op)XViewOp, 2, 5, "?moveto fract? ?scroll number what?",},
-    {"yview", 1, (Rbc_Op)YViewOp, 2, 5, "?moveto fract? ?scroll number what?",},
+    {"bbox"        , 2, (Rbc_Op)BboxOp              , 3, 0, "tagOrId..."                                                                                              ,}, 
+    {"bind"        , 2, (Rbc_Op)BindOp              , 3, 5, "tagName ?sequence command?"                                                                              ,}, 
+    {"button"      , 2, (Rbc_Op)ButtonOp            , 2, 0, "args"                                                                                                    ,},
+    {"cget"        , 2, (Rbc_Op)CgetOp              , 3, 3, "option"                                                                                                  ,}, 
+    {"close"       , 2, (Rbc_Op)CloseOp             , 2, 0, "?-recurse? tagOrId..."                                                                                   ,}, 
+    {"column"      , 3, (Rbc_Op)Rbc_TreeViewColumnOp, 2, 0, "oper args"                                                                                               ,}, 
+    {"configure"   , 3, (Rbc_Op)ConfigureOp         , 2, 0, "?option value?..."                                                                                       ,},
+    {"curselection", 2, (Rbc_Op)CurselectionOp      , 2, 2, ""                                                                                                        ,},
+    {"delete"      , 1, (Rbc_Op)DeleteOp            , 2, 0, "tagOrId ?tagOrId...?"                                                                                    ,}, 
+    {"edit"        , 2, (Rbc_Op)EditOp              , 4, 6, "?-root|-test? x y"                                                                                       ,},
+    {"entry"       , 2, (Rbc_Op)EntryOp             , 2, 0, "oper args"                                                                                               ,},
+    {"find"        , 2, (Rbc_Op)FindOp              , 2, 0, "?flags...? ?first last?"                                                                                 ,}, 
+    {"focus"       , 2, (Rbc_Op)FocusOp             , 3, 3, "tagOrId"                                                                                                 ,}, 
+    {"get"         , 1, (Rbc_Op)GetOp               , 2, 0, "?-full? tagOrId ?tagOrId...?"                                                                            ,}, 
+    {"hide"        , 1, (Rbc_Op)HideOp              , 2, 0, "?-exact? ?-glob? ?-regexp? ?-nonmatching? ?-name string? ?-full string? ?-data string? ?--? ?tagOrId...?",},
+    {"index"       , 3, (Rbc_Op)IndexOp             , 3, 6, "?-at tagOrId? ?-path? string"                                                                            ,},
+    {"insert"      , 3, (Rbc_Op)InsertOp            , 3, 0, "?-at tagOrId? position label ?label...? ?option value?"                                                  ,},
+    {"move"        , 1, (Rbc_Op)MoveOp              , 5, 5, "tagOrId into|before|after tagOrId"                                                                       ,},
+    {"nearest"     , 1, (Rbc_Op)NearestOp           , 4, 5, "x y ?varName?"                                                                                           ,}, 
+    {"open"        , 1, (Rbc_Op)OpenOp              , 2, 0, "?-recurse? tagOrId..."                                                                                   ,}, 
+    {"range"       , 1, (Rbc_Op)RangeOp             , 4, 5, "?-open? tagOrId tagOrId"                                                                                 ,},
+    {"scan"        , 2, (Rbc_Op)ScanOp              , 5, 5, "dragto|mark x y"                                                                                         ,},
+    {"see"         , 3, (Rbc_Op)SeeOp               , 3, 0, "?-anchor anchor? tagOrId"                                                                                ,},
+    {"selection"   , 3, (Rbc_Op)SelectionOp         , 2, 0, "oper args"                                                                                               ,},
+    {"show"        , 2, (Rbc_Op)ShowOp              , 2, 0, "?-exact? ?-glob? ?-regexp? ?-nonmatching? ?-name string? ?-full string? ?-data string? ?--? ?tagOrId...?",},
+    {"sort"        , 2, (Rbc_Op)Rbc_TreeViewSortOp  , 2, 0, "args"                                                                                                    ,},
+    {"style"       , 2, (Rbc_Op)Rbc_TreeViewStyleOp , 2, 0, "args"                                                                                                    ,},
+    {"tag"         , 2, (Rbc_Op)TagOp               , 2, 0, "oper args"                                                                                               ,},
+    {"toggle"      , 2, (Rbc_Op)ToggleOp            , 3, 3, "tagOrId"                                                                                                 ,},
+    {"xview"       , 1, (Rbc_Op)XViewOp             , 2, 5, "?moveto fract? ?scroll number what?"                                                                     ,},
+    {"yview"       , 1, (Rbc_Op)YViewOp             , 2, 5, "?moveto fract? ?scroll number what?"                                                                     ,},
 };
 
 static int nTreeViewOps = sizeof(treeViewOps) / sizeof(Rbc_OpSpec);

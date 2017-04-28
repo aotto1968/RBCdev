@@ -668,6 +668,22 @@ DoConfig(interp, tkwin, specPtr, objPtr, widgRec)
 		if (oldBorder != NULL) {
 		    Tk_Free3DBorder(oldBorder);
 		}
+MVvar("path<%s>, bg-color<%s>, obj<%s>", Tk_PathName(tkwin), Tk_NameOf3DBorder(newBorder), Tcl_GetStringFromObj(objPtr,NULL))
+//if (!strcmp(Tk_NameOf3DBorder(newBorder),"#d9d9d9") && !strcmp(Tk_PathName(tkwin),".h.mtime")) abort();
+                //  OTBUG set -bg color in hiertable1.tcl
+                //  ==43578==    at 0x62D78D7: raise (in /lib64/libc-2.22.so)
+                //  ==43578==    by 0x62D8CA9: abort (in /lib64/libc-2.22.so)
+                //  ==43578==    by 0x732DA63: DoConfig (rbcObjConfig.c:672)
+                //  ==43578==    by 0x732F799: Rbc_ConfigureWidgetFromObj (rbcObjConfig.c:1607)
+                //  ==43578==    by 0x7330073: Rbc_ConfigureComponentFromObj (rbcObjConfig.c:1994)
+                //  ==43578==    by 0x7340B1A: Rbc_TreeViewCreateColumn (rbcTreeViewColumn.c:656)
+                //  ==43578==    by 0x7340BE2: CreateColumn (rbcTreeViewColumn.c:676)
+                //  ==43578==    by 0x73415FB: ColumnInsertOp (rbcTreeViewColumn.c:1016)
+                //  ==43578==    by 0x73420F4: Rbc_TreeViewColumnOp (rbcTreeViewColumn.c:1467)
+                //  ==43578==    by 0x733FA67: Rbc_TreeViewWidgetInstCmd (rbcTreeViewCmd.c:4933)
+                //  ==43578==    by 0x5230D8E: Dispatch (tclBasic.c:4357)
+                //  ==43578==    by 0x5230E1C: TclNRRunCallbacks (tclBasic.c:4390)
+
 		*(Tk_3DBorder *)ptr = newBorder;
 	    }
 	    break;
@@ -1476,6 +1492,14 @@ Rbc_ConfigureWidgetFromObj(interp, tkwin, specs, objc, objv, widgRec, flags)
     int hateFlags;		/* If a spec contains any bits here, it's
 				 * not considered. */
 
+/*
+int i;
+printI(objc)
+for (i=0;i<objc;i++) {
+  printC(Tcl_GetStringFromObj(objv[i],NULL));
+}
+*/
+
     if (tkwin == NULL) {
 	/*
 	 * Either we're not really in Tk, or the main window was destroyed and
@@ -1507,7 +1531,9 @@ Rbc_ConfigureWidgetFromObj(interp, tkwin, specs, objc, objv, widgRec, flags)
 		specPtr->dbClass = Tk_GetUid(specPtr->dbClass);
 	    }
 	    if (specPtr->defValue != NULL) {
+                //printC(specPtr->defValue)
 		specPtr->defValue = Tk_GetUid(specPtr->defValue);
+                //if (!strcmp(specPtr->defValue,"#d9d9d9")) abort();
 	    }
 	}
 	specPtr->specFlags = 
@@ -1523,6 +1549,12 @@ Rbc_ConfigureWidgetFromObj(interp, tkwin, specs, objc, objv, widgRec, flags)
 	if (specPtr == NULL) {
 	    return TCL_ERROR;
 	}
+/*
+if (!strcmp(Tcl_GetString(objv[0]),"-background") || !strcmp(Tcl_GetString(objv[0]),"-bg") ) {
+  printC(Tcl_GetString(objv[0]))
+  printC(Tcl_GetString(objv[1]))
+}
+*/
 
 	/* Process the entry.  */
 	if (objc < 2) {

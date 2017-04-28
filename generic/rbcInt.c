@@ -94,6 +94,7 @@ Rbc_Init (interp)
     }
 
     rbcEmptyStringObjPtr = Tcl_NewStringObj("", -1);
+    Tcl_IncrRefCount(rbcEmptyStringObjPtr);
 
     if (Tcl_PkgProvide(interp, "rbc", "0.2") == TCL_ERROR) {
         return TCL_ERROR;

@@ -66,6 +66,7 @@
 #define Rbc_Offset(type, field) ((int) ((char *) &((type *) 0)->field))
 #endif
 #endif /* Rbc_Offset */
+#define Ot_Offset(item) Rbc_Offset(OTOFFSET,item)
 
 typedef int (Rbc_OptionParseProc) _ANSI_ARGS_((ClientData clientData,
 	Tcl_Interp *interp, Tk_Window tkwin, Tcl_Obj *objPtr, char *widgRec, 

@@ -205,6 +205,7 @@ void Rbc_Draw3DRectangle _ANSI_ARGS_((Tk_Window tkwin, Drawable drawable,
 void Rbc_Fill3DRectangle _ANSI_ARGS_((Tk_Window tkwin, Drawable drawable,
                                       Tk_3DBorder border, int x, int y, int width, int height,
                                       int borderWidth, int relief));
+int Rbc_InitFromProc _ANSI_ARGS_((Tcl_Interp*, const char* proc, const char* file, const char* arg));
 
 #ifdef notdef
 #define Rbc_Fill3DRectangle	Tk_Fill3DRectangle
@@ -275,6 +276,7 @@ void Rbc_Fill3DRectangle _ANSI_ARGS_((Tk_Window tkwin, Drawable drawable,
 #define STD_FONT_HUGE		"*-Helvetica-Medium-R-Normal-*-18-180-*"
 #define STD_FONT_LARGE		"*-Helvetica-Medium-R-Normal-*-14-140-*"
 #define STD_FONT_SMALL		"*-Helvetica-Medium-R-Normal-*-10-100-*"
+#define STD_TITLE_FONT	        "*-Helvetica-Bold-R-Normal-*-14-140-*"
 #define STD_INDICATOR_COLOR	RGB_MAROON
 #define STD_NORMAL_BG_MONO	RGB_WHITE
 #define STD_NORMAL_FOREGROUND	RGB_BLACK
