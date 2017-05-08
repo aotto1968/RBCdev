@@ -20,7 +20,7 @@
 '\" The hierarchical table widget created by George Howlett.
 '\"
 .so man.macros
-.TH treeview n RBC_VERSION RBC "RBC Built-In Commands"
+.TH treeview n BLT_VERSION BLT "BLT Built-In Commands"
 .BS
 '\" Note:  do not modify the .SH NAME line immediately below!
 .SH NAME
@@ -102,12 +102,12 @@ section.
 .SH "IDS AND TAGS"
 Nodes can be inserted into a tree using the \fBtreeview\fR widget 
 .CS
-rbc::treeview .t
+blt::treeview .t
 set node [.t insert end root "one"]
 .CE
 or \fBtree\fR command. 
 .CS
-set tree [rbc::tree create]
+set tree [blt::tree create]
 set node [$tree insert root "one"]
 .CE
 In both cases, a number identifying the node is returned (the value of

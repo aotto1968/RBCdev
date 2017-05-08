@@ -1,3 +1,0 @@
-base=${1%.*}
-
-groff -Thtml -man $base.n > $base.html && pandoc -o $base.md $base.html

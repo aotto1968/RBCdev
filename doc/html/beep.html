@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, bell, beep" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">beep</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>beep - ring the bell</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>beep</strong> ?<em>percent</em>?</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>beep</strong> command rings the keyboard bell. <em>Percent</em> is relative to the base volume of the keyboard bell and can range from -100 to 100 inclusive.</p>
+<p>If <em>percent</em> is nonnegative then the bell volume is:</p>
+<pre><code>base - [(base * percent) / 100] + percent</code></pre>
+<p>If <em>percent</em> is negative then the bell volume is:</p>
+<pre><code>base + [(base * percent) / 100]</code></pre>
+<p>The default <em>percent</em> is 50.</p>
+<h1 id="example">EXAMPLE</h1>
+<pre><code>beep</code></pre>
+<h1 id="keywords">KEYWORDS</h1>
+<p>bell, beep</p>
+</body>
+</html>

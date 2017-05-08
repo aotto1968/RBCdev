@@ -19,7 +19,7 @@
 '\"
 '\" Container widget created by George Howlett.
 '\"
-.so man.macros.in
+.so man.macros
 .TH container n RBC_VERSION RBC "RBC Built-In Commands"
 .BS
 '\" Note:  do not modify the .SH NAME line immediately below!

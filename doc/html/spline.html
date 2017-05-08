@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, spline, vector, graph" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">spline</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#operations">OPERATIONS</a></li>
+<li><a href="#references">REFERENCES</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>spline - Fit curves with spline interpolation</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>spline natural</strong> <em>x</em> <em>y</em> <em>sx</em> <em>sy</em></p>
+<p><strong>spline quadratic</strong> <em>x</em> <em>y</em> <em>sx</em> <em>sy</em></p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>spline</strong> command computes a spline fitting a set of data points (x and y vectors) and produces a vector of the interpolated images (y- coordinates) at a given set of x-coordinates.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>Curve fitting has many applications. In graphs, curve fitting can be useful for displaying curves which are aesthetically pleasing to the eye. Another advantage is that you can quickly generate arbitrary points on the curve from a small set of data points.</p>
+<p>A spline is a device used in drafting to produce smoothed curves. The points of the curve, known as <em>knots</em>, are fixed and the <em>spline</em>, typically a thin strip of wood or metal, is bent around the knots to create the smoothed curve. Spline interpolation is the mathematical equivalent. The curves between adjacent knots are piecewise functions such that the resulting spline runs exactly through all the knots. The order and coefficients of the polynominal determine the &quot;looseness&quot; or &quot;tightness&quot; of the curve fit from the line segments formed by the knots.</p>
+<p>The <strong>spline</strong> command performs spline interpolation using cubic (&quot;natural&quot;) or quadratic polynomial functions. It computes the spline based upon the knots, which are given as x and y vectors. The interpolated new points are determined by another vector which represents the abscissas (x-coordinates) or the new points. The ordinates (y-coordinates) are interpolated using the spline and written to another vector.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>Before we can use the <strong>spline</strong> command, we need to create two RBC vectors which will represent the knots (x and y coordinates) of the data that we're going to fit. Obviously, both vectors must be the same length.</p>
+<pre><code># Create sample data of ten points.
+vector x(10) y(10)
+
+for {set i 10} {$i &gt; 0} {incr i -1} {
+    set x($i-1) [expr $i*$i]
+    set y($i-1) [expr sin($i*$i*$i)]
+}</code></pre>
+<p>We now have two vectors x and y representing the ten data points we're trying to fit. The order of the values of x must be monotonically increasing. We can use the vector's <strong>sort</strong> operation to sort the vectors.</p>
+<pre><code>x sort y</code></pre>
+<p>The components of x are sorted in increasing order. The components of y are rearranged so that the original x,y coordinate pairings are retained.</p>
+<p>A third vector is needed to indicate the abscissas (x-coordinates) of the new points to be interpolated by the spline. Like the x vector, the vector of abscissas must be monotonically increasing. All the abscissas must lie between the first and last knots (x vector) forming the spline.</p>
+<p>How the abscissas are picked is arbitrary. But if we are going to plot the spline, we will want to include the knots too. Since both the quadratic and natural splines preserve the knots (an abscissa from the x vector will always produce the corresponding ordinate from the y vector), we can simply make the new vector a superset of x. It will contain the same coordinates as x, but also the abscissas of the new points we want interpolated. A simple way is to use the vector's <strong>populate</strong> operation.</p>
+<pre><code>x populate sx 10</code></pre>
+<p>This creates a new vector sx. It contains the abscissas of x, but in addition sx will have ten evenly distributed values between each abscissa. You can interpolate any points you wish, simply by setting the vector values.</p>
+<p>Finally, we generate the ordinates (the images of the spline) using the <strong>spline</strong> command. The ordinates are stored in a fourth vector.</p>
+<pre><code>spline natural x y sx sy</code></pre>
+<p>This creates a new vector sy. It will have the same length as sx. The vectors sx and sy represent the smoothed curve which we can now plot.</p>
+<pre><code>graph .graph
+.graph element create original -x x -y x -color blue
+.graph element create spline -x sx -y sy -color red
+table . .graph</code></pre>
+<p>The <strong>natural</strong> operation employs a cubic interpolant when forming the spline. In terms of the draftmen's spline, a <em>natural</em> <em>spline</em> requires the least amount of energy to bend the spline (strip of wood), while still passing through each knot. In mathematical terms, the second derivatives of the first and last points are zero.</p>
+<p>Alternatively, you can generate a spline using the <strong>quadratic</strong> operation. Quadratic interpolation produces a spline which follows the line segments of the data points much more closely.</p>
+<pre><code>spline quadratic x y sx sy</code></pre>
+<h1 id="operations">OPERATIONS</h1>
+<dl>
+<dt>spline natural <em>x</em> <em>y</em> <em>sx</em> <em>sy</em></dt>
+<dd>Computes a cubic spline from the data points represented by the vectors <em>x</em> and <em>y</em> and interpolates new points using vector <em>sx</em> as the x-coordinates. The resulting y-coordinates are written to a new vector <em>sy</em>. The vectors <em>x</em> and <em>y</em> must be the same length and contain at least three components. The order of the components of <em>x</em> must be monotonically increasing. <em>Sx</em> is the vector containing the x-coordinates of the points to be interpolated. No component of <em>sx</em> can be less than first component of <em>x</em> or greater than the last component. The order of the components of <em>sx</em> must be monotonically increasing. <em>Sy</em> is the name of the vector where the calculated y-coordinates will be stored. If <em>sy</em> does not already exist, a new vector will be created.
+</dd>
+<dt>spline quadratic <em>x</em> <em>y</em> <em>sx</em> <em>sy</em></dt>
+<dd>Computes a quadratic spline from the data points represented by the vectors <em>x</em> and <em>y</em> and interpolates new points using vector <em>sx</em> as the x-coordinates. The resulting y-coordinates are written to a new vector <em>sy</em>. The vectors <em>x</em> and <em>y</em> must be the same length and contain at least three components. The order of the components of <em>x</em> must be monotonically increasing. <em>Sx</em> is the vector containing the x-coordinates of the points to be interpolated. No component of <em>sx</em> can be less than first component of <em>x</em> or greater than the last component. The order of the components of <em>sx</em> must be monotonically increasing. <em>Sy</em> is the name of the vector where the calculated y-coordinates are stored. If <em>sy</em> does not already exist, a new vector will be created.
+</dd>
+</dl>
+<h1 id="references">REFERENCES</h1>
+<p>Numerical Analysis<br />
+by R. Burden, J. Faires and A. Reynolds.<br />
+Prindle, Weber &amp; Schmidt, 1981, pp. 112</p>
+<p>Shape Preserving Quadratic Splines<br />
+by D.F.Mcallister &amp; J.A.Roulier<br />
+Coded by S.L.Dodd &amp; M.Roulier N.C.State University.</p>
+<p>The original code for the quadratric spline can be found in TOMS #574.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>spline, vector, graph</p>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, tile, texture, button, label, radiobutton, checkbutton, scrollbar," />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">tile</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#options">OPTIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>tile - Tiling versions of Tk widgets</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>tile::button</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<p><strong>tile::checkbutton</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<p><strong>tile::frame</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<p><strong>tile::label</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<p><strong>tile::radiobutton</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<p><strong>tile::scrollbar</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<p><strong>tile::toplevel</strong> <em>pathName</em> <em>option</em> <em>value</em>...</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The tile widgets let you create textured backgrounds. The texture is a Tk image which is tiled over the entire background of the widget.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>With the advent of Tk 4.0, images are now easy to create and use in applications. Images add interest to applications and they convey more information. But one area where Tk hasn't taken advantage of images is using images as textures for widgets. Since tiling is a standard feature of windowing systems, it's very easy to use images as textures.</p>
+<p>The tile widgets take the standard Tk 4.0 widgets and add tiling configuration options to them. Textures are specified by the name of the image you wish to be tiled across the background of the widget.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>To add tiling to a widget, you simply create an image using Tk's <strong>image</strong> command and use the image name as the value for the <strong>-tile</strong> configuration option of the widget.</p>
+<pre><code>image create photo my_texture -file tan_paper.gif
+rbc::tile::frame .f -tile my_texture</code></pre>
+<p>The image my_texture is added to the frame. If my_texture is updated, so will the widget background.</p>
+<pre><code>image create photo my_texture -file rain.gif</code></pre>
+<p>The tile widget commands reside in the &quot;rbc::tile&quot; namespace, so as not to collide with the normal Tk widgets. An easy way to add tiling to existing programs is to import the tile widget commands into the global namespace.</p>
+<pre><code>image create photo my_texture -file tan_paper.gif
+namespace import -force rbc::tile::*
+frame .f -tile my_texture</code></pre>
+<p>To use one image for all texturing, you can use the &quot;Tile&quot; option class name to specify the same image for all tile widgets.</p>
+<pre><code>image create photo my_texture -file tan_paper.gif
+option add *Tile my_texture</code></pre>
+<h1 id="options">OPTIONS</h1>
+<p>The following configurations options are added to the widgets. If a <strong>-tile or -activetile</strong> option is specified, it overrides the background color of the widget.</p>
+<dl>
+<dt>-activetile <em>image</em></dt>
+<dd>Specifies a textured background to display when the widget is active. This option is available for the <strong>tilebutton</strong>, <strong>tilecheckbutton</strong>, <strong>tileradiobutton</strong>, and <strong>tilescrollbar</strong> widgets. <em>Image</em> is the name an image created using Tk's <strong>image</strong> command. The background of the widget is tiled with <em>image</em>. If <em>image</em> is &quot;&quot;, then the active background color is displayed. The default is &quot;&quot;.
+</dd>
+<dt>-tile <em>image</em></dt>
+<dd>Specifies a textured background to display for the widget. <em>Image</em> is the name an image created using Tk's <strong>image</strong> command. The background of the widget is tiled with <em>image</em>. If <em>image</em> is &quot;&quot;, then the normal background color is displayed. The default is &quot;&quot;.
+</dd>
+</dl>
+<h1 id="keywords">KEYWORDS</h1>
+<p>tile, texture, button, label, radiobutton, checkbutton, scrollbar, frame, toplevel</p>
+</body>
+</html>

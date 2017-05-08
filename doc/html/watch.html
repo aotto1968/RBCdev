@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, debug, profile" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">watch</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#operations">OPERATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>watch - call Tcl procedures before and after each command</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>watch create</strong> <em>watchName</em> ?<em>options</em>?</p>
+<p><strong>watch activate</strong> <em>watchName</em></p>
+<p><strong>watch deactivate</strong> <em>watchName</em></p>
+<p><strong>watch delete</strong> <em>watchName</em></p>
+<p><strong>watch configure</strong> <em>watchName</em> ?<em>options</em></p>
+<p><strong>watch info</strong> <em>watchName</em></p>
+<p><strong>watch names</strong></p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>watch</strong> command arranges for Tcl procedures to be invoked before and after the execution of each Tcl command.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>When an error occurs in Tcl, the global variable <em>errorInfo</em> will contain a stack-trace of the active procedures when the error occured. Sometimes, however, the stack trace is insufficient. You may need to know exactly where in the program's execution the error occured. In cases like this, a more general tracing facility would be useful.</p>
+<p>The <strong>watch</strong> command lets you designate Tcl procedures to be invoked before and after the execution of each Tcl command. This means you can display the command line and its results for each command as it executes. Another use is to profile your Tcl commands. You can profile any Tcl command (like <strong>if</strong> and <strong>set</strong>), not just Tcl procedures.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example use <strong>watch</strong> to trace Tcl commands (printing to standard error) both before and after they are executed.</p>
+<pre><code>proc preCmd { level command argv } {
+    set name [lindex $argv 0]
+    puts stderr &quot;$level $name =&gt; $command&quot;
+}
+
+proc postCmd { level command argv retcode results } {
+    set name [lindex $argv 0]
+    puts stderr &quot;$level $name =&gt; $argv0= ($retcode) $results&quot;
+}
+watch create trace \
+  -postcmd postCmd -precmd preCmd</code></pre>
+<h1 id="operations">OPERATIONS</h1>
+<p>The following operations are available for the <strong>watch</strong> command:</p>
+<dl>
+<dt><strong>watch activate</strong> <em>watchName</em></dt>
+<dd><p>Activates the watch, causing Tcl commands the be traced to the maximum depth selected.</p>
+</dd>
+<dt><strong>watch create</strong> <em>watchName</em> ?<em>options</em>?...</dt>
+<dd><p>Creates a new watch <em>watchName</em>. It's an error if another watch <em>watchName</em> already exists and an error message will be returned. <em>Options</em> may have any of the values accepted by the <strong>watch</strong> <strong>configure</strong> command. This command returns the empty string.</p>
+</dd>
+<dt><strong>watch configure</strong> <em>watchName</em> ?<em>options...</em>?</dt>
+<dd><p>Queries or modifies the configuration options of the watch <em>watchName</em>. <em>WatchName</em> is the name of a watch. <em>Options</em> may have any of the following values:</p>
+<dl>
+<dt>-active <em>boolean</em></dt>
+<dd>Specifies if the watch is active. By default, watches are active when created.
+</dd>
+<dt>-postcmd <em>string</em></dt>
+<dd>Specifies a Tcl procedure to be called immediately after each Tcl command. <em>String</em> is name of a Tcl procedure and any extra arguments to be passed to it. Before <em>string</em> is invoked, five more arguments are appended: 1) the current level 2) the current command line 3) a list containing the command after substitutions and split into words 4) the return code of the command, and 5) the results of the command. The return status of the postcmd procedure is always ignored.
+</dd>
+<dt>-precmd <em>string</em></dt>
+<dd>Specifies a Tcl procedure to be called immediately before each Tcl command. <em>String</em> is name of a Tcl procedure and any extra arguments to be passed to it. Before <em>string</em> is invoked, three arguments are appended: 1) the current level 2) the current command line, and 3) a list containing the command after substitutions and split into words. The return status of the <strong>-precmd</strong> procedure is always ignored.
+</dd>
+<dt>-maxlevel <em>number</em></dt>
+<dd>Specifies the maximum evaluation depth to watch Tcl commands. The default maximum level is 10000.
+</dd>
+</dl>
+</dd>
+<dt><strong>watch deactivate</strong> <em>watchName</em></dt>
+<dd><p>Deactivates the watch. The <strong>-precmd</strong> and <strong>-postcmd</strong> procedures will no longer be invoked.</p>
+</dd>
+<dt><strong>watch info</strong> <em>watchName</em></dt>
+<dd><p>Returns the configuration information associated with the watch <em>watchName</em>. <em>WatchName</em> is the name of a watch.</p>
+</dd>
+<dt><strong>watch names</strong> ?<em>state</em>?</dt>
+<dd><p>Lists the names of the watches for a given state. <em>State</em> may be one of the following: active, idle, or ignore. If a <em>state</em> argument isn't specified,<br />
+all watches are listed.</p>
+</dd>
+</dl>
+<h1 id="keywords">KEYWORDS</h1>
+<p>debug, profile</p>
+</body>
+</html>

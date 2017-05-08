@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, hypertext, widget" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">htext</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#file-format">FILE FORMAT</a></li>
+<li><a href="#indices">INDICES</a></li>
+<li><a href="#variables">VARIABLES</a></li>
+<li><a href="#syntax">SYNTAX</a></li>
+<li><a href="#operations">OPERATIONS</a></li>
+<li><a href="#bugs">BUGS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>htext - Create and manipulate hypertext widgets</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>htext</strong> <em>pathName</em> ?<em>option</em> <em>value</em>?...</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>htext</strong> command creates a new window (given by the <em>pathName</em> argument) and makes it into a <strong>htext</strong> widget. Additional options, described above, may be specified on the command line or in the option database to configure aspects of the widget such as its color and font. At the time this command is invoked, there must not exist a window named <em>pathName</em>, but <em>pathName</em>'s parent must exist. The <strong>htext</strong> command returns its <em>pathName</em>.</p>
+<p>The <strong>htext</strong> widget is hybrid of a non-editable text widget and a geometry manager (e.g. the packer). It displays text (optionally read from file) in a window. Text can be scrolled either horizontally or vertically using the <strong>htext</strong> window as a viewport. In addition, Tcl commands can be embedded into the text which are evaluated as the text is parsed. Text between special double characters (percent signs &quot;%%&quot;) is immediately passed to the Tcl interpreter for evaluation.</p>
+<p>Furthermore, any widget or widget hierarchy can be packed in-line and made to appear on the current line of the text. Widgets are packed using the <strong>htext append</strong> command. All widgets must be children of the <strong>htext</strong> window and must already exist before packing. Once a widget has been packed it cannot be moved to a different position within the text. Widgets can be resized but they will remain at the same position within the text.</p>
+<p>Before a file or text string is parsed by the <strong>htext</strong> widget, all the widget's current children are destroyed. You can reload files or text without worrying about unmapping or destroying each child window beforehand.</p>
+<p>Setting the either the <strong>-file</strong> or <strong>-text</strong> configuration option will adjust the value of the other. If both options are set, the file takes precedence. When a new file is read using the <strong>-file</strong> option, the value of the <strong>-text</strong> option is reset to the empty string. Likewise, when the <strong>-text</strong> option is set, the string representing the <strong>-file</strong> option is cleared.</p>
+<h1 id="file-format">FILE FORMAT</h1>
+<p>The format of <strong>htext</strong> text file is typically ASCII text. Text enclosed by special double characters (by default, percent signs '%%') is interpreted and executed as Tcl commands. The special character may be specified by the <strong>-specialchar</strong> option. In the following example of a <strong>htext</strong> file, a button widget is appended to the text between the words &quot;a&quot; and &quot;which&quot;. The <em>pathName</em> of the <strong>htext</strong> widget is &quot;.ht&quot;.</p>
+<pre><code>This will be displayed as normal text.
+But this will become a %%
+  button .ht.button -text &quot;button&quot; -fg red
+  .ht append .ht.button
+%% which can invoke a Tcl command.</code></pre>
+<h1 id="indices">INDICES</h1>
+<p>Some of the widget operations (<strong>selection</strong>, gotoline, <strong>search</strong>, etc.) take one or more indices as arguments. An index is a string used to indicate a particular place within the text, such as the first and last characters in a range to be selected.</p>
+<p>An index must have one of the following forms:</p>
+<dl>
+<dt><em>line</em>.<em>char</em></dt>
+<dd>Indicates <em>char</em>'th character on line <em>line</em>. Both lines and characters are number from 0, so &quot;0.0&quot; is the first beginning of the text. <em>Char</em> may be undesignated. In this case a character position of 0 is assumed.
+</dd>
+<dt>@<em>x</em>,<em>y</em></dt>
+<dd>Indicates the character that covers the pixel whose x and y coordinates within the text's window are <em>x</em> and <em>y</em>.
+</dd>
+<dt>end</dt>
+<dd>Indicates the end of the text.
+</dd>
+<dt>anchor</dt>
+<dd>Indicates the anchor point for the selection, which is set with the <strong>selection</strong> operation.
+</dd>
+<dt>sel.first</dt>
+<dd>Indicates the first character in the selection. It is an error to use this form if the selection isn't in the entry window.
+</dd>
+<dt>sel.last</dt>
+<dd>Indicates the character just after the last one in the │ selection. It is an error to use this form if the selection isn't in the entry window.
+</dd>
+</dl>
+<h1 id="variables">VARIABLES</h1>
+<p>The following global Tcl variables are maintained when an <strong>htext</strong> file is parsed.</p>
+<dl>
+<dt>htext(widget)</dt>
+<dd>is the pathname of the <strong>htext</strong> widget.
+</dd>
+<dt>htext(file)</dt>
+<dd>is the name of the file the <strong>htext</strong> widget is currently parsing. It is the empty string when the <strong>-text</strong> option is used.
+</dd>
+<dt>htext(line)</dt>
+<dd>is the current line number in the text.
+</dd>
+</dl>
+<p>This information might be used to construct hyper links between different files and/or lines.</p>
+<h1 id="syntax">SYNTAX</h1>
+<p>The <strong>htext</strong> command creates a new Tcl command whose name is <em>pathName</em>. This command may be used to invoke various operations on the widget. It has the following general form: <em>pathName</em> <em>oper</em> ?<em>args</em>? <em>Oper</em> and <em>args</em> determine the exact behavior of the command.</p>
+<h1 id="operations">OPERATIONS</h1>
+<p>The following operations are available for <strong>htext</strong> widgets:</p>
+<dl>
+<dt><em>pathName</em> <strong>append</strong> <em>window</em> ?<em>option</em> <em>value</em>?...</dt>
+<dd><p>Embeds the widget <em>window</em> into the htext widget. <em>Window</em> is the pathname of the widget to be embedded which must be a child of <em>pathName</em>. <em>Window</em> will be positioned in the htext widget at the current location of the text. If <em>option</em> and <em>value</em> pairs are present, they configure various aspects how <em>window</em> appears in <em>pathName</em>. The following options are available.</p>
+<dl>
+<dt>-anchor <em>anchorPos</em></dt>
+<dd>Specifies how <em>window</em> will be arranged if there is any extra space in the cavity surrounding the window. For example, if <em>anchorPos</em> is <strong>center</strong> then the window is centered in the cavity; if <em>anchorPos</em> is <strong>w</strong> then the window will be drawn such it touches the leftmost edge of the cavity. The default is center.
+</dd>
+<dt>-fill <em>style</em></dt>
+<dd>Specifies how the <em>window</em> should be stretched to occupy the extra space in the cavity surrounding it (if any exists). <em>Style</em> is none, x, y, both. If <em>style</em> is x, the width of <em>window</em> is expanded to fill the cavity. If <em>style</em> is <strong>y</strong>, the height is expanded. The default is none.
+</dd>
+<dt>-height <em>pixels</em></dt>
+<dd>Sets the height of the cavity surrounding <em>window</em>. If <em>pixels</em> is zero, the height of the cavity will be the same as the requested height of <em>window</em>. If <em>pixels</em> is less than the requested height of <em>window</em>, <em>window</em> will be reduced to fit the cavity. The default is 0.
+</dd>
+<dt>-ipadx <em>pad</em></dt>
+<dd>Sets the amount of internal padding to be added to the width <em>window</em>. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the left side of <em>window</em> is extended by the first value and the right side by the second value. If <em>pad</em> is just one value, both the left and right sides are padded by evenly by the value. The default is 0.
+</dd>
+<dt>-ipady <em>pad</em></dt>
+<dd>Sets an amount of internal padding to be added to the height of <em>window</em>. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the top of <em>window</em> is padded by the first value and the bottom by the second value. If <em>pad</em> is just one number, both the top and bottom are padded evenly by the value. The default is 0.
+</dd>
+<dt>-justify <em>justify</em></dt>
+<dd>Justifies <em>window</em> vertically within the cavity containing it in relation to the line of text. <em>Justify</em> is <strong>top</strong>, <strong>bottom</strong>, or <strong>center</strong>. If <em>justify</em> is center the widget is centered along the baseline of the line of text. The default is center.
+</dd>
+<dt>-padx <em>pad</em></dt>
+<dd>Sets the padding on the left and right sides of <em>window</em>. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the left side of <em>window</em> is padded by the first value and the right side by the second value. If <em>pad</em> has just one value, both the left and right sides are padded evenly by the value. The default is 0.
+</dd>
+<dt>-pady <em>pad</em></dt>
+<dd>Sets the padding above and below <em>window</em>. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the area above <em>window</em> is padded by the first value and the area below by the second value. If <em>pad</em> is just one number, both the top and bottom are padded by the value. The default is 0.
+</dd>
+<dt>-relheight <em>value</em></dt>
+<dd>Specifies the height of the cavity containing <em>window</em> relative to the height of <em>pathName</em>. <em>Value</em> is real number indicating the ratio of the height of the cavity to the height of <em>pathName</em>. As the height of <em>pathName</em> changes, so will the height of <em>window</em>. If <em>value</em> is 0.0 or less, the height of the cavity is the requested height <em>window</em>. The default is 0.0.
+</dd>
+<dt>-relwidth <em>value</em></dt>
+<dd>Specifies the width of the cavity containing <em>window</em> relative to the width of <em>pathName</em>. <em>Value</em> is real number indicating the ratio of the width of the cavity to the width of IpathName. As the height of <em>pathName</em> changes, so will the height of <em>window</em>. If <em>value</em> is 0.0 or less, the width of the cavity is the requested width of <em>window</em>. The default is 0.0.
+</dd>
+<dt>-width <em>value</em></dt>
+<dd>Species the width of the cavity containing the child window. <em>Value</em> must be in a form accepted by <strong>Tk_GetPixels</strong>. If <em>value</em> is greater than zero, the cavity is resized to that width. If the requested window width is greater than the cavity's width, the window will be reduced to fit the cavity. By default, the cavity is requested width of the child window.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>configure</strong> ?<em>window</em>? ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Queries or modifies the configuration options of the text widget or one of its embedded widgets. If no <em>window</em> argument is present, the htext widget itself is configured. Otherwise <em>window</em> is the pathname of a widget already embedded into the htext widget. Then this command configure the options for the embedded widget.</p>
+</dd>
+</dl>
+<p>If <em>option</em> isn't specified, a list describing all of the current options for <em>pathName</em> or <em>window</em> is returned. If <em>option</em> is specified, but not <em>value</em>, then a list describing the option <em>option</em> is returned. If one or more <em>option</em> and <em>value</em> pairs are specified, then for each pair, the htext or embedded window option <em>option</em> is set to <em>value</em>.</p>
+<p>The following options are valid for the htext widget.</p>
+<dl>
+<dt>-background <em>color</em></dt>
+<dd>Sets the background of the htext widget to <em>color</em>. This default is white.
+</dd>
+<dt>-cursor <em>cursor</em></dt>
+<dd>Specifies the cursor for the htext widget. The default cursor is pencil.
+</dd>
+<dt>-file <em>fileName</em></dt>
+<dd>Specifies a <strong>htext</strong> file to be displayed in the window. If the value is the empty string, the <strong>-text</strong> option is used instead. See the section <strong>FILE FORMAT</strong> for a description of the <strong>htext</strong> file format.
+</dd>
+<dt>-font <em>fontName</em></dt>
+<dd>Sets the font of the text in the htext widget to <em>fontName</em>. The default is *-Helvetica-Bold-R- Normal-*-12-120-*.
+</dd>
+<dt>-foreground <em>color</em></dt>
+<dd>Sets the foreground of the htext widget to <em>color</em>. This is the color of the text. This default is black.
+</dd>
+<dt>-height <em>pixels</em></dt>
+<dd>Specifies the height of the htext widget window.
+</dd>
+<dt>-linespacing <em>pixels</em></dt>
+<dd>Specifies the spacing between each line of text. The value must be in a form accepted by <strong>Tk_GetPixels</strong>. The default value is 1 pixel.
+</dd>
+<dt>-specialchar <em>number</em></dt>
+<dd>Specifies the ASCII value of the special double character delimiters. In <strong>htext</strong> files, the text between these special characters is evaluated as a block of Tcl commands. The default special character is the 0x25 (percent sign).
+</dd>
+<dt>-text <em>text</em></dt>
+<dd>Specifies the text to be displayed in the htext widget. <em>Text</em> can be any valid string of characters. See <strong>FILE</strong> <strong>FORMAT</strong> for a description.
+</dd>
+<dt>-xscrollcommand <em>string</em></dt>
+<dd>Specifies the prefix for a command used to communicate with horizontal scrollbars. When the view in the htext widget's window changes (or whenever anything else occurs that could change the display in a scrollbar, such as a change in the total size of the widget's contents), the widget invoke <em>string</em> concatenated by two numbers. Each of the numbers is a fraction between 0 and 1, which indicates a position in the document. If this option is not specified, then no command will be executed.
+</dd>
+<dt>-yscrollcommand <em>string</em></dt>
+<dd>Specifies the prefix for a command used to communicate with vertical scrollbars. When the view in the htext widget's window changes (or whenever anything else occurs that could change the display in a scrollbar, such as a change in the total size of the widget's contents), the widget invoke <em>string</em> concatenated by two numbers. Each of the numbers is a fraction between 0 and 1, which indicates a position in the document. If this option is not specified, then no command will be executed.
+</dd>
+<dt>-width <em>pixels</em></dt>
+<dd>Specifies the desired width of the viewport window. If the <em>pixels</em> is less than one, the window will grow to accommodate the widest line of text.
+</dd>
+<dt>-xscrollunits <em>pixels</em></dt>
+<dd>Specifies the horizontal scrolling distance. The default is 10 pixels.
+</dd>
+<dt>-yscrollunits <em>pixels</em></dt>
+<dd>Specifies the vertical scrolling distance. The default is 10 pixels.
+</dd>
+<dt><em>pathName</em> <strong>gotoline</strong> ?<em>index</em>?</dt>
+<dd><p>Sets the top line of the text to <em>index</em>. <em>Index</em> must be a valid text index (the character offset is ignored). If an <em>index</em> isn't provided, the current line number is returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>scan mark</strong> <em>position</em></dt>
+<dd><p>Records <em>position</em> and the current view in the text window; used in conjunction with later <strong>scan dragto</strong> commands. <em>Position</em> must be in the form &quot;<em>@x,y</em>, where <em>x</em> and <em>y</em> are window coordinates. Typically this command is associated with a mouse button press in the widget. It returns an empty string.</p>
+</dd>
+<dt><em>pathName</em> <strong>scan dragto</strong> <em>position</em></dt>
+<dd><p>Computes the difference between <em>position</em> and the position registered in the last <strong>scan mark</strong> command for the widget. The view is then adjusted up or down by 10 times the difference in coordinates. This command is can be associated with mouse motion events to produce the effect of dragging the text at high speed through the window. <em>Position</em> must be in the form &quot;<em>@x,y</em>, where <em>x</em> and <em>y</em> are window coordinates. The command returns an empty string.</p>
+</dd>
+<dt><em>pathName</em> <strong>search</strong> <em>pattern</em> ?<em>from</em>? ?<em>to</em>?</dt>
+<dd><p>Returns the number of the next line matching <em>pattern</em>. <em>Pattern</em> is a string which obeys the matching rules of <strong>Tcl_StringMatch</strong>. <em>From</em> and <em>to</em> are text line numbers (inclusive) which bound the search. If no match for <em>pattern</em> can be found, <strong>-1</strong> is returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>xview</strong> ?<em>position</em>?</dt>
+<dd><p>Moves the viewport horizontally to the new text x-coordinate position. <em>Position</em> is the offset from the left side of the text to the current position and must be in a form accepted by <strong>Tk_GetPixels</strong>. If <em>position</em> is not present, the current text position is returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>yview</strong> ?<em>position</em>?</dt>
+<dd><p>Moves the viewport vertically to the new text y-coordinate position. <em>Position</em> is the offset from the top of the text to the current position and must be in a form accepted by <strong>Tk_GetPixels</strong>. If <em>position</em> is not present, the current text position is returned.</p>
+</dd>
+</dl>
+<h1 id="bugs">BUGS</h1>
+<p>Text with embedded tabs can be obscured by child windows when scrolled horizontally.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>hypertext, widget</p>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, container, widget" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">container</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#syntax">SYNTAX</a></li>
+<li><a href="#container-operations">CONTAINER OPERATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>container - Widget to contain a foreign window.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>container</strong> <em>pathName</em> ?<em>options</em>?</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>container</strong> widget lets you embed an X11 window from a foreign application into your Tk application. The foreign window is reparented inside of the widget. You can then place and arrange the container just as you would any Tk widget.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>Notebooks are a popular graphical paradigm. They allow you to organize many windows in a single widget. For example, you might have an application the displays several X-Y graphs at the same time. Typically, you can't pack the graphs into the same <strong>frame</strong> because they are too large. The other alternative is to pack the graphs into several <strong>toplevel</strong> widgets, allowing them to overlap on the screen. The problem is that all the different toplevel windows clutter the screen and are difficult to manage.</p>
+<p>The <strong>container</strong> widget lets organize your application by displaying each graph as a page in a folder of a notebook. Only one page is visible at a time. When you click on a tab, the folder (graph) corresponding to the tab is displayed in the <strong>container</strong> widget. The container also lets you temporarily tear pages out of the notebook into a separate toplevel widget, and put them back in the container later. For example, you could compare two graphs side-by-side by tearing them out, and then replace them when you are finished.</p>
+<p>A container may contain an unlimited number of folders. If there are too many tabs to view, you can arrange them as multiple tiers or scroll the tabs. The container uses the conventional Tk scrollbar syntax, so you can attach a scrollbar too.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>You create a container widget with the <strong>container</strong> command.</p>
+<pre><code># Create a new container
+container .c</code></pre>
+<p>A new Tcl command .c is also created. This command can be used to query and modify the container. For example, to change the default borderwidth, you use the new command and the container's <strong>configure</strong> operation.</p>
+<pre><code># Change the default font.
+.c configure -borderwidth 2</code></pre>
+<p>You can then add folders using the <strong>insert</strong> operation.</p>
+<pre><code># Create a new folder &quot;f1&quot;
+.c coinsert 0 &quot;f1&quot;</code></pre>
+<p>This inserts the new tab named &quot;f1&quot; into the container. The index 0 indicates location to insert the new tab. You can also use the index end to append a tab to the end of the container. By default, the text of the tab is the name of the tab. You can change this by configuring the <strong>-text</strong> option.</p>
+<pre><code># Change the label of &quot;f1&quot;
+.ts tab configure &quot;f1&quot; -label &quot;Tab #1&quot;</code></pre>
+<p>The <strong>insert</strong> operation lets you add one or more folders at a time.</p>
+<pre><code>.ts insert end &quot;f2&quot; -label &quot;Tab #2&quot; &quot;f3&quot; &quot;f4&quot;</code></pre>
+<p>The tab on each folder contains a label. A label may display both an image and a text string. You can reconfigure the tab's attributes (foreground/background colors, font, rotation, etc) using the <strong>tab</strong> <strong>configure</strong> operation.</p>
+<pre><code># Add an image to the label of &quot;f1&quot;
+set image [image create photo -file stopsign.gif]
+.ts tab configure &quot;f1&quot; -image $image
+.ts tab configure &quot;f2&quot; -rotate 90</code></pre>
+<p>Each folder may contain an embedded widget to represent its contents. The widget to be embedded must be a child of the container widget. Using the <strong>-window</strong> option, you specify the name of widget to be embedded. But don't pack the widget, the container takes care of placing and arranging the widget for you.</p>
+<pre><code>graph .ts.graph
+.ts tab configure &quot;f1&quot; -window &quot;.ts.graph&quot; \
+    -fill both -padx 0.25i -pady 0.25i</code></pre>
+<p>The size of the folder is determined the sizes of the Tk widgets embedded inside each folder. The folder will be as wide as the widest widget in any folder. The tallest determines the height. You can use the tab's <strong>-pagewidth</strong> and <strong>-pageheight</strong> options override this.</p>
+<p>Other options control how the widget appears in the folder. The <strong>-fill</strong> option says that you wish to have the widget stretch to fill the available space in the folder.</p>
+<pre><code>.ts tab configure &quot;f1&quot; -fill both -padx 0.25i -pady 0.25i</code></pre>
+<p>Now when you click the left mouse button on &quot;f1&quot;, the graph will be displayed in the folder. It will be automatically hidden when another folder is selected. If you click on the right mouse button, the embedded widget will be moved into a toplevel widget of its own. Clicking again on the right mouse button puts it back into the folder.</p>
+<p>If you want to share a page between two different folders, the <strong>-command</strong> option lets you specify a Tcl command to be invoked whenever the folder is selected. You can reset the <strong>-window</strong> option for the tab whenever it's clicked.</p>
+<pre><code>.ts tab configure &quot;f2&quot; -command {
+    .ts tab configure &quot;f2&quot; -window &quot;.ts.graph&quot;
+}
+.ts tab configure &quot;f1&quot; -command {
+    .ts tab configure &quot;f1&quot; -window &quot;.ts.graph&quot;
+}</code></pre>
+<p>If you have many folders, you may wish to stack tabs in multiple tiers. The container's <strong>-tiers</strong> option requests a maximum number of tiers. The default is one tier.</p>
+<pre><code>.ts configure -tiers 2</code></pre>
+<p>If the tabs can fit in less tiers, the widget will use that many. Whenever there are more tabs than can be displayed in the maximum number of tiers, the container will automatically let you scroll the</p>
+<dl>
+<dt>tabs.</dt>
+<dd><p>You can even attach a scrollbar to the container.</p>
+<p>.ts configure -scrollcommand { .sbar set } -scrollincrement 20 .sbar configure -orient horizontal -command { .ts view }</p>
+</dd>
+</dl>
+<p>By default tabs are along the top of the container from left to right. But tabs can be placed on any side of the container using the <strong>-side</strong> option.</p>
+<pre><code># Arrange tabs along the right side of the container.
+.ts configure -side right -rotate 270</code></pre>
+<h1 id="syntax">SYNTAX</h1>
+<p>The <strong>container</strong> command creates a new window using the <em>pathName</em> argument and makes it into a container widget.</p>
+<pre><code>container pathName ?option value?...</code></pre>
+<p>Additional options may be specified on the command line or in the option database to configure aspects of the container such as its colors, font, text, and relief. The <strong>container</strong> command returns its <em>pathName</em> argument. At the time this command is invoked, there must not exist a window named <em>pathName</em>, but <em>pathName</em>'s parent must exist.</p>
+<p>When first created, a new container contains no tabs. Tabs are added or deleted using widget operations described below. It is not necessary for all the tabs to be displayed in the container window at once; commands described below may be used to change the view in the window. Containers allow scrolling of tabs using the <strong>-scrollcommand</strong> option. They also support scanning (see the <strong>scan</strong> operation). Tabs may be arranged along any side of the container window using the <strong>-side</strong> option.</p>
+<p>The size of the container window is determined the number of tiers of tabs and the sizes of the Tk widgets embedded inside each folder. The widest widget determines the width of the folder. The tallest determines the height. If no folders contain an embedded widget, the size is detemined solely by the size of the tabs.</p>
+<p>You can override either dimension with the container's <strong>-width</strong> and <strong>-height</strong> options.</p>
+<h1 id="container-operations">CONTAINER OPERATIONS</h1>
+<p>All <strong>container</strong> operations are invoked by specifying the widget's pathname, the operation, and any arguments that pertain to that operation. The general form is:</p>
+<p><em>pathName</em> <em>operation</em> ?<em>arg</em> <em>arg</em> <em>...</em>?</p>
+<p><em>Operation</em> and the <em>arg</em>s determine the exact behavior of the command. The following operations are available for container widgets:</p>
+<dl>
+<dt><em>pathName</em> <strong>cget</strong> <em>option</em></dt>
+<dd><p>Returns the current value of the configuration option given by <em>option</em>. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>configure</strong> ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Query or modify the configuration options of the widget. If no <em>option</em> is specified, returns a list describing all the available options for <em>pathName</em> (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given widget option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described below:</p>
+<dl>
+<dt>-background <em>color</em></dt>
+<dd>Sets the border color of the container.
+</dd>
+<dt>-borderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border around the outside edge of the widget. The <strong>-relief</strong> option determines how the border is to be drawn. The default is 2.
+</dd>
+<dt>-command <em>pattern</em></dt>
+<dd>Specifies to search for a window whose WM_COMMAND property matches the given pattern. If no windows, or more than one window, matches the pattern, an error is generated. If <em>pattern</em> is the empty string, then no command search is performed. The default is &quot;&quot;.
+</dd>
+<dt>-cursor <em>cursor</em></dt>
+<dd>Specifies the widget's cursor. The default cursor is &quot;&quot;.
+</dd>
+<dt>-height <em>pixels</em></dt>
+<dd>Specifies the requested height of widget. If <em>pixels</em> is 0, then the height is height the embedded window plus the specified borderwidth. The default is 0.
+</dd>
+<dt>-highlightbackground <em>color</em></dt>
+<dd>Sets the color to display in the traversal highlight region when the container does not have the input focus.
+</dd>
+<dt>-highlightcolor <em>color</em></dt>
+<dd>Sets the color to use for the traversal highlight rectangle that is drawn around the widget when it has the input focus. The default is black.
+</dd>
+<dt>-highlightthickness <em>pixels</em></dt>
+<dd>Sets the width of the highlight rectangle to draw around the outside of the widget when it has the input focus. <em>Pixels</em> is a non-negative value and may have any of the forms acceptable to <strong>Tk_GetPixels</strong>. If the value is zero, no focus highlight is drawn around the widget. The default is 2.
+</dd>
+<dt>-name <em>pattern</em></dt>
+<dd>Specifies to search for a window whose WM_NAME property matches the given pattern. If no windows, or more than one window, matches the pattern, an error is generated. If <em>pattern</em> is the empty string, then no name search is performed. The default is &quot;&quot;.
+</dd>
+<dt>-relief <em>relief</em></dt>
+<dd>Specifies the 3-D effect for the container widget. <em>Relief</em> specifies how the container should appear relative to widget that it is packed into; for example, raised means the container should appear to protrude. The default is sunken.
+</dd>
+<dt>-takefocus <em>focus</em></dt>
+<dd>Provides information used when moving the focus from window to window via keyboard traversal (e.g., Tab and Shift-Tab). If <em>focus</em> is 0, this means that this window should be skipped entirely during keyboard traversal. 1 means that the this window should always receive the input focus. An empty value means that the traversal scripts decide whether to focus on the window. The default is 1.
+</dd>
+<dt>-width <em>pixels</em></dt>
+<dd>Specifies the requested width of the widget. If <em>pixels</em> is 0, then the width is the width the embedded window and the specified borderwidth. The default is 0.
+</dd>
+<dt>-window <em>id</em></dt>
+<dd>Specifies the foreign embedded using its X window id.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>find -command</strong>|<strong>-name</strong> <em>pattern</em></dt>
+<dd><p>Searches for all windows that match the given pattern. If the <strong>-command</strong> switch is given, all windows whose WWM_COMMAND property match <em>pattern</em> are returned in a list. If the <strong>-name</strong> switch is given, all windows whose WWM_NAME property match <em>pattern</em> are returned in a list. The list returned will contains pairs of the window id and the matching property.</p>
+</dd>
+</dl>
+<h1 id="keywords">KEYWORDS</h1>
+<p>container, widget</p>
+</body>
+</html>

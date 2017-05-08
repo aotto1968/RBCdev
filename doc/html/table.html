@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, frame, geometry manager, location, table, size" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">table</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#operations">OPERATIONS</a></li>
+<li><a href="#table-options">TABLE OPTIONS</a></li>
+<li><a href="#widget-options">WIDGET OPTIONS</a></li>
+<li><a href="#column-options">COLUMN OPTIONS</a></li>
+<li><a href="#row-options">ROW OPTIONS</a></li>
+<li><a href="#bounding-sizes">BOUNDING SIZES</a></li>
+<li><a href="#miscellaneous">MISCELLANEOUS</a></li>
+<li><a href="#limitations">LIMITATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>table - Arranges widgets in a table</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>table</strong> <em>container</em> ?<em>widget</em> <em>index</em> <em>option</em> <em>value</em>?...</p>
+<p><strong>table arrange</strong> <em>container</em></p>
+<p><strong>table cget</strong> <em>container</em> ?<em>item</em>? <em>option</em></p>
+<p><strong>table configure</strong> <em>container</em> ?<em>item</em>?... ?<em>option</em> <em>value</em>?...</p>
+<p><strong>table extents</strong> <em>container</em> <em>item</em></p>
+<p><strong>table forget</strong> <em>widget</em> ?<em>widget</em>?...</p>
+<p><strong>table info</strong> <em>container</em> <em>item</em></p>
+<p><strong>table locate</strong> <em>container</em> <em>x</em> <em>y</em></p>
+<p><strong>table containers</strong> ?<em>switch</em>? ?<em>arg</em>?</p>
+<p><strong>table save</strong> <em>container</em></p>
+<p><strong>table search</strong> <em>container</em> ?<em>switch</em> <em>arg</em>?...</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>table</strong> command arranges widgets in a table. The alignment of widgets is detemined by their row and column positions and the number of rows or columns that they span.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>Probably the most painstaking aspect of building a graphical application is getting the placement and size of the widgets just right. It usually takes many iterations to align widgets and adjust their spacing. That's because managing the geometry of widgets is simply not a packing problem, but also graphical design problem. Attributes such as alignment, symmetry, and balance are more important than minimizing the amount of space used for packing.</p>
+<p>The <strong>table</strong> geometry manager arranges widgets in a table. It's easy to align widgets (horizontally and vertically) or to create empty space to balance the arrangement of the widgets. Widgets (called <em>slaves</em> in the Tk parlance) are arranged inside a containing widget (called the <em>master</em>). Widgets are positioned at row,column locations and may span any number of rows or columns. More than one widget can occupy a single location.</p>
+<p>The placement of widget windows determines both the size and arrangement of the table. The table queries the requested size of each widget. The <em>requested</em> <em>size</em> of a widget is the natural size of the widget (before the widget is shrunk or expanded). The height of each row and the width of each column is the largest widget spanning that row or column. The size of the table is in turn the sum of the row and column sizes. This is the table's <em>normal</em> <em>size</em>.</p>
+<p>The total number of rows and columns in a table is determined from the indices specified. The table grows dynamically as windows are added at larger indices.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The table geometry manager is created by invoking the <strong>table</strong> command.</p>
+<pre><code># Create a table in the root window
+table .</code></pre>
+<p>The window . is now the <em>container</em> of the table. Widgets are packed into the table and displayed within the confines of the container.</p>
+<p>You add widgets to the table by row and column location. Row and column indices start from zero.</p>
+<pre><code>label .title -text &quot;This is a title&quot;
+
+# Add a label to the table
+table . .title 0,0</code></pre>
+<p>The label .title is added to the table. We can add more widgets in the same way.</p>
+<pre><code>button .ok -text &quot;Ok&quot;
+button .cancel -text &quot;Cancel&quot;
+
+# Add two buttons
+table . .ok 1,0
+table . .cancel 1,1</code></pre>
+<p>Two buttons .ok and .cancel are now packed into the second row of the table. They each occupy one cell of the table. By default, widgets span only a single row and column.</p>
+<p>The first column contains two widgets, .title and .ok. By default, the widest of the two widgets will define the width of the column. However, we want .title to be centered horizontally along the top of the table. We can make .title span two columns using the <strong>configure</strong> operation.</p>
+<pre><code># Make the label span both columns
+table configure . .title -cspan 2</code></pre>
+<p>The label .title will now be centered along the top row of the table.</p>
+<p>In the above example, we've create and arranged the layout for the table invoking the <strong>table</strong> command several times. Alternately, we could have used a single <strong>table</strong> command.</p>
+<pre><code>label .title -text &quot;This is a title&quot;
+button .ok -text &quot;Ok&quot;
+button .cancel -text &quot;Cancel&quot;
+
+# Create and pack the table
+table . \
+    .title  0,0 -cspan 2 \
+    .ok     1,0 \
+    .cancel 1,1</code></pre>
+<p>The table will override the requested width and height of the container so that the window fits the table exactly. This also means that any change to the size of table will be propagated up through the Tk window hierarchy. This feature can be turned off using the <strong>configure</strong> operation again.</p>
+<pre><code>table configure . -propagate no</code></pre>
+<p>You can also set the width of height of the table to a specific value. This supersedes the calculated table size.</p>
+<pre><code># Make the container 4 inches wide, 3 inches high
+table configure . -reqwidth 4i -reqheight 3i</code></pre>
+<p>If a widget is smaller than the cell(s) it occupies, the widget will float within the extra space. By default, the widget will be centered within the space, but you can anchor the widget to any side of cell using the <strong>-anchor</strong> configuration option.</p>
+<pre><code>table configure . .ok -anchor w</code></pre>
+<p>The <strong>-fill</strong> option expands the widget to fill the extra space either vertically or horizontally (or both).</p>
+<pre><code># Make the title label fill the entire top row
+table configure . .title -cspan 2 -fill x
+
+# Each button will be as height of the 2nd row.
+table configure . .ok .cancel -fill y</code></pre>
+<p>The width of .title will be the combined widths of both columns. Both .ok and .cancel will become as tall as the second row.</p>
+<p>The <strong>-padx</strong> and <strong>-pady</strong> options control the amount of padding around the widget. Both options take a list of one or two values.</p>
+<pre><code># Pad the title by two pixels above and below.
+table configure . .title -pady 2
+
+# Pad each button 2 pixels on the left, and 4 on the right.
+table configure . .ok .cancel -padx { 2 4 }</code></pre>
+<p>If the list has only one value, then both exterior sides (top and bottom or left and right) of the widget are padded by that amount. If the list has two elements, the first specifies padding for the top or left side and the second for the bottom or right side.</p>
+<p>Like the container, you can also override the requested widths and heights of widgets using the <strong>-reqwidth</strong> and <strong>-reqheight</strong> options. This is especially useful with character-based widgets (such as buttons, labels, text, listbox, etc) that let you specify their size only in units of characters and lines, instead of pixels.</p>
+<pre><code># Make all buttons one inch wide
+table configure . .ok .cancel -reqwidth 1i</code></pre>
+<p>Each row and column of the table can be configured, again using the <strong>configure</strong> operation. Rows are and columns are designated by R<em>i</em> and C<em>i</em> respectively, where <em>i</em> is the index of the row or column.</p>
+<p>For example, you can set the size of a row or column.</p>
+<pre><code># Make the 1st column 2 inches wide
+table configure . c0 -width 2.0i
+
+# Make the 2nd row 1/2 inch high.
+table configure . r1 -height 0.5i</code></pre>
+<p>The new size for the row or column overrides its calculated size. If no widgets span the row or column, its height or width is zero. So you can use the <strong>-width</strong> and <strong>-height</strong> options to create empty spaces in the table.</p>
+<pre><code># Create an empty row and column
+table configure . r2 c2 -width 1i</code></pre>
+<p>The <strong>-pady</strong> option lets you add padding to the top and bottom sides of rows. The <strong>-padx</strong> option adds padding to the left and right sides of columns. Both options take a list of one or two values.</p>
+<pre><code># Pad above the title by two pixels
+table configure . r0 -pady { 2 0 }
+
+# Pad each column 4 pixels on the left, and 2 on the right.
+table configure . c* -padx { 2 4 }</code></pre>
+<p>Notice that you can configure all the rows and columns using either R* or C*.</p>
+<p>When the container is resized, the rows and columns of the table are also resized. Only the rows or columns that contain widgets (a widget spans the row or column) grow or shrink. The <strong>-resize</strong> option indicates whether the row or column can be shrunk or stretched. If the value is shrink, the row or column can only be resized smaller. If expand, it can only be resized larger. If none, the row or column is frozen at its requested size.</p>
+<pre><code># Let the 1st column get smaller, but not bigger
+table configure . c0 -resize shrink
+
+# Let the 2nd column get bigger, not smaller
+table configure . c1 -resize expand
+
+# Don&#39;t resize the first row
+table configure . r0 -resize none</code></pre>
+<p>The following example packs a canvas, two scrollbars, and a title. The rows and columns containing the scrollbars are frozen at their requested size, so that even if the frame is resized, the scrollbars will remain the same width.</p>
+<pre><code>table . \
+    .title   0,0 -cspan 3 \
+    .canvas  1,1 -fill both \
+    .vscroll 1,2 -fill y \
+    .hscroll 2,1 -fill x
+
+# Don&#39;t let the scrollbars resize
+table configure . c2 r2 -resize none
+
+# Create an empty space to balance the scrollbar
+table configure . c0 -width .vscroll</code></pre>
+<p>Note that the value of the <strong>-width</strong> option is the name of a widget window. This indicates that the width of the column should be the same as the requested width of .vscroll.</p>
+<p>Finally, the <strong>forget</strong> operation removes widgets from the table.</p>
+<pre><code># Remove the windows from the table
+table forget .quit .frame</code></pre>
+<p>It's not necessary to specify the container. The <strong>table</strong> command determines the container from the widget name.</p>
+<h1 id="operations">OPERATIONS</h1>
+<p>The following operations are available for the <strong>table</strong>:</p>
+<dl>
+<dt><strong>table</strong> <em>container</em> ?<em>widget</em> <em>index</em> <em>option</em> <em>value</em>?...</dt>
+<dd><p>Adds the widget <em>widget</em> to the table at <em>index</em>. <em>Index</em> is a row,column position in the table. It must be in the form <em>row</em>,<em>column</em> where <em>row</em> and <em>column</em> are the respective row and column numbers, starting from zero (0,0 is the upper leftmost position). <em>Row</em> and <em>column</em> may also be numeric expressions that are recursively evaluated. If a table doesn't exist for <em>container</em>, one is created. <em>Widget</em> is the path name of the window, that must already exist, to be arranged inside of <em>container</em>. <em>Option</em> and <em>value</em> are described in the <strong>WIDGET OPTIONS</strong> section.</p>
+</dd>
+<dt><strong>table arrange</strong> <em>container</em></dt>
+<dd><p>Forces the table to compute its layout immediately. Normally, the table geometry manager will wait until the next idle point, before calculating the size of its rows and columns. This is useful for collecting the <em>normal</em> sizes of rows and columns, that are based upon the requested widget sizes.</p>
+</dd>
+<dt><strong>table cget</strong> <em>container</em> ?<em>item</em>? <em>option</em></dt>
+<dd><p>Returns the current value of the configuration option specific to <em>item</em> given by <em>option</em>. <em>Item</em> is either a row or column index, or the path name of a widget. <em>Item</em> can be in any form describe in the <strong>configure</strong> operation below. If no <em>item</em> argument is provided, then the configuration option is for the table itself. <em>Option</em> may be any one of the options described in the appropiate section for <em>item</em>.</p>
+</dd>
+<dt><strong>table configure</strong> <em>container</em> <em>item</em>... ?<em>option</em> <em>value</em>?...</dt>
+<dd><p>Queries or modifies the configuration options specific to <em>item</em>. If no <em>option</em> is specified, this command returns a list describing all of the available options for <em>item</em> If the argument <em>item</em> is omitted, then the specified configuration options are for the table itself. Otherwise <em>item</em> must be either a row or column specification, or the path name of a widget. The following <em>item</em> types are available.</p>
+<dl>
+<dt>C<em>i</em></dt>
+<dd>Specifies the column of <em>container</em> to be configured. <em>Item</em> must be in the form C<em>n</em>, where <em>i</em> is the index of the column. See the <strong>COLUMN OPTIONS</strong> section.
+</dd>
+<dt>R<em>i</em></dt>
+<dd>Specifies the row of <em>container</em> to be configured. <em>Item</em> must be in the form R<em>i</em>, where <em>i</em> is the index of the row. See the <strong>ROW OPTIONS</strong> section.
+</dd>
+<dt><em>widget</em></dt>
+<dd>Specifies a widget of <em>container</em> to be queried. <em>Widget</em> is the path name of a widget packed in <em>container</em>. See the <strong>WIDGET OPTIONS</strong> section.
+</dd>
+<dt>No argument</dt>
+<dd>Specifies that the table itself is to be queried. See the <strong>TABLE OPTIONS</strong> section for a description of the option-value pairs for the table.
+</dd>
+</dl>
+<p>The <em>option</em> <em>and</em> <em>value</em> pairs are specific to <em>item</em>. If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given option(s) to have the given value(s); in this case the command returns the empty string.</p>
+</dd>
+<dt><strong>table extents</strong> <em>container</em> <em>index</em></dt>
+<dd><p>Queries the location and dimensions of row and columns in the table. <em>Index</em> can be either a row or column index or a table index. Returns a list of the x,y coordinates (upperleft corner) and dimensions (width and height) of the cell, row, or column.</p>
+</dd>
+<dt><strong>table forget</strong> <em>widget</em> ?<em>widget</em>?...</dt>
+<dd><p>Requests that <em>widget</em> no longer have its geometry managed. <em>Widget</em> is the pathname of the window currently managed by some table. The window will be unmapped so that it no longer appears on the screen. If <em>widget</em> is not currently managed by any table, an error message is returned, otherwise the empty string.</p>
+</dd>
+<dt><strong>table info</strong> <em>container</em> <em>item</em></dt>
+<dd><p>Returns a list of the current configuration options for <em>item</em>. The list returned is exactly in the form that might be specified to the <strong>table</strong> command. It can be used to save and reset table configurations. <em>Item</em> must be one of the following.</p>
+<dl>
+<dt>C<em>i</em></dt>
+<dd>Specifies the column of <em>container</em> to be queried. <em>Item</em> must be in the form C<em>n</em>, where <em>n</em> is the index of the column.
+</dd>
+<dt>R<em>i</em></dt>
+<dd>Specifies the row of <em>container</em> to be queried. <em>Item</em> must be in the form R<em>i</em>, where <em>i</em> is the index of the row.
+</dd>
+<dt><em>widget</em></dt>
+<dd>Specifies a widget of <em>container</em> to be queried. <em>Widget</em> is the path name of a widget packed in <em>container</em>.
+</dd>
+<dt>No argument</dt>
+<dd>Specifies that the table itself is to be queried.
+</dd>
+</dl>
+</dd>
+<dt><strong>table locate</strong> <em>container</em> <em>x</em> <em>y</em></dt>
+<dd><p>Returns the table index (row,column) of the cell containing the given screen coordinates. The <em>x</em> and <em>y</em> arguments represent the x and y coordinates of the sample point to be tested.</p>
+</dd>
+<dt><strong>table containers</strong> ?<em>switch</em> <em>arg</em>?</dt>
+<dd><p>Returns a list of all container windows matching a given criteria (using <em>switch</em> and <em>arg</em>). If no <em>switch</em> and <em>arg</em> arguments are given, the names of all container windows (only those using the <strong>table</strong> command) are returned. The following are valid switches:</p>
+<dl>
+<dt>-pattern <em>pattern</em></dt>
+<dd>Returns a list of pathnames of all container windows matching <em>pattern</em>.
+</dd>
+<dt>-slave <em>window</em></dt>
+<dd>Returns the name of the container window of table managing <em>window</em>. <em>Window</em> must be the path name of widget. If <em>window</em> is not managed by any table, the empty string is returned.
+</dd>
+</dl>
+</dd>
+<dt><strong>table search</strong> <em>container</em> ?<em>switch</em> <em>arg</em>?...</dt>
+<dd><p>Returns the names of all the widgets in <em>container</em> matching the criteria given by <em>switch</em> and <em>arg</em>. <em>Container</em> is name of the container window associated with the table to be searched. The name of the widget is returned if any one <em>switch</em>-<em>arg</em> criteria matches. If no <em>switch</em>-<em>arg</em> arguments are given, the names of all widgets managed by <em>container</em> are returned. The following are switches are available:</p>
+<dl>
+<dt>-pattern <em>pattern</em></dt>
+<dd>Returns the names of any names of the widgets matching <em>pattern</em>.
+</dd>
+<dt>-span <em>index</em></dt>
+<dd>Returns the names of widgets that span <em>index</em>. A widget does not need to start at <em>index</em> to be included. <em>Index</em> must be in the form <em>row</em>,<em>column</em>, where <em>row</em> and <em>column</em> are valid row and column numbers.
+</dd>
+<dt>-start <em>index</em></dt>
+<dd>Returns the names of widgets that start at <em>index</em>. <em>Index</em> must be in the form <em>row</em>,<em>column</em>, where <em>row</em> and <em>column</em> are valid row and column numbers.
+</dd>
+</dl>
+</dd>
+</dl>
+<h1 id="table-options">TABLE OPTIONS</h1>
+<p>To configure the table itself, you omit the <em>item</em> argument when invoking the <strong>configure</strong> operation.</p>
+<pre><code>table configure container ?option value?...</code></pre>
+<p>The following options are available for the table:</p>
+<dl>
+<dt>-padx <em>pad</em></dt>
+<dd>Sets how much padding to add to the left and right exteriors of the table. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the left side of the table is padded by the first value and the right side by the second value. If <em>pad</em> has just one value, both the left and right sides are padded evenly by the value. The default is 0.
+</dd>
+<dt>-pady <em>pad</em></dt>
+<dd>Sets how much padding to add to the top and bottom exteriors of the table. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the area above the table is padded by the first value and the area below by the second value. If <em>pad</em> is just one number, both the top and bottom areas are padded by the value. The default is 0.
+</dd>
+<dt>-propagate <em>boolean</em></dt>
+<dd>Indicates if the table should override the requested width and height of the <em>container</em> window. If <em>boolean</em> is false, <em>container</em> will not be resized. <em>Container</em> will be its requested size. The default is 1.
+</dd>
+</dl>
+<h1 id="widget-options">WIDGET OPTIONS</h1>
+<p>widgets are configured by specifying the name of the widget when invoking the <strong>configure</strong> operation. <strong>table configure</strong> <em>container</em> <em>widget</em> ?<em>option</em> <em>value</em>?... <em>Widget</em> must be the path name of a window already packed in the table associated with <em>container</em>. The following options are available for widgets:</p>
+<dl>
+<dt>-anchor <em>anchor</em></dt>
+<dd>Anchors <em>widget</em> to a particular edge of the cell(s) it resides. This option has effect only if the space of the spans surrounding <em>widget</em> is larger than <em>widget</em>. <em>Anchor</em> specifies how <em>widget</em> will be positioned in the space. For example, if <em>anchor</em> is center then the window is centered in the rows and columns it spans; if <em>anchor</em> is w then the window will be aligned with the leftmost edge of the span. The default is center.
+</dd>
+<dt>-columnspan <em>number</em></dt>
+<dd>Sets the number of columns <em>widget</em> will span. The default is 1.
+</dd>
+<dt>-columncontrol <em>control</em></dt>
+<dd><p>Specifies how the width of <em>widget</em> should control the width of the columns it spans. <em>Control</em> is either normal, none, or full. The default is normal.</p>
+<dl>
+<dt>none</dt>
+<dd>The width of <em>widget</em> is not considered.
+</dd>
+<dt>full</dt>
+<dd>Only the width of <em>widget</em> will be considered when computing the widths of the columns.
+</dd>
+<dt>normal</dt>
+<dd>Indicates that the widest widget spanning the column will determine the width of the span.
+</dd>
+</dl>
+</dd>
+<dt>-fill <em>fill</em></dt>
+<dd><p>Specifies if <em>widget</em> should be stretched to fill any free space in the span surrounding <em>widget</em>. <em>Fill</em> is either none, x, y, both. The default is none.</p>
+<dl>
+<dt>x</dt>
+<dd>The widget can grow horizontally.
+</dd>
+<dt>y</dt>
+<dd>The widget can grow vertically.
+</dd>
+<dt>both</dt>
+<dd>The widget can grow both vertically and horizontally.
+</dd>
+<dt>none</dt>
+<dd>The widget does not grow along with the span.
+</dd>
+</dl>
+</dd>
+<dt>-ipadx <em>pixels</em></dt>
+<dd>Sets how much horizontal padding to add internally on the left and right sides of <em>widget</em>. <em>Pixels</em> must be a valid screen distance like 2 or 0.3i. The default is 0.
+</dd>
+<dt>-ipady <em>pixels</em></dt>
+<dd>Sets how much vertical padding to add internally on the top and bottom of <em>widget</em>. <em>Pixels</em> must be a valid screen distance like 2 or 0.3i. The default is 0.
+</dd>
+<dt>-padx <em>pad</em></dt>
+<dd>Sets how much padding to add to the left and right exteriors of <em>widget</em>. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the left side of <em>widget</em> is padded by the first value and the right side by the second value. If <em>pad</em> has just one value, both the left and right sides are padded evenly by the value. The default is 0.
+</dd>
+<dt>-pady <em>pad</em></dt>
+<dd>Sets how much padding to add to the top and bottom exteriors of <em>widget</em>. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the area above <em>widget</em> is padded by the first value and the area below by the second value. If <em>pad</em> is just one number, both the top and bottom areas are padded by the value. The default is 0.
+</dd>
+<dt>-reqheight <em>height</em></dt>
+<dd>Specifies the limits of the requested height for <em>widget</em>. <em>Height</em> is a list of bounding values. See the <strong>BOUNDING</strong> <strong>SIZES</strong> section for a description of this list. By default, the height of <em>widget</em> is its requested height with its internal padding (see the <strong>-ipady</strong> option). The bounds specified by <em>height</em> either override the height completely, or bound the height between two sizes. The default is &quot;&quot;.
+</dd>
+<dt>-reqwidth <em>width</em></dt>
+<dd>Specifies the limits of the requested width for <em>widget</em>. <em>Width</em> is a list of bounding values. See the <strong>BOUNDING</strong> <strong>SIZES</strong> section for a description of this list. By default, the width of <em>widget</em> is its requested width with its internal padding (set the <strong>-ipadx</strong> option). The bounds specified by <em>width</em> either override the width completely, or bound the height between two sizes. The default is &quot;&quot;.
+</dd>
+<dt>-rowspan <em>number</em></dt>
+<dd>Sets the number of rows <em>widget</em> will span. The default is 1.
+</dd>
+<dt>-rowcontrol <em>control</em></dt>
+<dd><p>Specifies how the height of <em>widget</em> should control the height of the rows it spans. <em>Control</em> is either normal, none, or full. The default is normal.</p>
+<dl>
+<dt>none</dt>
+<dd>The height of <em>widget</em> is not considered.
+</dd>
+<dt>full</dt>
+<dd>Only the height of <em>widget</em> will be considered when computing the heights of the rows.
+</dd>
+<dt>normal</dt>
+<dd>Indicates that the tallest widget spanning the row will determine the height of the span.
+</dd>
+</dl>
+</dd>
+</dl>
+<h1 id="column-options">COLUMN OPTIONS</h1>
+<p>To configure a column in the table, specify the column index as C<em>i</em>, where <em>i</em> is the index of the column to be configured. <strong>table configure</strong> <em>container</em> <em>Ci</em> ?<em>option</em> <em>value</em>?... If the index is specified as C*, then all columns of the table will be configured. The following options are available for table columns.</p>
+<dl>
+<dt>-padx <em>pad</em></dt>
+<dd>Sets the padding to the left and right of the column. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the left side of the column is padded by the first value and the right side by the second value. If <em>pad</em> has just one value, both the left and right sides are padded evenly by the value. The default is 0.
+</dd>
+<dt>-resize <em>mode</em></dt>
+<dd>Indicates that the column can expand or shrink from its requested width when the table is resized. <em>Mode</em> must be one of the following: none, expand, shrink, or both. If <em>mode</em> is expand the width of the column is expanded if there is extra space in the container window. If <em>mode</em> is shrink its width may be reduced beyond its requested width if there is not enough space in the container. The default is none.
+</dd>
+<dt>-width <em>width</em></dt>
+<dd>Specifies the limits within that the width of the column may expand or shrink. <em>Width</em> is a list of bounding values. See the section <strong>BOUNDING SIZES</strong> for a description of this list. By default there are no constraints.
+</dd>
+</dl>
+<h1 id="row-options">ROW OPTIONS</h1>
+<p>To configure a row in the table, specify the row index as R<em>i</em>, where <em>i</em> is the index of the row to be configured. <strong>table configure</strong> <em>container</em> <em>Ri</em> ?<em>option</em> <em>value</em>?... If the index is specified as R*, then all rows of the table will be configured. The following options are available for table rows.</p>
+<dl>
+<dt>-height <em>height</em></dt>
+<dd>Specifies the limits of the height that the row may expand or shrink to. <em>Height</em> is a list of bounding values. See the section <strong>BOUNDING SIZES</strong> for a description of this list. By default there are no constraints.
+</dd>
+<dt>-pady <em>pad</em></dt>
+<dd>Sets the padding above and below the row. <em>Pad</em> can be a list of one or two numbers. If <em>pad</em> has two elements, the area above the row is padded by the first value and the area below by the second value. If <em>pad</em> is just one number, both the top and bottom areas are padded by the value. The default is 0.
+</dd>
+<dt>-resize <em>mode</em></dt>
+<dd>Indicates that the row can expand or shrink from its requested height when the table is resized. <em>Mode</em> must be one of the following: none, expand, shrink, or both. If <em>mode</em> is expand the height of the row is expanded if there is extra space in the container. If <em>mode</em> is shrink its height may be reduced beyond its requested height if there is not enough space in the container. The default is none.
+</dd>
+</dl>
+<h1 id="bounding-sizes">BOUNDING SIZES</h1>
+<p>Sometimes it's more useful to limit resizes to an acceptable range, than to fix the size to a particular value or disallow resizing altogether. Similar to the way the <strong>wm</strong> command lets you specify a <strong>minsize</strong> and <strong>maxsize</strong> for a toplevel window, you can bound the sizes the container, a widget, row, or column may take. The <strong>-width</strong>, <strong>-height</strong>, <strong>-reqwidth</strong>, and <strong>-reqheight</strong> options, take a list of one, two, or three values. We can take a previous example and instead preventing resizing, bound the size of the scrollbars between two values.</p>
+<pre><code>table . \
+    .title   0,0 -cspan 3 \
+    .canvas  1,1 -fill both \
+    .vscroll 1,2 -fill y \
+    .hscroll 2,1 -fill x
+
+# Bound the scrollbars between 1/8 and 1/2 inch
+table configure . c2 -width { 0.125 0.5 }
+table configure . r2 -height { 0.125 0.5 }
+table configure . vscroll .hscroll -fill both</code></pre>
+<p>The scrollbars will get no smaller than 1/8 of an inch, or bigger than 1/2 inch. The initial size will be their requested size, so long as it is within the specified bounds.</p>
+<p>How the elements of the list are interpreted is dependent upon the number of elements in the list.</p>
+<dl>
+<dt>{}</dt>
+<dd>Empty list. No bounds are set. The default sizing is performed.
+</dd>
+<dt>{ <em>x</em> }</dt>
+<dd>Fixes the size to <em>x</em>. The window or partition cannot grow or shrink.
+</dd>
+<dt>{ <em>min</em> <em>max</em> }</dt>
+<dd>Sets up minimum and maximum limits for the size of the window or partition. The window or partition can be reduced less than <em>min</em>, nor can it be stretched beyond <em>max</em>.
+</dd>
+<dt>{ <em>min</em> <em>max</em> <em>nom</em> }</dt>
+<dd>Specifies minimum and maximum size limits, but also specifies a nominal size <em>nom</em>. This overrides the calculated size of the window or partition.
+</dd>
+</dl>
+<h1 id="miscellaneous">MISCELLANEOUS</h1>
+<p>Another feature is that you can put two widgets in the same cell of the table. This is useful when you want to add decorations around a widget.</p>
+<pre><code>frame .frame -bd 1 -relief sunken
+button .quit -text &quot;Quit&quot;
+
+# Put both the frame and the button in the same cell.
+table . \
+    .quit  1,0 -padx 2 -pady 2 \
+    .frame 1,0 -fill both</code></pre>
+<h1 id="limitations">LIMITATIONS</h1>
+<p>A long standing bug in Tk (circa 1993), there is no way to detect if a window is already a container of a different geometry manager. This is usually done by accident, such as the following where all three widgets are arranged in the same container &quot;.&quot;, but using different geometry managers.</p>
+<p>table .f1</p>
+<dl>
+<dt>...</dt>
+<dd>pack .f2
+</dd>
+<dt>...</dt>
+<dd>grid .f3
+</dd>
+</dl>
+<p>This leads to bizarre window resizing, as each geometry manager applies its own brand of layout policies. When the container is a top level window (such as &quot;.&quot;), your window manager may become locked as it responds to the never-ending stream of resize requests.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>frame, geometry manager, location, table, size</p>
+</body>
+</html>

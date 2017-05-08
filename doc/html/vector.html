@@ -1,0 +1,654 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, vector, graph, widget" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">vector</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#syntax">SYNTAX</a><ul>
+<li><a href="#vector-indices">VECTOR INDICES</a></li>
+</ul></li>
+<li><a href="#vector-operations">VECTOR OPERATIONS</a></li>
+<li><a href="#instance-operations">INSTANCE OPERATIONS</a></li>
+<li><a href="#c-language-api">C LANGUAGE API</a></li>
+<li><a href="#library-routines">LIBRARY ROUTINES</a></li>
+<li><a href="#c-api-example">C API EXAMPLE</a></li>
+<li><a href="#incompatibilities">INCOMPATIBILITIES</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>vector - Vector data type for Tcl</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>vector create</strong> <em>vecName</em> ?<em>vecName</em>...? ?<em>switches</em>?</p>
+<p><strong>vector destroy</strong> <em>vecName</em> ?<em>vecName</em>...?</p>
+<p><strong>vector expr</strong> <em>expression</em></p>
+<p><strong>vector names</strong> ?<em>pattern</em>...?</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>vector</strong> command creates a vector of floating point values. The vector's components can be manipulated in three ways: through a Tcl array variable, a Tcl command, or the C API.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>A vector is simply an ordered set of numbers. The components of a vector are real numbers, indexed by counting numbers.</p>
+<p>Vectors are common data structures for many applications. For example, a graph may use two vectors to represent the X-Y coordinates of the data plotted. The graph will automatically be redrawn when the vectors are updated or changed. By using vectors, you can separate data analysis from the graph widget. This makes it easier, for example, to add data transformations, such as splines. It's possible to plot the same data to in multiple graphs, where each graph presents a different view or scale of the data.</p>
+<p>You could try to use Tcl's associative arrays as vectors. Tcl arrays are easy to use. You can access individual elements randomly by specifying the index, or the set the entire array by providing a list of index and value pairs for each element. The disadvantages of associative arrays as vectors lie in the fact they are implemented as hash tables.</p>
+<ul>
+<li><p>There's no implied ordering to the associative arrays. If you used vectors for plotting, you would want to insure the second component comes after the first, an so on. This isn't possible since arrays are actually hash tables. For example, you can't get a range of values between two indices. Nor can you sort an array.</p></li>
+<li><p>Arrays consume lots of memory when the number of elements becomes large (tens of thousands). This is because each element's index and value are stored as strings in the hash table.</p></li>
+<li><p>The C programming interface is unwieldy. Normally with vectors, you would like to view the Tcl array as you do a C array, as an array of floats or doubles. But with hash tables, you must convert both the index and value to and from decimal strings, just to access an element in the array. This makes it cumbersome to perform operations on the array as a whole.</p></li>
+</ul>
+<p>The <strong>vector</strong> command tries to overcome these disadvantages while still retaining the ease of use of Tcl arrays. The <strong>vector</strong> command creates both a new Tcl command and associate array which are linked to the vector components. You can randomly access vector components though the elements of array. Not have all indices are generated for the array, so printing the array (using the <strong>parray</strong> procedure) does not print out all the component values. You can use the Tcl command to access the array as a whole. You can copy, append, or sort vector using its command. If you need greater performance, or customized behavior, you can write your own C code to manage vectors.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>You create vectors using the <strong>vector</strong> command and its <strong>create</strong> operation.</p>
+<pre><code># Create a new vector.
+vector create y(50)</code></pre>
+<p>This creates a new vector named y. It has fifty components, by default, initialized to 0.0. In addition, both a Tcl command and array variable, both named y, are created. You can use either the command or variable to query or modify components of the vector.</p>
+<pre><code># Set the first value.
+set y(0) 9.25
+puts &quot;y has [y length] components&quot;</code></pre>
+<p>The array y can be used to read or set individual components of the vector. Vector components are indexed from zero. The array index must be a number less than the number of components. For example, it's an error if you try to set the 51st element of y.</p>
+<pre><code># This is an error. The vector only has 50 components.
+set y(50) 0.02</code></pre>
+<p>You can also specify a range of indices using a colon (:) to separate the first and last indices of the range.</p>
+<pre><code># Set the first six components of y
+set y(0:5) 25.2</code></pre>
+<p>If you don't include an index, then it will default to the first and/or last component of the vector.</p>
+<pre><code># Print out all the components of y
+puts &quot;y = $y(:)&quot;</code></pre>
+<p>There are special non-numeric indices. The index end, specifies the last component of the vector. It's an error to use this index if the vector is empty (length is zero). The index ++end can be used to extend the vector by one component and initialize it to a specific value. You can't read from the array using this index, though.</p>
+<pre><code># Extend the vector by one component.
+set y(++end) 0.02</code></pre>
+<p>The other special indices are min and max. They return the current smallest and largest components of the vector.</p>
+<pre><code># Print the bounds of the vector
+puts &quot;min=$y(min) max=$y(max)&quot;</code></pre>
+<p>To delete components from a vector, simply unset the corresponding array element. In the following example, the first component of y is deleted. All the remaining components of y will be moved down by one index as the length of the vector is reduced by one.</p>
+<pre><code># Delete the first component
+unset y(0)
+puts &quot;new first element is $y(0)&quot;</code></pre>
+<p>The vector's Tcl command can also be used to query or set the vector.</p>
+<pre><code># Create and set the components of a new vector
+vector create x
+x set { 0.02 0.04 0.06 0.08 0.10 0.12 0.14 0.16 0.18 0.20 }</code></pre>
+<p>Here we've created a vector x without a initial length specification. In this case, the length is zero. The <strong>set</strong> operation resets the vector, extending it and setting values for each new component.</p>
+<p>There are several operations for vectors. The <strong>range</strong> operation lists the components of a vector between two indices.</p>
+<pre><code># List the components
+puts &quot;x = [x range 0 end]&quot;</code></pre>
+<p>You can search for a particular value using the <strong>search</strong> operation. It returns a list of indices of the components with the same value. If no component has the same value, it returns &quot;&quot;.</p>
+<pre><code># Find the index of the biggest component
+set indices [x search $x(max)]</code></pre>
+<p>Other operations copy, append, or sort vectors. You can append vectors or new values onto an existing vector with the <strong>append</strong> operation.</p>
+<pre><code># Append assorted vectors and values to x
+x append x2 x3 { 2.3 4.5 } x4</code></pre>
+<p>The <strong>sort</strong> operation sorts the vector. If any additional vectors are specified, they are rearranged in the same order as the vector. For example, you could use it to sort data points represented by x and y vectors.</p>
+<pre><code># Sort the data points
+x sort y</code></pre>
+<p>The vector x is sorted while the components of y are rearranged so that the original x,y coordinate pairs are retained.</p>
+<p>The <strong>expr</strong> operation lets you perform arithmetic on vectors. The result is stored in the vector.</p>
+<pre><code># Add the two vectors and a scalar
+x expr { x + y }
+x expr { x * 2 }</code></pre>
+<p>When a vector is modified, resized, or deleted, it may trigger call- backs to notify the clients of the vector. For example, when a vector used in the <strong>graph</strong> widget is updated, the vector automatically notifies the widget that it has changed. The graph can then redrawn itself at the next idle point. By default, the notification occurs when Tk is next idle. This way you can modify the vector many times without incurring the penalty of the graph redrawing itself for each change. You can change this behavior using the <strong>notify</strong> operation.</p>
+<pre><code># Make vector x notify after every change
+x notify always
+  ...
+# Never notify
+x notify never
+  ...
+# Force notification now
+x notify now</code></pre>
+<p>To delete a vector, use the <strong>vector delete</strong> command. Both the vector and its corresponding Tcl command are destroyed.</p>
+<pre><code># Remove vector x
+vector destroy x</code></pre>
+<h1 id="syntax">SYNTAX</h1>
+<p>Vectors are created using the <strong>vector create</strong> operation. Th <strong>create</strong> operation can be invoked in one of three forms:</p>
+<dl>
+<dt>vector create <em>vecName</em></dt>
+<dd>This creates a new vector <em>vecName</em> which initially has no components.
+</dd>
+<dt>vector create <em>vecName</em>(<em>size</em>)</dt>
+<dd>This second form creates a new vector which will contain <em>size</em> number of components. The components will be indexed starting from zero (0). The default value for the components is 0.0.
+</dd>
+<dt>vector create <em>vecName</em>(<em>first</em>:<em>last</em>)</dt>
+<dd>The last form creates a new vector of indexed <em>first</em> through <em>last</em>. <em>First</em> and <em>last</em> can be any integer value so long as <em>first</em> is less than <em>last</em>.
+</dd>
+</dl>
+<p>Vector names must start with a letter and consist of letters, digits, or underscores.</p>
+<pre><code># Error: must start with letter
+vector create 1abc</code></pre>
+<p>You can automatically generate vector names using the &quot;#auto&quot; vector</p>
+<dl>
+<dt>name.</dt>
+<dd><p>The <strong>create</strong> operation will generate a unique vector name.</p>
+<p>set vec [vector create #auto]<br />
+puts &quot;$vec has [$vec length] components&quot;</p>
+</dd>
+</dl>
+<h2 id="vector-indices">VECTOR INDICES</h2>
+<p>Vectors are indexed by integers. You can access the individual vector components via its array variable or Tcl command. The string representing the index can be an integer, a numeric expression, a range, or a special keyword.</p>
+<p>The index must lie within the current range of the vector, otherwise an an error message is returned. Normally the indices of a vector are start from 0. But you can use the <strong>offset</strong> operation to change a vector's indices on-the-fly.</p>
+<pre><code>puts $vecName(0)
+vecName offset -5
+puts $vecName(-5)</code></pre>
+<p>You can also use numeric expressions as indices. The result of the expression must be an integer value.</p>
+<pre><code>set n 21
+set vecName($n+3) 50.2</code></pre>
+<p>The following special non-numeric indices are available: min, max, end, and ++end.</p>
+<pre><code>puts &quot;min = $vecName($min)&quot;
+set vecName(end) -1.2</code></pre>
+<p>The indices min and max will return the minimum and maximum values of the vector. The index end returns the value of the last component in the vector. The index ++end is used to append new value onto the vector. It automatically extends the vector by one component and sets its value.</p>
+<pre><code># Append an new component to the end
+set vecName(++end) 3.2</code></pre>
+<p>A range of indices can be indicated by a colon (:).</p>
+<pre><code># Set the first six components to 1.0
+set vecName(0:5) 1.0</code></pre>
+<p>If no index is supplied the first or last component is assumed.</p>
+<pre><code># Print the values of all the components
+puts $vecName(:)</code></pre>
+<h1 id="vector-operations">VECTOR OPERATIONS</h1>
+<dl>
+<dt>vector</dt>
+<dd><p>create__ <em>vecName</em>?(<em>size</em>)?... ?<em>switches</em>? The <strong>create</strong> operation creates a new vector <em>vecName</em>. Both a Tcl command and array variable <em>vecName</em> are also created. The name <em>vecName</em> must be unique, so another Tcl command or array variable can not already exist in that scope. You can access the components of the vector using its variable. If you change a value in the array, or unset an array element, the vector is updated to reflect the changes. When the variable <em>vecName</em> is unset, the vector and its Tcl command are also destroyed.</p>
+<p>The vector has optional switches that affect how the vector is created. They are as follows:</p>
+<dl>
+<dt>-variable <em>varName</em></dt>
+<dd>Specifies the name of a Tcl variable to be mapped to the vector. If the variable already exists, it is first deleted, then recreated. If <em>varName</em> is the empty string, then no variable will be mapped. You can always map a variable back to the vector using the vector's <strong>variable</strong> operation.
+</dd>
+<dt>-command <em>cmdName</em></dt>
+<dd>Maps a Tcl command to the vector. The vector can be accessed using <em>cmdName</em> and one of the vector instance operations. A Tcl command by that name cannot already exist. If <em>cmdName</em> is the empty string, no command mapping will be made.
+</dd>
+<dt>-watchunset <em>boolean</em></dt>
+<dd>Indicates that the vector should automatically delete itself if the variable associated with the vector is unset. By default, the vector will not be deleted. This is different from previous releases. Set <em>boolean</em> to &quot;true&quot; to get the old behavior.
+</dd>
+</dl>
+</dd>
+<dt>vector</dt>
+<dd>destroy__ <em>vecName</em> ?<em>vecName...</em>?
+</dd>
+<dt>vector expr <em>expression</em></dt>
+<dd><p>All binary operators take vectors as operands (remember that numbers are treated as one-component vectors). The exact action of binary operators depends upon the length of the second operand. If the second operand has only one component, then each element of the first vector operand is computed by that value. For example, the expression &quot;x * 2&quot; multiples all elements of the vector x by 2. If the second operand has more than one component, both operands must be the same length. Each pair of corresponding elements are computed. So &quot;x + y&quot; adds the the first components of x and y together, the second, and so on.</p>
+<p>The valid operators are listed below, grouped in decreasing order of precedence:</p>
+<dl>
+<dt>- !</dt>
+<dd>Unary minus and logical NOT. The unary minus flips the sign of each component in the vector. The logical not operator returns a vector of whose values are 0.0 or 1.0. For each non-zero component 1.0 is returned, 0.0 otherwise.
+</dd>
+<dt>^</dt>
+<dd>Exponentiation.
+</dd>
+<dt>*</dt>
+<dd>/ %__ Multiply, divide, remainder.
+</dd>
+<dt>+</dt>
+<dd>-__ Add and subtract.
+</dd>
+<dt>&lt;&lt; &gt;&gt;</dt>
+<dd>Left and right shift. Circularly shifts the values of the vector (not implemented yet).
+</dd>
+<dt>&lt; &gt; &lt;= &gt;=</dt>
+<dd>Boolean less, greater, less than or equal, and greater than or equal. Each operator returns a vector of ones and zeros. If the condition is true, 1.0 is the component value, 0.0 otherwise.
+</dd>
+<dt>== !=</dt>
+<dd>Boolean equal and not equal. Each operator returns a vector of ones and zeros. If the condition is true, 1.0 is the component value, 0.0 otherwise.
+</dd>
+<dt>|</dt>
+<dd>Bit-wise OR. (Not implemented).
+</dd>
+<dt>&amp;&amp;</dt>
+<dd>Logical AND. Produces a 1 result if both operands are non-zero, 0 otherwise.
+</dd>
+<dt>||</dt>
+<dd>Logical OR. Produces a 0 result if both operands are zero, 1 otherwise.
+</dd>
+<dt><em>x</em>?<em>y</em>:<em>z</em></dt>
+<dd>If-then-else, as in C. (Not implemented yet).
+</dd>
+</dl>
+<p>See the C manual for more details on the results produced by each operator. All of the binary operators group left-to-right within the same precedence level.</p>
+<p>Several mathematical functions are supported for vectors. Each of the following functions invokes the math library function of the same name; see the manual entries for the library functions for details on what they do. The operation is applied to all elements of the vector returning the results.</p>
+<dl>
+<dt>acos</dt>
+<dd><strong>cos hypot sinh</strong>
+</dd>
+<dt>asin</dt>
+<dd><strong>cosh log sqrt</strong>
+</dd>
+<dt>atan</dt>
+<dd><strong>exp log10 tan</strong>
+</dd>
+<dt>ceil</dt>
+<dd><strong>floor sin tanh</strong>
+</dd>
+</dl>
+<p>Additional functions are:</p>
+<dl>
+<dt>abs</dt>
+<dd>Returns the absolute value of each component.
+</dd>
+<dt>random</dt>
+<dd>Returns a vector of non-negative values uniformly distributed between [0.0, 1.0) using <em>drand48</em>. The seed comes from the internal clock of the machine or may be set manual with the srandom function.
+</dd>
+<dt>round</dt>
+<dd>Rounds each component of the vector.
+</dd>
+<dt>srandom</dt>
+<dd>Initializes the random number generator using <em>srand48</em>. The high order 32-bits are set using the integral portion of the first vector component. All other components are ignored. The low order 16-bits are set to an arbitrary value.
+</dd>
+</dl>
+<p>The following functions return a single value.</p>
+<dl>
+<dt>adev</dt>
+<dd>Returns the average deviation (defined as the sum of the absolute values of the differences between component and the mean, divided by the length of the vector).
+</dd>
+<dt>kurtosis</dt>
+<dd>Returns the degree of peakedness (fourth moment) of the vector.
+</dd>
+<dt>length</dt>
+<dd>Returns the number of components in the vector.
+</dd>
+<dt>max</dt>
+<dd>Returns the vector's maximum value.
+</dd>
+<dt>mean</dt>
+<dd>Returns the mean value of the vector.
+</dd>
+<dt>median</dt>
+<dd>Returns the median of the vector.
+</dd>
+<dt>min</dt>
+<dd>Returns the vector's minimum value.
+</dd>
+<dt>q1</dt>
+<dd>Returns the first quartile of the vector.
+</dd>
+<dt>q3</dt>
+<dd>Returns the third quartile of the vector.
+</dd>
+<dt>prod</dt>
+<dd>Returns the product of the components.
+</dd>
+<dt>sdev</dt>
+<dd>Returns the standard deviation (defined as the square root of the variance) of the vector.
+</dd>
+<dt>skew</dt>
+<dd>Returns the skewness (or third moment) of the vector. This characterizes the degree of asymmetry of the vector about the mean.
+</dd>
+<dt>sum</dt>
+<dd>Returns the sum of the components.
+</dd>
+<dt>var</dt>
+<dd>Returns the variance of the vector. The sum of the squared differences between each component and the mean is computed. The variance is the sum divided by the length of the vector minus 1.
+</dd>
+</dl>
+<p>The last set returns a vector of the same length as the argument.</p>
+<dl>
+<dt>norm</dt>
+<dd>Scales the values of the vector to lie in the range [0.0..1.0].
+</dd>
+<dt>sort</dt>
+<dd>Returns the vector components sorted in ascending order.
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>vector names</strong> ?<em>pattern</em>?</p>
+<h1 id="instance-operations">INSTANCE OPERATIONS</h1>
+<p>You can also use the vector's Tcl command to query or modify it. The general form is <em>vecName</em> <em>operation</em> ?<em>arg</em>?... Both <em>operation</em> and its arguments determine the exact behavior of the command. The operations available for vectors are listed below.</p>
+<dl>
+<dt><em>vecName</em> <strong>append</strong> <em>item</em> ?<em>item</em>?...</dt>
+<dd><p>Appends the component values from <em>item</em> to <em>vecName</em>. <em>Item</em> can be either the name of a vector or a list of numeric values.</p>
+</dd>
+<dt><em>vecName</em> <strong>binread</strong> <em>channel</em> ?<em>length</em>? ?<em>switches</em>?</dt>
+<dd><p>Reads binary values from a Tcl channel. Values are either appended to the end of the vector or placed at a given index (using the <strong>-at</strong> option), overwriting existing values. Data is read until EOF is found on the channel or a specified number of values <em>length</em> are read (note that this is not necessarily the same as the number of bytes). The following switches are supported:</p>
+<dl>
+<dt>-swap</dt>
+<dd>Swap bytes and words. The default endian is the host machine.
+</dd>
+<dt>-at <em>index</em></dt>
+<dd>New values will start at vector index <em>index</em>. This will overwrite any current values.
+</dd>
+<dt>-format <em>format</em></dt>
+<dd>Specifies the format of the data. <em>Format</em> can be one of the following: &quot;i1&quot;, &quot;i2&quot;, &quot;i4&quot;, &quot;i8&quot;, &quot;u1, &quot;u2&quot;, &quot;u4&quot;, &quot;u8&quot;, &quot;r4&quot;, &quot;r8&quot;, or &quot;r16&quot;. The number indicates the number of bytes required for each value. The letter indicates the type: &quot;i&quot; for signed, &quot;u&quot; for unsigned, &quot;r&quot; or real. The default format is &quot;r16&quot;.
+</dd>
+</dl>
+</dd>
+<dt><em>vecName</em> <strong>clear</strong></dt>
+<dd><p>Clears the element indices from the array variable associated with <em>vecName</em>. This doesn't affect the components of the vector. By default, the number of entries in the Tcl array doesn't match the number of components in the vector. This is because its too expensive to maintain decimal strings for both the index and value for each component. Instead, the index and value are saved only when you read or write an element with a new index. This command removes the index and value strings from the array. This is useful when the vector is large.</p>
+</dd>
+<dt><em>vecName</em> <strong>delete</strong> <em>index</em> ?<em>index</em>?...</dt>
+<dd><p>Deletes the <em>index</em>th component from the vector <em>vecName</em>. <em>Index</em> is the index of the element to be deleted. This is the same as unsetting the array variable element <em>index</em>. The vector is compacted after all the indices have been deleted.</p>
+</dd>
+<dt><em>vecName</em> <strong>dup</strong> <em>destName</em></dt>
+<dd><p>Copies <em>vecName</em> to <em>destName</em>. <em>DestName</em> is the name of a destination vector. If a vector <em>destName</em> already exists, it is overwritten with the components of <em>vecName</em>. Otherwise a new vector is created.</p>
+</dd>
+<dt><em>vecName</em> <strong>expr</strong> <em>expression</em></dt>
+<dd><p>Computes the expression and resets the values of the vector accordingly. Both scalar and vector math operations are allowed. All values in expressions are either real numbers or names of vectors. All numbers are treated as one component vectors.</p>
+</dd>
+<dt><em>vecName</em> <strong>length</strong> ?<em>newSize</em>?</dt>
+<dd><p>Queries or resets the number of components in <em>vecName</em>. <em>NewSize</em> is a number specifying the new size of the vector. If <em>newSize</em> is smaller than the current size of <em>vecName</em>, <em>vecName</em> is truncated. If <em>newSize</em> is greater, the vector is extended and the new components are initialized to 0.0. If no <em>newSize</em> argument is present, the current length of the vector is returned.</p>
+</dd>
+<dt><em>vecName</em> <strong>merge</strong> <em>srcName</em> ?<em>srcName</em>?...</dt>
+<dd><p>Merges the named vectors into a single vector. The resulting vector is formed by merging the components of each source vector one index at a time.</p>
+</dd>
+<dt><em>vecName</em> <strong>notify</strong> <em>keyword</em></dt>
+<dd><p>Controls how vector clients are notified of changes to the vector. The exact behavior is determined by <em>keyword</em>.</p>
+<dl>
+<dt>always</dt>
+<dd>Indicates that clients are to be notified immediately whenever the vector is updated.
+</dd>
+<dt>never</dt>
+<dd>Indicates that no clients are to be notified.
+</dd>
+<dt>whenidle</dt>
+<dd>Indicates that clients are to be notified at the next idle point whenever the vector is updated.
+</dd>
+<dt>now</dt>
+<dd>If any client notifications is currently pending, they are notified immediately.
+</dd>
+<dt>cancel</dt>
+<dd>Cancels pending notifications of clients using the vector.
+</dd>
+<dt>pending</dt>
+<dd>Returns 1 if a client notification is pending, and 0 otherwise.
+</dd>
+</dl>
+</dd>
+<dt><em>vecName</em> <strong>offset</strong> ?<em>value</em>?</dt>
+<dd><p>Shifts the indices of the vector by the amount specified by <em>value</em>. <em>Value</em> is an integer number. If no <em>value</em> argument is given, the current offset is returned.</p>
+</dd>
+<dt><em>vecName</em> <strong>populate</strong> <em>destName</em> ?<em>density</em>?</dt>
+<dd><p>Creates a vector <em>destName</em> which is a superset of <em>vecName</em>. <em>DestName</em> will include all the components of <em>vecName</em>, in addition the interval between each of the original components will contain a <em>density</em> number of new components, whose values are evenly distributed between the original components values. This is useful for generating abscissas to be interpolated along a spline.</p>
+</dd>
+<dt><em>vecName</em> <strong>range</strong> <em>firstIndex</em> ?<em>lastIndex</em>?...</dt>
+<dd><p>Returns a list of numeric values representing the vector components between two indices. Both <em>firstIndex</em> and <em>lastIndex</em> are indices representing the range of components to be returned. If <em>lastIndex</em> is less than <em>firstIndex</em>, the components are listed in reverse order.</p>
+</dd>
+<dt><em>vecName</em> <strong>search</strong> <em>value</em> ?<em>value</em>?</dt>
+<dd><p>Searches for a value or range of values among the components of <em>vecName</em>. If one <em>value</em> argument is given, a list of indices of the components which equal <em>value</em> is returned. If a second <em>value</em> is also provided, then the indices of all components which lie within the range of the two values are returned. If no components are found, then &quot;&quot; is returned.</p>
+</dd>
+<dt><em>vecName</em> <strong>set</strong> <em>item</em></dt>
+<dd><p>Resets the components of the vector to <em>item</em>. <em>Item</em> can be either a list of numeric expressions or another vector.</p>
+</dd>
+<dt><em>vecName</em> <strong>seq</strong> <em>start</em> ?<em>finish</em>? ?<em>step</em>?</dt>
+<dd><p>Generates a sequence of values starting with the value <em>start</em>. <em>Finish</em> indicates the terminating value of the sequence. The vector is automatically resized to contain just the sequence. If three arguments are present, <em>step</em> designates the interval.</p>
+<p>With only two arguments (no <em>finish</em> argument), the sequence will continue until the vector is filled. With one argument, the interval defaults to 1.0.</p>
+</dd>
+<dt><em>vecName</em> <strong>sort</strong> ?<strong>-reverse</strong>? ?<em>argName</em>?...</dt>
+<dd><p>Sorts the vector <em>vecName</em> in increasing order. If the <strong>-reverse</strong> flag is present, the vector is sorted in decreasing order. If other arguments <em>argName</em> are present, they are the names of vectors which will be rearranged in the same manner as <em>vecName</em>. Each vector must be the same length as <em>vecName</em>. You could use this to sort the x vector of a graph, while still retaining the same x,y coordinate pairs in a y vector.</p>
+</dd>
+<dt><em>vecName</em> <strong>variable</strong> <em>varName</em></dt>
+<dd><p>Maps a Tcl variable to the vector, creating another means for accessing the vector. The variable <em>varName</em> can't already exist. This overrides any current variable mapping the vector may have.</p>
+</dd>
+</dl>
+<h1 id="c-language-api">C LANGUAGE API</h1>
+<p>You can create, modify, and destroy vectors from C code, using library</p>
+<dl>
+<dt>routines.</dt>
+<dd>You need to include the header file rbc.h. It contains the
+</dd>
+<dt>definition</dt>
+<dd>of the structure <strong>Rbc_Vector</strong>, which represents the vector.
+</dd>
+<dt>It appears</dt>
+<dd>below.
+</dd>
+</dl>
+<pre><code>typedef struct {
+    double *valueArr;
+    int numValues;
+    int arraySize;
+    double min, max;
+} Rbc_Vector;</code></pre>
+<p>The field <em>valueArr</em> points to memory holding the vector components. The components are stored in a double precision array, whose size size is represented by <em>arraySize</em>. <em>NumValues</em> is the length of vector. The size of the array is always equal to or larger than the length of the vector. <em>Min</em> and <em>max</em> are minimum and maximum component values.</p>
+<h1 id="library-routines">LIBRARY ROUTINES</h1>
+<p>The following routines are available from C to manage vectors. Vectors are identified by the vector name.</p>
+<p><strong>Rbc_CreateVector</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>int Rbc_CreateVector (<em>interp</em>, <em>vecName</em>, <em>length</em>, <em>vecPtrPtr</em>)</dt>
+<dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;<br />
+int <em>length</em>;<br />
+Rbc_Vector **<em>vecPtrPtr</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Creates a new vector <em>vecName</em> with a length of <em>length</em>. <strong>Rbc_CreateVector</strong> creates both a new Tcl command and array variable <em>vecName</em>. Neither a command nor variable named <em>vecName</em> can already exist. A pointer to the vector is placed into <em>vecPtrPtr</em>.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully created. If <em>length</em> is negative, a Tcl variable or command <em>vecName</em> already exists, or memory cannot be allocated for the vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_DeleteVectorByName</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>int Rbc_DeleteVectorByName (<em>interp</em>, <em>vecName</em>)</dt>
+<dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Removes the vector <em>vecName</em>. <em>VecName</em> is the name of a vector which must already exist. Both the Tcl command and array variable <em>vecName</em> are destroyed. All clients of the vector will be notified immediately that the vector has been destroyed.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully deleted. If <em>vecName</em> is not the name a vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_DeleteVector</strong></p>
+<p>Synopsis:</p>
+<p>int <strong>Rbc_DeleteVector</strong> (<em>vecPtr</em>)<br />
+Rbc_Vector *<em>vecPtr</em>;</p>
+<dl>
+<dt>Description:</dt>
+<dd>Removes the vector pointed to by <em>vecPtr</em>. <em>VecPtr</em> is a pointer to a vector, typically set by <strong>Rbc_GetVector</strong> or <strong>Rbc_CreateVector</strong>. Both the Tcl command and array variable of the vector are destroyed. All clients of the vector will be notified immediately that the vector has been destroyed.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully deleted. If <em>vecName</em> is not the name a vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_GetVector</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>int Rbc_GetVector (<em>interp</em>, <em>vecName</em>, <em>vecPtrPtr</em>)</dt>
+<dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;<br />
+Rbc_Vector **<em>vecPtrPtr</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Retrieves the vector <em>vecName</em>. <em>VecName</em> is the name of a vector which must already exist. <em>VecPtrPtr</em> will point be set to the address of the vector.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully retrieved. If <em>vecName</em> is not the name of a vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_ResetVector</strong></p>
+<p>Synopsis:</p>
+<p>int <strong>Rbc_ResetVector</strong> (<em>vecPtr</em>, <em>dataArr</em>,</p>
+<dl>
+<dt><em>numValues</em>, <em>arraySize</em>, <em>freeProc</em>)</dt>
+<dd>Rbc_Vector *<em>vecPtr</em>; double *<em>dataArr</em>;<br />
+int *<em>numValues</em>;<br />
+int *<em>arraySize</em>;<br />
+Tcl_FreeProc *<em>freeProc</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Resets the components of the vector pointed to by <em>vecPtr</em>. Calling <strong>Rbc_ResetVector</strong> will trigger the vector to dispatch notifications to its clients. <em>DataArr</em> is the array of doubles which represents the vector data. <em>NumValues</em> is the number of elements in the array. <em>ArraySize</em> is the actual size of the array (the array may be bigger than the number of values stored in it). <em>FreeProc</em> indicates how the storage for the vector component array (<em>dataArr</em>) was allocated. It is used to determine how to reallocate memory when the vector is resized or destroyed. It must be TCL_DYNAMIC, TCL_STATIC, TCL_VOLATILE, or a pointer to a function to free the memory allocated for the vector array. If <em>freeProc</em> is TCL_VOLATILE, it indicates that <em>dataArr</em> must be copied and saved. If <em>freeProc</em> is TCL_DYNAMIC, it indicates that <em>dataArr</em> was dynamically allocated and that Tcl should free <em>dataArr</em> if necessary. Static indicates that nothing should be done to release storage for <em>dataArr</em>.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully resized. If <em>newSize</em> is negative, a vector <em>vecName</em> does not exist, or memory cannot be allocated for the vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_ResizeVector</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>int Rbc_ResizeVector (<em>vecPtr</em>, <em>newSize</em>)</dt>
+<dd>Rbc_Vector *<em>vecPtr</em>; int <em>newSize</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Resets the length of the vector pointed to by <em>vecPtr</em> to <em>newSize</em>. If <em>newSize</em> is smaller than the current size of the vector, it is truncated. If <em>newSize</em> is greater, the vector is extended and the new components are initialized to 0.0. Calling <strong>Rbc_ResetVector</strong> will trigger the vector to dispatch notifications.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully resized. If <em>newSize</em> is negative or memory can not be allocated for the vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_VectorExists</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>int Rbc_VectorExists (<em>interp</em>, <em>vecName</em>)</dt>
+<dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Indicates if a vector named <em>vecName</em> exists in <em>interp</em>.
+</dd>
+<dt>Results:</dt>
+<dd>Returns 1 if a vector <em>vecName</em> exists and 0 otherwise.
+</dd>
+</dl>
+<p>If your application needs to be notified when a vector changes, it can allocate a unique <em>client</em> <em>identifier</em> for itself. Using this identifier, you can then register a call-back to be made whenever the vector is updated or destroyed. By default, the call-backs are made at the next idle point. This can be changed to occur at the time the vector is modified. An application can allocate more than one identifier for any vector. When the client application is done with the vector, it should free the identifier.</p>
+<p>The call-back routine must of the following type.</p>
+<p>typedef void (<strong>Rbc_VectorChangedProc</strong>) (Tcl_Interp *<em>interp</em>, ClientData <em>clientData</em>, Rbc_VectorNotify <em>notify</em>);</p>
+<p><em>ClientData</em> is passed to this routine whenever it is called. You can use this to pass information to the call-back. The <em>notify</em> argument indicates whether the vector has been updated of destroyed. It is an enumerated type.</p>
+<dl>
+<dt>typedef enum {</dt>
+<dd>RBC_VECTOR_NOTIFY_UPDATE=1, RBC_VECTOR_NOTIFY_DESTROY=2<br />
+} <strong>Rbc_VectorNotify</strong>;
+</dd>
+</dl>
+<p><strong>Rbc_AllocVectorId</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>Rbc_VectorId Rbc_AllocVectorId (<em>interp</em>, <em>vecName</em>)</dt>
+<dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Allocates an client identifier for with the vector <em>vecName</em>. This identifier can be used to specify a call- back which is triggered when the vector is updated or destroyed.
+</dd>
+<dt>Results:</dt>
+<dd>Returns a client identifier if successful. If <em>vecName</em> is not the name of a vector, then NULL is returned and <em>interp-&gt;result</em> will contain an error message.
+</dd>
+</dl>
+<p><strong>Rbc_GetVectorById</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>int Rbc_GetVector (<em>interp</em>, <em>clientId</em>, <em>vecPtrPtr</em>)</dt>
+<dd>Tcl_Interp *<em>interp</em>; Rbc_VectorId <em>clientId</em>;<br />
+Rbc_Vector **<em>vecPtrPtr</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Retrieves the vector used by <em>clientId</em>. <em>ClientId</em> is a valid vector client identifier allocated by <strong>Rbc_AllocVectorId</strong>. <em>VecPtrPtr</em> will point be set to the address of the vector.
+</dd>
+<dt>Results:</dt>
+<dd>Returns TCL_OK if the vector is successfully retrieved.
+</dd>
+</dl>
+<p><strong>Rbc_SetVectorChangedProc</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>void Rbc_SetVectorChangedProc (<em>clientId</em>, <em>proc</em>, <em>clientData</em>);</dt>
+<dd>Rbc_VectorId <em>clientId</em>; Rbc_VectorChangedProc *<em>proc</em>; ClientData *<em>clientData</em>;
+</dd>
+<dt>Description:</dt>
+<dd>Specifies a call-back routine to be called whenever the vector associated with <em>clientId</em> is updated or deleted. <em>Proc</em> is a pointer to call-back routine and must be of the type <strong>Rbc_VectorChangedProc</strong>. <em>ClientData</em> is a one- word value to be passed to the routine when it is invoked. If <em>proc</em> is NULL, then the client is not notified.
+</dd>
+<dt>Results:</dt>
+<dd>The designated call-back procedure will be invoked when the vector is updated or destroyed.
+</dd>
+</dl>
+<p><strong>Rbc_FreeVectorId</strong></p>
+<p>Synopsis:</p>
+<p>void <strong>Rbc_FreeVectorId</strong> (<em>clientId</em>);<br />
+Rbc_VectorId <em>clientId</em>;</p>
+<dl>
+<dt>Description:</dt>
+<dd>Frees the client identifier. Memory allocated for the identifier is released. The client will no longer be notified when the vector is modified.
+</dd>
+<dt>Results:</dt>
+<dd>The designated call-back procedure will be no longer be invoked when the vector is updated or destroyed.
+</dd>
+</dl>
+<p><strong>Rbc_NameOfVectorId</strong></p>
+<p>Synopsis:</p>
+<p>char *<strong>Rbc_NameOfVectorId</strong> (<em>clientId</em>);<br />
+Rbc_VectorId <em>clientId</em>;</p>
+<dl>
+<dt>Description:</dt>
+<dd>Retrieves the name of the vector associated with the client identifier <em>clientId</em>.
+</dd>
+<dt>Results:</dt>
+<dd>Returns the name of the vector associated with <em>clientId</em>. If <em>clientId</em> is not an identifier or the vector has been destroyed, NULL is returned.
+</dd>
+</dl>
+<p><strong>Rbc_InstallIndexProc</strong></p>
+<p>Synopsis:</p>
+<dl>
+<dt>void Rbc_InstallIndexProc (<em>indexName</em>, <em>procPtr</em>)</dt>
+<dd>char *<em>indexName</em>; Rbc_VectorIndexProc *<em>procPtr</em>;
+</dd>
+<dt>Description:</dt>
+<dd><p>Registers a function to be called to retrieved the index <em>indexName</em> from the vector's array variable.</p>
+<p>typedef double Rbc_VectorIndexProc(Vector *vecPtr);</p>
+<p>The function will be passed a pointer to the vector. The function must return a double representing the value at the index.</p>
+</dd>
+<dt>Results:</dt>
+<dd>The new index is installed into the vector.
+</dd>
+</dl>
+<h1 id="c-api-example">C API EXAMPLE</h1>
+<p>The following example opens a file of binary data and stores it in an array of doubles. The array size is computed from the size of the file. If the vector &quot;data&quot; exists, calling <strong>Rbc_VectorExists</strong>, <strong>Rbc_GetVector</strong> is called to get the pointer to the vector. Otherwise the routine <strong>Rbc_CreateVector</strong> is called to create a new vector and returns a pointer to it. Just like the Tcl interface, both a new Tcl command and array variable are created when a new vector is created. It doesn't make any difference what the initial size of the vector is since it will be reset shortly. The vector is updated when bc_ResetVector is called. Rbc_ResetVector makes the changes visible to the Tcl interface and other vector clients (such as a graph widget).</p>
+<pre><code>#include &lt;tcl.h&gt;
+#include &lt;rbc.h&gt;
+Rbc_Vector *vecPtr;
+double *newArr;
+FILE *f;
+struct stat statBuf;
+int numBytes, numValues;
+
+f = fopen(&quot;binary.dat&quot;, &quot;r&quot;);
+fstat(fileno(f), &amp;statBuf);
+numBytes = (int)statBuf.st_size;
+
+/* Allocate an array big enough to hold all the data */
+newArr = (double *)malloc(numBytes);
+numValues = numBytes / sizeof(double);
+fread((void *)newArr, numValues, sizeof(double), f);
+fclose(f);
+
+if (Rbc_VectorExists(interp, &quot;data&quot;))  {
+    if (Rbc_GetVector(interp, &quot;data&quot;, &amp;vecPtr) != TCL_OK) {
+  return TCL_ERROR;
+    }
+} else {
+   if (Rbc_CreateVector(interp, &quot;data&quot;, 0, &amp;vecPtr) != TCL_OK) {
+  return TCL_ERROR;
+   }
+}
+/*
+ * Reset the vector. Clients will be notified when Tk is idle.
+ * TCL_DYNAMIC tells the vector to free the memory allocated
+ * if it needs to reallocate or destroy the vector.
+ */
+if (Rbc_ResetVector(vecPtr, newArr, numValues, numValues,
+  TCL_DYNAMIC) != TCL_OK) {
+    return TCL_ERROR;
+}</code></pre>
+<h1 id="incompatibilities">INCOMPATIBILITIES</h1>
+<p>In previous versions, if the array variable isn't global (i.e. local to a Tcl procedure), the vector is automatically destroyed when the procedure returns.</p>
+<pre><code>proc doit {} {
+    # Temporary vector x
+    vector x(10)
+    set x(9) 2.0
+      ...
+}</code></pre>
+<p>This has changed. Variables are not automatically destroyed when their variable is unset. You can restore the old behavior by setting the &quot;-watchunset&quot; switch.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>vector, graph, widget</p>
+</body>
+</html>

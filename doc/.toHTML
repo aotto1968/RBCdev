@@ -1,2 +1,0 @@
-base=${1%.*}
-pandoc -s -t html $base.md > $base.html && kfmclient exec $base.html

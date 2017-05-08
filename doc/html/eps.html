@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc," />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">eps</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#syntax">SYNTAX</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>eps - Encapsulated PostScript canvas item.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><em>canvas</em> <strong>create eps</strong> <em>x</em> <em>y</em> ?<em>option</em> <em>value</em>?...</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>eps</strong> canvas item lets you place encapulated PostScript (EPS) on a canvas, controlling its size and placement. The EPS item is displayed either as a solid rectangle or a preview image. The preview image is designated in one of two ways: 1) the EPS file contains an ASCII hexidecimal preview, or 2) a Tk photo image. When the canvas generates PostScript output, the EPS will be inserted with the proper translation and scaling to match that of the EPS item. So can use the canvas widget as a page layout tool.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>Let's say you have for PostScript files of four graphs which you want to tile two-by-two on a single page. Maybe you'd like to annotate the graphs by putting a caption at the bottom of each graph.</p>
+<p>Normally, you would have to resort to an external tool or write your own PostScript program. The <strong>eps</strong> canvas item lets you do this through Tk's canvas widget. An <strong>eps</strong> item displays an image (or rectangle) representing the encapsulated PostScript file. It also scales and translates the EPS file when the canvas is printed.</p>
+<h1 id="syntax">SYNTAX</h1>
+<p><em>canvas</em> <strong>create eps</strong> <em>x</em> <em>y</em> ?<em>option</em> <em>value</em>?... The <strong>eps</strong> item creates a new canvas item. <em>Canvas</em> is the name of a <strong>canvas</strong> widget. You must supply the X-Y coordinate of the new eps item. How the coordinate is exactly interpretered is controlled by the <strong>-anchor</strong> option (see below).</p>
+<p>Additional options may be specified on the command line to configure aspects of the eps item such as its color, stipple, and font. The following <em>option</em> and <em>value</em> pairs are valid.</p>
+<dl>
+<dt>-anchor <em>anchor</em></dt>
+<dd>Tells how to position the EPS item relative to its X-Y coordinate. The default is center.
+</dd>
+<dt>-background <em>color</em></dt>
+<dd>Sets the background color of the EPS rectangle.
+</dd>
+<dt>-borderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border around the outside edge of the item. The <strong>-relief</strong> option determines if the border is to be drawn. The default is 0.
+</dd>
+<dt>-file <em>fileName</em></dt>
+<dd>Specifies the name of the EPS file. The first line of an EPS file must start with &quot;%!PS&quot; and contain a &quot;EPS&quot; version specification. The other requirement is that there be a &quot;%%BoundingBox:&quot; entry which contains four integers representing the lower-left and upper-right coordinates of the area bounding the EPS. The default is &quot;&quot;.
+</dd>
+<dt>-font <em>fontName</em></dt>
+<dd>Specifies the font of the title. The default is *-Helvetica- Bold-R-Normal-*-18-180-*.
+</dd>
+<dt>-foreground <em>color</em></dt>
+<dd>Specifies the foreground color of the EPS rectangle. The option matters only when the <strong>-stipple</strong> option is set. The default is white.
+</dd>
+<dt>-height <em>pixels</em></dt>
+<dd>Specifies the height EPS item. If <em>pixels</em> is 0, then the height is determined from the PostScript &quot;BoundingBox:&quot; entry in the EPS file. The default is 0.
+</dd>
+<dt>-image <em>photo</em></dt>
+<dd>Specifies the name of a Tk photo image to be displayed as in the item as a preview image. This option overrides any preview specification found in the EPS file. The default is &quot;&quot;.
+</dd>
+<dt>-justify <em>justify</em></dt>
+<dd>Specifies how the title should be justified. This matters only when the title contains more than one line of text. <em>Justify</em> must be left, right, or center. The default is center.
+</dd>
+<dt>-relief <em>relief</em></dt>
+<dd>Specifies the 3-D effect for the EPS item. <em>Relief</em> specifies how the item should appear relative to canvas; for example, raised means the item should appear to protrude. The default is flat.
+</dd>
+<dt>-shadowcolor <em>color</em></dt>
+<dd>Specifies the color of the drop shadow used for the title. The option with the <strong>-shadowoffset</strong> option control how the title's drop shadow appears. The default is grey.
+</dd>
+<dt>-shadowoffset <em>pixels</em></dt>
+<dd>Specifies the offset of the drop shadow from the title's text. If <em>pixels</em> is 0, no shadow will be seen. The default is 0.
+</dd>
+<dt>-showimage <em>boolean</em></dt>
+<dd>Indicates whether to display the image preview (if one exists), or a simple rectangle. The default is yes.
+</dd>
+<dt>-stipple <em>bitmap</em></dt>
+<dd>Specifies a bitmap to used to stipple the rectangle representing the EPS item. The default is &quot;&quot;.
+</dd>
+<dt>-title <em>string</em></dt>
+<dd>Sets the title of the EPS item. If <em>string</em> is &quot;&quot;, then the title specified by the PostScript &quot;Title:&quot; entry is used. You can set the string a single space to display no title. The default is &quot;&quot;.
+</dd>
+<dt>-titleanchor <em>anchor</em></dt>
+<dd>Tells how to position the title within EPS item. The default is n.
+</dd>
+<dt>-titlecolor <em>color</em></dt>
+<dd>Specifies the color of the title. The default is white.
+</dd>
+<dt>-titlerotate <em>degrees</em></dt>
+<dd>Sets the rotation of the title. <em>Degrees</em> is a real number representing the angle of rotation. The title is first rotated in space and then placed according to the <strong>-titleanchor</strong> position. The default rotation is 0.0.
+</dd>
+<dt>-width <em>pixels</em></dt>
+<dd>Specifies the width EPS item. If <em>pixels</em> is 0, then the width is determined from the PostScript &quot;BoundingBox:&quot; entry in the EPS file. The default is 0. 5i.
+</dd>
+</dl>
+</body>
+</html>

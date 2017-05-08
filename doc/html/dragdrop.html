@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, drag&drop, send, bind, widget" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">dragdrop</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>drag&amp;drop - facilities for handling drag&amp;drop data transfers</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>drag&amp;drop source</strong><br />
+<strong>drag&amp;drop source</strong> <em>window</em> ?<em>options</em>?<br />
+<strong>drag&amp;drop source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em>? ?<em>command</em> <em>arg</em> <em>arg...</em>?</p>
+<p><strong>drag&amp;drop target</strong><br />
+<strong>drag&amp;drop target</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em> <em>command</em> <em>arg</em> <em>arg...</em>?</p>
+<p><strong>drag&amp;drop target</strong> <em>window</em> <strong>handle</strong> <em>dataType</em> ?<em>value</em>?</p>
+<p><strong>drag&amp;drop token</strong> <em>window</em></p>
+<p><strong>drag&amp;drop drag</strong> <em>window</em> <em>x</em> <em>y</em><br />
+<strong>drag&amp;drop drop</strong> <em>window</em> <em>x</em> <em>y</em><br />
+<strong>drag&amp;drop active</strong><br />
+<strong>drag&amp;drop errors</strong> ?<em>proc</em>?<br />
+<strong>drag&amp;drop location</strong> ?<em>x</em> <em>y</em>?</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>drag&amp;drop</strong> command provides access to a set of facilities for managing drag-and-drop data transfers. Any of the usual Tk widgets can be registered to participate in the drag-and-drop process. Widgets registered as a drag&amp;drop <em>source</em> can export data to other widgets registered as a drag&amp;drop <em>target</em>. Note that a particular widget can be registered as a source, as a target, or as both.</p>
+<p>The drag-and-drop process begins when the user clicks and holds a mouse button in a source window; a token window appears with an icon or message to represent the data being transferred. As the user moves the mouse pointer, the token window follows along, acting as a movable packet of data. Whenever the mouse pointer falls on a valid target window, the border of the token window is changed to a raised (active) state. When the mouse button is released over the target window, a Tcl routine is invoked to send the data to the desired application, and the target window is asked to &quot;handle&quot; the data. If this communication process fails, a rejection symbol (a circle with a line through it) is displayed on the token window to indicate failure.</p>
+<p>The details of the communication process are fully configurable by the application developer. In the simplest case, the value that is sent to the target window is a simple string. The target window is simply asked to &quot;handle&quot; that string value. In general, the source window can have a special &quot;handler&quot; procedure to transfer a particular data type by issuing a series of &quot;send&quot; commands. After this, the target window is again asked to &quot;handle&quot; the result.</p>
+<p>Both sources and targets can have a list of &quot;handlers&quot; for different data types. As a token window is dragged from its source to various targets, each target is checked to see if it recognizes a handler offered by the source. If it does, it is treated as a valid target. Otherwise, it is ignored. This scheme allows the same source to interact with many different kinds of targets. For example, a source for RGB color samples might have &quot;color&quot; and &quot;string&quot; handlers. This would allow it to communicate with &quot;color&quot; targets (sending RGB data) as well as entry widgets (sending strings of the form &quot;#rrggbb&quot;).</p>
+<p>This introduction was presented as a brief overview of the communication process; further details are presented below:</p>
+<dl>
+<dt><strong>drag&amp;drop source</strong></dt>
+<dd><p>Returns a list of path names for widgets registered as drag&amp;drop sources. Returns an empty string if no widgets have been registered.</p>
+</dd>
+<dt><strong>drag&amp;drop source</strong> <em>window</em> ?<em>options</em>?</dt>
+<dd><p>Registers a new drag&amp;drop source window with the given options, or modifies the options for an existing window:</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>buttonBinding</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>ButtonBinding</strong> Switch: <strong>-button</strong> <em>n</em>
+</dd>
+</dl>
+<p>Specifies the mouse button (integer 1-5) that will invoke the drag&amp;drop operation on the source window. This causes the following bindings to be added to the widget:</p>
+<p>bind <em>win</em> &lt;ButtonPress-<em>n</em>&gt; {drag&amp;drop drag %W %X %Y} bind <em>win</em> &lt;B<em>n</em>-Motion&gt; {drag&amp;drop drag %W %X %Y} bind <em>win</em> &lt;ButtonRelease-<em>n</em>&gt; {drag&amp;drop drop %W %X %Y}</p>
+<p>The default value is button 3. If the value &quot;0&quot; is specified, then no bindings are added; this enables the user to establish bindings manually.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>packageCommand</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Command</strong> Switch: <strong>-packagecmd</strong> <em>command</em>
+</dd>
+</dl>
+<p>Specifies a Tcl command used to establish the appearance of the token window at the start of each drag&amp;drop operation. This command is automatically invoked by the <strong>drag&amp;drop drag</strong> command whenever the token window is about to be mapped for a drag operation. It should update the appearance of the token window to represent the data that is being moved.</p>
+<p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
+<dl>
+<dt>%t</dt>
+<dd>Replaced with the window path name for the token which represents the data being dragged.
+</dd>
+<dt>%W</dt>
+<dd>Replaced with the window path name for the drag&amp;drop source.
+</dd>
+</dl>
+<p>The return value from the package command represents the data being transferred. If the package command returns an empty string, the drag operation is quietly aborted. This can be used to disallow drag&amp;drop operations from certain parts of a widget, if the drag position is inappropriate.</p>
+<p>For example, the following package routine will select an item from a listbox and configure the token window to display the selected string. It uses the <strong>drag&amp;drop location</strong> command to determine the entry in the listbox that the user has selected and it returns this as the data value:</p>
+<dl>
+<dt>proc package_list_item {lbox token} {</dt>
+<dd><p>set xy [drag&amp;drop location] set y [expr [lindex $xy 1]-[winfo rooty $lbox]]</p>
+<p>set str [$lbox get [$lbox nearest $y]] $token.value configure -text $str<br />
+return $str<br />
+}</p>
+</dd>
+</dl>
+<p>The return value is available later when the source and target communicate. If the source has a command associated with its data handler, then this value is substituted in place of &quot;%v&quot; in the source handler. Otherwise, it is substituted in place of &quot;%v&quot; in the target handler.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>rejectBackground</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Background</strong>
+</dd>
+<dt>Switch:</dt>
+<dd><strong>-rejectbg</strong> <em>color</em>
+</dd>
+</dl>
+<p>Specifies the color used to draw the background of the rejection symbol on the token window. The rejection symbol (a circle with a line through it--the international &quot;no&quot;) appears whenever communication fails.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>rejectForeground</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Foreground</strong>
+</dd>
+<dt>Switch:</dt>
+<dd><strong>-rejectfg</strong> <em>color</em>
+</dd>
+</dl>
+<p>Specifies the color used to draw the foreground of the rejection symbol on the token window.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>rejectStipple</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Stipple</strong>
+</dd>
+<dt>Switch:</dt>
+<dd><strong>-rejectstipple</strong> <em>pattern</em>
+</dd>
+</dl>
+<p>Specifies a stipple pattern used to draw the foreground of the rejection symbol on the token window. Any of the forms acceptable to Tk_GetBitmap can be used.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>selfTarget</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>SelfTarget</strong> Switch: <strong>-selftarget</strong> <em>boolean</em>
+</dd>
+</dl>
+<p>If the <em>boolean</em> value is true, and if a source widget is also registered as a compatible target, then the source will be able to transmit to itself during drag&amp;drop operations. This is primarily useful for complex sources such as a canvas widget, where items may be moved from place to place within the same widget. By default, this option is disabled.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>send</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Send</strong> Switch: <strong>-send</strong> <em>list</em>
+</dd>
+</dl>
+<p>Specifies a <em>list</em> of <em>dataTypes</em> enabled for communication. Only <em>dataTypes</em> defined by commands of the form &quot;<strong>drag&amp;drop</strong> <strong>source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em> ?<em>command</em> <em>arg</em> <em>arg...</em>?&quot; are allowed. This list also determines the priority of the various <em>dataTypes</em>. When a token window is over a potential drag&amp;drop target, this list is searched from start to finish for a <em>dataType</em> that is also recognized by the target. The first matching <em>dataType</em> found determines the value that will be sent if the token is dropped. If no matching <em>dataType</em> is found, then the target is incompatible, and is ignored. By default, this option has the value &quot;all&quot;, indicating that all <em>dataTypes</em> should be considered in the order that they were defined for the source.</p>
+<p>Note that this option makes it easy to control a drag&amp;drop source. Setting the value to an empty string disables the source; setting the value back to &quot;all&quot; restores communication.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>siteCommand</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Command</strong> Switch: <strong>-sitecmd</strong> <em>command</em>
+</dd>
+</dl>
+<p>Specifies a Tcl command used to update the appearance of the token window. If specified, this command is automatically invoked by the <strong>drag&amp;drop drag</strong> command whenever the token window is over a compatible drag&amp;drop target.</p>
+<p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
+<dl>
+<dt>%s</dt>
+<dd>Replaced with &quot;1&quot; if the token window is over a compatible target, and &quot;0&quot; otherwise.
+</dd>
+<dt>%t</dt>
+<dd>Replaced with the window path name for the token which represents the data being dragged.
+</dd>
+</dl>
+<p>Regardless of this command, border of the token window will become raised whenever the token is over a valid target. This command can be used to display other visual cues.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>tokenAnchor</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Anchor</strong> Switch: <strong>-tokenanchor</strong> <em>anchor</em>
+</dd>
+</dl>
+<p>Specifies how the token window is positioned relative to the mouse pointer coordinates passed to the <strong>drag&amp;drop</strong> <strong>drag</strong> command. Must be one of the values n, s, e, w, center, nw, ne, sw or se. For example, &quot;nw&quot; means to position the token such that its upper-left corner is at the mouse pointer. The default value is &quot;center&quot;.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>tokenBackground</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Background</strong>
+</dd>
+<dt>Switch:</dt>
+<dd><strong>-tokenbg</strong> <em>color</em>
+</dd>
+</dl>
+<p>Specifies the color used to draw the background of the token window.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>tokenBorderWidth</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>BorderWidth</strong>
+</dd>
+<dt>Switch:</dt>
+<dd><strong>-tokenborderwidth</strong> <em>size</em>
+</dd>
+</dl>
+<p>Specifies the width in pixels of the border around the token window. This border becomes raised to indicate when the token is over a compatible drag&amp;drop target site. The value may have any of the forms acceptable to Tk_GetPixels. The default value is &quot;3&quot;.</p>
+<dl>
+<dt>Name:</dt>
+<dd><strong>tokenCursor</strong>
+</dd>
+<dt>Class:</dt>
+<dd><strong>Cursor</strong>
+</dd>
+<dt>Switch:</dt>
+<dd><strong>-tokencursor</strong> <em>cursor</em>
+</dd>
+</dl>
+<p>Specifies the cursor used when a token window is active. The value may have any of the forms acceptable to Tk_GetCursor. The default value is &quot;center_ptr&quot;.</p>
+</dd>
+<dt><strong>drag&amp;drop source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em>? ?<em>command</em> <em>arg</em> <em>arg...</em>?</dt>
+<dd><p>With no extra arguments, this command returns a list of all <em>dataType</em> names that have been registered for the source <em>window</em>. If only the <em>dataType</em> is specified, then the <em>dataType</em> is created if necessary, and the command associated with the <em>dataType</em> is returned. Otherwise, it concatenates the <em>command</em> and any extra <em>arg</em> strings, and registers a new <em>dataType</em> with this command.</p>
+<p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
+<dl>
+<dt>%i</dt>
+<dd>Replaced with the name of the interpreter for the target application.
+</dd>
+<dt>%v</dt>
+<dd>Replaced with the value returned from the &quot;-packagecmd&quot; command.
+</dd>
+<dt>%w</dt>
+<dd>Replaced with the window path name for the target window.
+</dd>
+</dl>
+<p>A typical source handler contains one or more &quot;send&quot; commands which transfer data to the remote application. The target window is then asked to handle the new data. Whatever value is returned by the source <em>command</em> handler is automatically substituted into the &quot;%v&quot; fields of the target handler.</p>
+<p>This separation between the transfer and the handling of the data is important. It allows the same source handler to transfer data for many different targets, and it allows each of the targets to handle the incoming data differently. If an error is encountered during the communication process, the rejection symbol is posted on the token window to indicate failure.</p>
+</dd>
+<dt><strong>drag&amp;drop target</strong></dt>
+<dd><p>Returns a list of path names for widgets registered as drag&amp;drop targets. Returns an empty string if no widgets have been registered.</p>
+</dd>
+<dt><strong>drag&amp;drop target</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em> <em>command</em> <em>arg</em> <em>arg...</em>?</dt>
+<dd><p>Registers a new drag&amp;drop target window with a given handler, or modifies the handlers for an existing window. If no <em>dataType</em> is specified, this command returns the current list of recognized <em>dataType</em> strings. Each <em>dataType</em> is a symbolic name representing a form of data, and the corresponding <em>command</em> is a Tcl command that specifies how the target will make use of the data. This command is invoked indirectly after a source has transferred data to a target application.</p>
+<p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
+<dl>
+<dt>%v</dt>
+<dd>In the simplest case, the source window does not have a handler command for the selected <em>dataType</em>, and this field is replaced with the result from the &quot;-packagecmd&quot; command. When the source does have a handler command, the result from the &quot;-packagecmd&quot; command is substituted into its &quot;%v&quot; field, and the result from this command is substituted into this field in the target command.
+</dd>
+<dt>%W</dt>
+<dd>Replaced with the window path name for the target window.
+</dd>
+</dl>
+</dd>
+<dt><strong>drag&amp;drop target</strong> <em>window</em> handle <em>dataType</em> ?<em>value</em>?</dt>
+<dd><p>Searches for the given <em>dataType</em> name among the handlers registered for the target <em>window</em>, and invokes the appropriate <em>command</em>. If a <em>value</em> is specified, it is substituted into any &quot;%v&quot; fields in the handler command associated with the <em>dataType</em>. If the <em>dataType</em> name is not recognized, this command returns an error. This command is invoked automatically by the drag&amp;drop facility when data is being transferred from a source to a target.</p>
+</dd>
+<dt><strong>drag&amp;drop token</strong> <em>window</em></dt>
+<dd><p>Returns the token window associated with a drag&amp;drop source <em>window</em>. The token window is used to represent data as it is being dragged from the source to a target. When a source is first established, its token window must be filled with widgets to display the source data. For example,</p>
+<p>drag&amp;drop source .foo</p>
+<p>set win [drag&amp;drop token .foo]<br />
+label $win.label -text &quot;Data&quot;<br />
+pack $win.label</p>
+</dd>
+<dt><strong>drag&amp;drop drag</strong> <em>window</em> <em>x</em> <em>y</em></dt>
+<dd><p>Marks the start of (or movement during) a drag&amp;drop operation. If the token window is unmapped when this command is invoked, then the <strong>-packagecmd</strong> for the source <em>window</em> is executed. If this command is successful and returns a non-null string, the token window is mapped. On subsequent calls, the token window is moved to the new <em>x</em> <em>y</em> location. Unless the &quot;<strong>-button 0</strong>&quot; option is specified for the source, this command is automatically bound to &lt;ButtonPress-<em>n</em>&gt; and &lt;B<em>n</em>-Motion&gt; events for &quot;<strong>-button</strong> <em>n</em>&quot; of the source widget.</p>
+</dd>
+<dt><strong>drag&amp;drop drop</strong> <em>window</em> <em>x</em> <em>y</em></dt>
+<dd><p>Marks the end of a drag&amp;drop operation. If the mouse pointer is over a compatible target window, then the appropriate send handler for the first compatible <em>dataType</em> is invoked to handle the data transfer. If the data transfer is successful, then the token window is unmapped; otherwise, a rejection symbol is drawn on the token window, and the window is unmapped after a small delay. Unless the &quot;<strong>-button 0</strong>&quot; option is specified for the source, this command is automatically bound to the &lt;ButtonRelease-<em>n</em>&gt; event for &quot;<strong>-button</strong> <em>n</em>&quot; of the source widget.</p>
+</dd>
+<dt><strong>drag&amp;drop active</strong></dt>
+<dd><p>Returns &quot;1&quot; if a drag&amp;drop operation is in progress, and &quot;0&quot; otherwise. A drag&amp;drop operation officially starts after the package command has been executed successfully, and ends after the send handler has been executed (successfully or otherwise).</p>
+</dd>
+<dt><strong>drag&amp;drop errors</strong> ?<em>proc</em>?</dt>
+<dd><p>Specifies a Tcl <em>proc</em> used to handle errors encountered during drag&amp;drop operations. If a <em>proc</em> is not specified, this command returns the current error handler. By default, all errors are sent to the usual <strong>tkerror</strong> command, and therefore appear in a dialog box to the user. This behavior is quite useful when debugging communication protocols, but may not be desirable in a finished application. Errors can be suppressed entirely (leaving the rejection symbol as the only error indicator) by specifying a null string in place of the <em>proc</em> name.</p>
+</dd>
+<dt><strong>drag&amp;drop location</strong> ?<em>x</em> <em>y</em>?</dt>
+<dd><p>Used to set or query the pointer location during a drag&amp;drop operation. The <em>x</em> <em>y</em> arguments specify the current location; if these arguments are missing, then the last reported (x,y) location is returned as a list with two elements. This command is issued automatically within the <strong>drag&amp;drop drag</strong> and <strong>drag&amp;drop</strong> <strong>drop</strong> commands, to keep track of pointer movement.</p>
+</dd>
+</dl>
+<h1 id="keywords">KEYWORDS</h1>
+<p>drag&amp;drop, send, bind, widget</p>
+</body>
+</html>

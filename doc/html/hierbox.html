@@ -1,0 +1,1377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, treeview, widget" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">hierbox</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#tree-data-object">TREE DATA OBJECT</a></li>
+<li><a href="#syntax">SYNTAX</a></li>
+<li><a href="#ids-and-tags">IDS AND TAGS</a></li>
+<li><a href="#special-node-ids">SPECIAL NODE IDS</a></li>
+<li><a href="#data-fields">DATA FIELDS</a></li>
+<li><a href="#entry-bindings">ENTRY BINDINGS</a></li>
+<li><a href="#treeview-operations">TREEVIEW OPERATIONS</a></li>
+<li><a href="#treeview-options">TREEVIEW OPTIONS</a></li>
+<li><a href="#entry-options">ENTRY OPTIONS</a></li>
+<li><a href="#button-options">BUTTON OPTIONS</a></li>
+<li><a href="#column-options">COLUMN OPTIONS</a></li>
+<li><a href="#text-editing-options">TEXT EDITING OPTIONS</a></li>
+<li><a href="#default-bindings">DEFAULT BINDINGS</a><ul>
+<li><a href="#widget-bindings">WIDGET BINDINGS</a></li>
+<li><a href="#button-bindings">BUTTON BINDINGS</a></li>
+<li><a href="#entry-bindings-1">ENTRY BINDINGS</a></li>
+<li><a href="#column-bindings">COLUMN BINDINGS</a></li>
+<li><a href="#column-rule-bindings">COLUMN RULE BINDINGS</a></li>
+</ul></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>treeview - Create and manipulate hierarchical table widgets</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>treeview</strong> <em>pathName</em> ?<em>options</em>?</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>treeview</strong> widget displays a tree of data. It replaces both the <strong>hiertable</strong> and <strong>hierbox</strong> widgets. The <strong>treeview</strong> is 100% syntax compatible with the <strong>hiertable</strong> widget. The <strong>hiertable</strong> command is retained for sake of script-level compatibility. This widget obsoletes the <strong>hierbox</strong> widget. It does everything the old <strong>hierbox</strong> widget did, but also provides data sharing (via <em>tree</em> <em>data</em> <em>objects</em>) and the ability to tag nodes.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>The <strong>treeview</strong> widget displays hierarchical data. Data is represented as nodes in a general-ordered tree. Each node may have sub-nodes and these nodes can in turn has their own children.</p>
+<p>A node is displayed as a row entry in the widget. Each entry has a text label and icon. When a node has children, its entry is drawn with a small button to the left of the label. Clicking the mouse over this button opens or closes the node. When a node is <em>open</em>, its children are exposed. When it is <em>closed</em>, the children and their descedants are hidden. The button is normally a + or - symbol (ala Windows Explorer), but can be replaced with a pair of Tk images (open and closed images).</p>
+<p>If the node has data associated with it, they can be displayed in columns running vertically on either side the tree. You can control the color, font, etc of each entry. Any entry label or data field can be edited in-place.</p>
+<h1 id="tree-data-object">TREE DATA OBJECT</h1>
+<p>The tree is not stored inside the widget but in a tree data object (see the <strong>tree</strong> command for a further explanation). Tree data objects can be shared among different clients, such as a <strong>treeview</strong> widget or the <strong>tree</strong> command. You can walk the tree and manage its data with the <strong>tree</strong> command tree, while displaying it with the <strong>treeview</strong> widget. Whenever the tree is updated, the <strong>treeview</strong> widget is automatically redrawn.</p>
+<p>By default, the <strong>treeview</strong> widget creates its own tree object. The tree initially contains just a root node. But you can also display trees created by the <strong>tree</strong> command using the <strong>-tree</strong> configuration option. <strong>Treeview</strong> widgets can share the same tree object, possibly displaying different views of the same data.</p>
+<p>A tree object has both a Tcl and C API. You can insert or delete nodes using <strong>treeview</strong> widget or <strong>tree</strong> command operations, but also from C code. For example, you can load the tree from your C code while still managing and displaying the tree from Tcl. The widget is automatically notified whenever the tree is modified via C or Tcl.</p>
+<h1 id="syntax">SYNTAX</h1>
+<p><strong>treeview</strong> <em>pathName</em> ?<em>option</em> <em>value</em>?... The <strong>treeview</strong> command creates a new window <em>pathName</em> and makes it into a <strong>treeview</strong> widget. At the time this command is invoked, there must not exist a window named <em>pathName</em>, but <em>pathName</em>'s parent must exist. Additional options may be specified on the command line or in the option database to configure aspects of the widget such as its colors and font. See the <strong>configure</strong> operation below for the exact details about what <em>option</em> and <em>value</em> pairs are valid.</p>
+<p>If successful, <strong>treeview</strong> returns the path name of the widget. It also creates a new Tcl command by the same name. You can use this command to invoke various operations that query or modify the widget. The general form is: <em>pathName</em> <em>operation</em> ?<em>arg</em>?... Both <em>operation</em> and its arguments determine the exact behavior of the command. The operations available are described in the <strong>TREEVIEW OPERATIONS</strong> section.</p>
+<h1 id="ids-and-tags">IDS AND TAGS</h1>
+<p>Nodes can be inserted into a tree using the <strong>treeview</strong> widget</p>
+<pre><code>rbc::treeview .t
+set node [.t insert end root &quot;one&quot;]</code></pre>
+<p>or <strong>tree</strong> command.</p>
+<pre><code>set tree [rbc::tree create]
+set node [$tree insert root &quot;one&quot;]</code></pre>
+<p>In both cases, a number identifying the node is returned (the value of $node). This serial number or <em>id</em> uniquely identifies the node. Please note that you can't infer a location or position of a node from its id. The only exception is that the root node is always id 0. Since nodes may have the same labels or be moved within the tree, ids provide an convenient way to identify nodes. If a tree is shared, the ids will be the same regardless if you are using by the <strong>treeview</strong> widget or the <strong>tree</strong> command. Ids are recycled when the node deleted.</p>
+<p>A node may also have any number of <em>tags</em> associated with it. A tag is just a string of characters, and it may take any form except that of an integer. For example, &quot;x123&quot; is valid, but &quot;123&quot; isn't. The same tag may be associated with many different nodes. This is typically done to associate a group of nodes. Many operations in the <strong>treeview</strong> widget take either node ids or tag names as arguments. Using a tag says to apply the operation to all nodes with that tag.</p>
+<p>The tag <strong>all</strong> is implicitly associated with every node in the tree. It may be used to invoke operations on all the nodes in the tree.</p>
+<p>Tags may be shared, just like trees, between clients. For example, you can use the tags created by the <strong>tree</strong> command with <strong>treeview</strong> widgets.</p>
+<h1 id="special-node-ids">SPECIAL NODE IDS</h1>
+<p>There are also several special non-numeric ids. Special ids differ from tags in that they are always translated to their numeric equivalent. They also take precedence over tags. For example, you can't use a tag name that is a special id. These ids are specific to the <strong>treeview</strong> widget.</p>
+<dl>
+<dt>active</dt>
+<dd>The node where the mouse pointer is currently located. When a node is active, it is drawn using its active icon (see the <strong>-activeicon</strong> option). The <strong>active</strong> id is changed automatically by moving the mouse pointer over another node or by using the <strong>entry activate</strong> operation. Note that there can be only one active node at a time.
+</dd>
+<dt>anchor</dt>
+<dd>The node representing the fixed end of the current selection. The anchor is set by the <strong>selection anchor</strong> operation.
+</dd>
+<dt>current</dt>
+<dd>The node where the mouse pointer is currently located. But unlike <strong>active</strong>, this id changes while the selection is dragged. It is used to determine the current node during button drags.
+</dd>
+<dt>down</dt>
+<dd>The next open node from the current focus. The <strong>down</strong> of the last open node is the same.
+</dd>
+<dt>end</dt>
+<dd>The last open node (in depth-first order) on the tree.
+</dd>
+<dt>focus</dt>
+<dd>The node that currently has focus. When a node has focus, it receives key events. To indicate focus, the node is drawn with a dotted line around its label. You can change the focus using the <strong>focus</strong> operation.
+</dd>
+<dt>last</dt>
+<dd>The last open node from the current focus. But unlike <strong>up</strong>, when the focus is at root, <strong>last</strong> wraps around to the last open node in the tree.
+</dd>
+<dt>mark</dt>
+<dd>The node representing the non-fixed end of the current selection. The mark is set by the <strong>selection mark</strong> operation.
+</dd>
+<dt>next</dt>
+<dd>The next open node from the current focus. But unlike <strong>down</strong>, when the focus is on last open node, <strong>next</strong> wraps around to the root node.
+</dd>
+<dt>nextsibling</dt>
+<dd>The next sibling from the node with the current focus. If the node is already the last sibling then it is the <strong>nextsibling.</strong>
+</dd>
+<dt>parent</dt>
+<dd>The parent of the node with the current focus. The <strong>parent</strong> of the root is also the root.
+</dd>
+<dt>prevsibling</dt>
+<dd>The previous sibling from the node with the current focus. If the node is already the first sibling then it is the <strong>prevsibling.</strong>
+</dd>
+<dt>root</dt>
+<dd>The root node. You can also use id 0 to indicate the root.
+</dd>
+<dt>up</dt>
+<dd>The last open node (in depth-first order) from the current focus. The <strong>up</strong> of the root node (i.e. the root has focus) is also the root.
+</dd>
+<dt>view.top</dt>
+<dd>First node that's current visible in the widget.
+</dd>
+<dt>view.bottom</dt>
+<dd>Last node that's current visible in the widget.
+</dd>
+<dt><em>path</em></dt>
+<dd>Absolute path of a node. Path names refer to the node name, not their entry labels. Paths don't have to start with a separator (see the <strong>-separator</strong> configuration option), but component names must be separated by the designated separator.
+</dd>
+<dt>@<em>x</em>,<em>y</em></dt>
+<dd>Indicates the node that covers the point in the treeview window specified by <em>x</em> and <em>y</em> (in pixel coordinates). If no part of the entryd covers that point, then the closest node to that point is used.
+</dd>
+</dl>
+<p>A node may be specified as an id or tag. If the specifier is an integer then it is assumed to refer to the single node with that id. If the specifier is not an integer, it's checked to see if it's a special id (such as focus). Otherwise, it's assumed to be tag. Some operations only operate on a single node at a time; if a tag refers to more than one node, then an error is generated.</p>
+<h1 id="data-fields">DATA FIELDS</h1>
+<p>A node in the tree can have <em>data</em> <em>fields</em>. A data field is a name-value pair, used to represent arbitrary data in the node. Nodes can contain different fields (they aren't required to contain the same fields). You can optionally display these fields in the <strong>treeview</strong> widget in columns running on either side of the displayed tree. A node's value for the field is drawn in the column along side its node in the hierarchy. Any node that doesn't have a specific field is left blank. Columns can be interactively resized, hidden, or, moved.</p>
+<h1 id="entry-bindings">ENTRY BINDINGS</h1>
+<p>You can bind Tcl commands to be invoked when events occur on nodes (much like Tk canvas items). You can bind a node using its id or its <em>bindtags</em>. Bindtags are simply names that associate a binding with one or more nodes. There is a built-in tag all that all node entries automatically have.</p>
+<h1 id="treeview-operations">TREEVIEW OPERATIONS</h1>
+<p>The <strong>treeview</strong> operations are the invoked by specifying the widget's pathname, the operation, and any arguments that pertain to that operation. The general form is:</p>
+<pre><code>pathName operation ?arg arg ...?</code></pre>
+<p><em>Operation</em> and the <em>arg</em>s determine the exact behavior of the command. The following operation are available for <strong>treeview</strong> widgets:</p>
+<dl>
+<dt><em>pathName</em> <strong>bbox</strong> ?<strong>-screen</strong>? <em>tagOrId...</em></dt>
+<dd><p>Returns a list of 4 numbers, representing a bounding box of around the specified entries. The entries is given by one or more <em>tagOrId</em> arguments. If the <strong>-screen</strong> flag is given, then the x-y coordinates of the bounding box are returned as screen coordinates, not virtual coordinates. Virtual coordinates start from 0 from the root node. The returned list contains the following values.</p>
+<dl>
+<dt><em>x</em></dt>
+<dd>X-coordinate of the upper-left corner of the bounding box.
+</dd>
+<dt><em>y</em></dt>
+<dd>Y-coordinate of the upper-left corner of the bounding box.
+</dd>
+<dt><em>width</em></dt>
+<dd>Width of the bounding box.
+</dd>
+<dt><em>height</em></dt>
+<dd>Height of the bounding box.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>bind</strong> <em>tagName</em> ?<em>sequence</em> <em>command</em>?</dt>
+<dd><p>Associates <em>command</em> with <em>tagName</em> such that whenever the event sequence given by <em>sequence</em> occurs for a node with this tag, <em>command</em> will be invoked. The syntax is similar to the <strong>bind</strong> command except that it operates on <strong>treeview</strong> entries, rather than widgets. See the <strong>bind</strong> manual entry for complete details on <em>sequence</em> and the substitutions performed on <em>command</em> before invoking it.</p>
+<p>If all arguments are specified then a new binding is created, replacing any existing binding for the same <em>sequence</em> and <em>tagName</em>. If the first character of <em>command</em> is + then <em>command</em> augments an existing binding rather than replacing it. If no <em>command</em> argument is provided then the command currently associated with <em>tagName</em> and <em>sequence</em> (it's an error occurs if there's no such binding) is returned. If both <em>command</em> and <em>sequence</em> are missing then a list of all the event sequences for which bindings have been defined for <em>tagName</em>.</p>
+</dd>
+<dt><em>pathName</em> <strong>button</strong> <em>operation</em> ?<em>args</em>?</dt>
+<dd><p>This command is used to control the button selectors within a <strong>treeview</strong> widget. It has several forms, depending on <em>operation</em>:</p>
+<dl>
+<dt><em>pathName</em> <strong>button activate</strong> <em>tagOrId</em></dt>
+<dd><p>Designates the node given by <em>tagOrId</em> as active. When a node is active it's entry is drawn using its active icon (see the <strong>-activeicon</strong> option). Note that there can be only one active entry at a time. The special id <strong>active</strong> indicates the currently active node.</p>
+</dd>
+<dt><em>pathName</em> <strong>button bind</strong> <em>tagName</em> ?<em>sequence</em> <em>command</em>?</dt>
+<dd><p>Associates <em>command</em> with <em>tagName</em> such that whenever the event sequence given by <em>sequence</em> occurs for an button of a node entry with this tag, <em>command</em> will be invoked. The syntax is similar to the <strong>bind</strong> command except that it operates on <strong>treeview</strong> buttons, rather than widgets. See the <strong>bind</strong> manual entry for complete details on <em>sequence</em> and the substitutions performed on <em>command</em> before invoking it.</p>
+<p>If all arguments are specified then a new binding is created, replacing any existing binding for the same <em>sequence</em> and <em>tagName</em>. If the first character of <em>command</em> is + then <em>command</em> augments an existing binding rather than replacing it. If no <em>command</em> argument is provided then the command currently associated with <em>tagName</em> and <em>sequence</em> (it's an error occurs if there's no such binding) is returned. If both <em>command</em> and <em>sequence</em> are missing then a list of all the event sequences for which bindings have been defined for <em>tagName</em>.</p>
+</dd>
+<dt><em>pathName</em> <strong>button cget</strong> <em>option</em></dt>
+<dd><p>Returns the current value of the configuration option given by <em>option</em>. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>button configure</strong> ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Query or modify the configuration options of the widget. If no <em>option</em> is specified, returns a list describing all of the available options for <em>pathName</em> (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given widget option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described in the section <strong>BUTTON OPTIONS</strong> below.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>cget</strong> <em>option</em></dt>
+<dd><p>Returns the current value of the configuration option given by <em>option</em>. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>close</strong> ?<strong>-recurse</strong>? <em>tagOrId...</em></dt>
+<dd><p>Closes the node specified by <em>tagOrId</em>. In addition, if a Tcl script was specified by the <strong>-closecommand</strong> option, it is invoked. If the node is already closed, this command has no effect. If the <strong>-recurse</strong> flag is present, each child node is recursively closed.</p>
+</dd>
+<dt><em>pathName</em> <strong>column</strong> <em>operation</em> ?<em>args</em>?</dt>
+<dd><p>The following operations are available for treeview columns.</p>
+<dl>
+<dt><em>pathName</em> <strong>column activate</strong> <em>column</em></dt>
+<dd><p>Sets the active column to <em>column</em>. <em>Column</em> is the name of a column in the widget. When a column is active, it's drawn using its <strong>-activetitlebackground</strong> and <strong>-activetitleforeground</strong> options. If <em>column</em> is the &quot;&quot;, then no column will be active. If no column argument is provided, then the name of the currently active column is returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>column cget</strong> <em>name</em> <em>option</em></dt>
+<dd><p>Returns the current value of the column configuration option given by <em>option</em> for <em>name</em>. <em>Name</em> is the name of column that corresponds to a data field. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>column configure</strong> <em>name</em> ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Query or modify the configuration options of the column designated by <em>name</em>. <em>Name</em> is the name of the column corresponding to a data field. If no <em>option</em> is specified, returns a list describing all of the available options for <em>pathName</em> (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given widget option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described in the section <strong>COLUMN OPTIONS</strong> below.</p>
+</dd>
+<dt><em>pathName</em> <strong>column delete</strong> <em>field</em> ?<em>field</em>...?</dt>
+<dd><p>Deletes one of more columns designated by <em>field</em>. Note that this does not delete the data fields themselves.</p>
+</dd>
+<dt><em>pathName</em> <strong>column insert</strong> <em>position</em> <em>field</em> ?<em>options</em>...?</dt>
+<dd><p>Inserts one of more columns designated by <em>field</em>. A column displays each node's data field by the same name. If the node doesn't have the given field, the cell is left blank. <em>Position</em> indicates where in the list of columns to add the new column. It may be either a number or end.</p>
+</dd>
+<dt><em>pathName</em> <strong>column invoke</strong> <em>field</em></dt>
+<dd><p>Invokes the Tcl command associated with the column <em>field</em>, if there is one (using the column's <strong>-command</strong> option). The command is ignored if the column's <strong>-state</strong> option set to disabled.</p>
+</dd>
+<dt><em>pathName</em> <strong>column move</strong> <em>name</em> <em>dest</em></dt>
+<dd><p>Moves the column <em>name</em> to the destination position. <em>Dest</em> is the name of another column or a screen position in the form @<em>x,y</em>.</p>
+</dd>
+<dt><em>pathName</em> <strong>column names</strong></dt>
+<dd><p>Returns a list of the names of all columns in the widget. The list is ordered as the columns are drawn from left- to-right.</p>
+</dd>
+<dt><em>pathName</em> <strong>column nearest</strong> <em>x</em> ?<em>y</em>?</dt>
+<dd><p>Returns the name of the column closest to the given X-Y screen coordinate. If you provide a <em>y</em> argument (it's optional), a name is returned only when if the point is over a column's title.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>configure</strong> ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Query or modify the configuration options of the widget. If no <em>option</em> is specified, returns a list describing all of the available options for <em>pathName</em> (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given widget option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described in the section <strong>TREEVIEW</strong> <strong>OPTIONS</strong> below.</p>
+</dd>
+<dt><em>pathName</em> <strong>curselection</strong></dt>
+<dd><p>Returns a list containing the ids of all of the entries that are currently selected. If there are no entries selected, then the empty string is returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>delete</strong> <em>tagOrId</em>...</dt>
+<dd><p>Deletes one or more entries given by <em>tagOrId</em> and its children.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry</strong> <em>operation</em> ?<em>args</em>?</dt>
+<dd><p>The following operations are available for treeview entries.</p>
+<dl>
+<dt><em>pathName</em> <strong>entry activate</strong> <em>tagOrId</em></dt>
+<dd><p>Sets the active entry to the one specified by <em>tagOrId</em>. When an entry is active it is drawn using its active icon (see the <strong>-activeicon</strong> option). Note that there can be only one active node at a time. The special id of the currently active node is <strong>active</strong>.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry cget</strong> <em>option</em></dt>
+<dd><p>Returns the current value of the configuration option given by <em>option</em>. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry children</strong> <em>tagOrId</em> ?<em>first</em>? ?<em>last</em>?</dt>
+<dd><p>Returns a list of ids for the given range of children of <em>tagOrId</em>. <em>TagOrId</em> is the id or tag of the node to be examined. If only a <em>first</em> argument is present, then the id of the that child at that numeric position is returned. If both <em>first</em> and <em>last</em> arguments are given, then the ids of all the children in that range are returned. Otherwise the ids of all children are returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry configure</strong> ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Query or modify the configuration options of the widget. If no <em>option</em> is specified, returns a list describing all of the available options for <em>pathName</em> (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given widget option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described below:</p>
+</dd>
+<dt><em>pathName</em> <strong>entry delete</strong> <em>tagOrId</em> ?<em>first</em> ?<em>last</em>?</dt>
+<dd><p>Deletes the one or more children nodes of the parent <em>tagOrId</em>. If <em>first</em> and <em>last</em> arguments are present, they are positions designating a range of children nodes to be deleted.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry isbefore</strong> <em>tagOrId1</em> <em>tagOrId2</em></dt>
+<dd><p>Returns 1 if <em>tagOrId1</em> is before <em>tagOrId2</em> and 0 otherwise.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry ishidden</strong> <em>tagOrId</em></dt>
+<dd><p>Returns 1 if the node is currently hidden and 0 otherwise. A node is also hidden if any of its ancestor nodes are closed or hidden.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry isopen</strong> <em>tagOrId</em></dt>
+<dd><p>Returns 1 if the node is currently open and 0 otherwise.</p>
+</dd>
+<dt><em>pathName</em> <strong>entry size -recurse</strong> <em>tagOrId</em></dt>
+<dd><p>Returns the number of children for parent node <em>tagOrId</em>. If the <strong>-recurse</strong> flag is set, the number of all its descendants is returned. The node itself is not counted.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>find</strong> ?<em>flags</em>? <em>first</em> <em>last</em></dt>
+<dd><p>Finds for all entries matching the criteria given by <em>flags</em>. A list of ids for all matching nodes is returned. <em>First</em> and <em>last</em> are ids designating the range of the search in depth-first order. If <em>last</em> is before <em>first</em>, then nodes are searched in reverse order. The valid flags are:</p>
+<dl>
+<dt>-name <em>pattern</em></dt>
+<dd>Specifies pattern to match against node names.
+</dd>
+<dt>-full <em>pattern</em></dt>
+<dd>Specifies pattern to match against node pathnames.
+</dd>
+<dt>-<em>option</em> <em>pattern</em></dt>
+<dd>Specifies pattern to match against the node entry's configuration option.
+</dd>
+<dt>-exact</dt>
+<dd>Patterns must match exactly. The is the default.
+</dd>
+<dt>-glob</dt>
+<dd><p>Use global pattern matching. Matching is done in a fashion similar to that used by the C-shell. For the two strings to match, their contents must be identical except that the following special sequences may appear in pattern:</p>
+<dl>
+<dt>*</dt>
+<dd>Matches any sequence of characters in string, including a null string.
+</dd>
+<dt>?</dt>
+<dd>Matches any single character in string.
+</dd>
+<dt>[<em>chars]</em></dt>
+<dd>Matches any character in the set given by <em>chars</em>. If a sequence of the form <em>x</em>-<em>y</em> appears in <em>chars</em>, then any character between <em>x</em> and <em>y</em>, inclusive, will match.
+</dd>
+<dt>\\<em>x</em></dt>
+<dd>Matches the single character <em>x</em>. This provides a way of avoiding the special interpretation of the characters *?[]\ in the pattern.
+</dd>
+</dl>
+</dd>
+<dt>-regexp</dt>
+<dd>Use regular expression pattern matching (i.e. the same as implemented by the <strong>regexp</strong> command).
+</dd>
+<dt>-nonmatching</dt>
+<dd>Pick entries that don't match.
+</dd>
+<dt>-exec <em>string</em></dt>
+<dd><p>Specifies a Tcl script to be invoked for each matching node. Percent substitutions are performed on <em>string</em> before it is executed. The following substitutions are valid:</p>
+<dl>
+<dt>%W</dt>
+<dd>The pathname of the widget.
+</dd>
+<dt>%p</dt>
+<dd>The name of the node.
+</dd>
+<dt>%P</dt>
+<dd>The full pathname of the node.
+</dd>
+<dt>%#</dt>
+<dd>The id of the node.
+</dd>
+<dt>%%</dt>
+<dd>Translates to a single percent.
+</dd>
+</dl>
+</dd>
+<dt>-count <em>number</em></dt>
+<dd>Stop searching after <em>number</em> matches.
+</dd>
+<dt>--</dt>
+<dd>Indicates the end of flags.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>focus</strong> <em>tagOrId</em></dt>
+<dd><p>Sets the focus to the node given by <em>tagOrId</em>. When a node has focus, it can receive keyboard events. The special id <strong>focus</strong> designates the node that currently has focus.</p>
+</dd>
+<dt><em>pathName</em> <strong>get</strong> ?<strong>-full</strong>? <em>tagOrId</em> <em>tagOrId</em>...</dt>
+<dd><p>Translates one or more ids to their node entry names. It returns a list of names for all the ids specified. If the <strong>-full</strong> flag is set, then the full pathnames are returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>hide</strong> ?<strong>flags</strong>? <em>tagOrId</em>...</dt>
+<dd><p>Hides all nodes matching the criteria given by <em>flags</em>. The search is performed recursively for each node given by <em>tagOrId</em>. The valid flags are described below:</p>
+<dl>
+<dt>-name <em>pattern</em></dt>
+<dd>Specifies pattern to match against node names.
+</dd>
+<dt>-full <em>pattern</em></dt>
+<dd>Specifies pattern to match against node pathnames.
+</dd>
+<dt>-<em>option</em> <em>pattern</em></dt>
+<dd>Specifies pattern to match against the node entry's configuration option.
+</dd>
+<dt>-exact</dt>
+<dd>Match patterns exactly. The is the default.
+</dd>
+<dt>-glob</dt>
+<dd><p>Use global pattern matching. Matching is done in a fashion similar to that used by the C-shell. For the two strings to match, their contents must be identical except that the following special sequences may appear in pattern:</p>
+<dl>
+<dt>*</dt>
+<dd>Matches any sequence of characters in string, including a null string.
+</dd>
+<dt>?</dt>
+<dd>Matches any single character in string.
+</dd>
+<dt>[<em>chars]</em></dt>
+<dd>Matches any character in the set given by <em>chars</em>. If a sequence of the form <em>x</em>-<em>y</em> appears in <em>chars</em>, then any character between <em>x</em> and <em>y</em>, inclusive, will match.
+</dd>
+<dt>\\<em>x</em></dt>
+<dd>Matches the single character <em>x</em>. This provides a way of avoiding the special interpretation of the characters *?[]\ in the pattern.
+</dd>
+</dl>
+</dd>
+<dt>-regexp</dt>
+<dd>Use regular expression pattern matching (i.e. the same as implemented by the <strong>regexp</strong> command).
+</dd>
+<dt>-nonmatching</dt>
+<dd>Hide nodes that don't match.
+</dd>
+<dt>--</dt>
+<dd>Indicates the end of flags.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>index</strong> ?<strong>-at</strong> <em>tagOrId</em>? <em>string</em></dt>
+<dd><p>Returns the id of the node specified by <em>string</em>. <em>String</em> may be a tag or node id. Some special ids are normally relative to the node that has focus. The <strong>-at</strong> flag lets you select another node.</p>
+</dd>
+<dt><em>pathName</em> <strong>insert</strong> ?<strong>-at</strong> <em>tagOrId</em>? <em>position</em> <em>path</em> ?<em>options...</em>? ?<em>path</em>? ?<em>options...</em>?</dt>
+<dd><p>Inserts one or more nodes at <em>position</em>. <em>Position</em> is the location (number or end) where the new nodes are added to the parent node. <em>Path</em> is the pathname of the new node. Pathnames can be formated either as a Tcl list (each element is a path component) or as a string separated by a special character sequence (using the <strong>-separator</strong> option). Pathnames are normally absolute, but the <strong>-at</strong> switch lets you select a relative starting point. Its value is the id of the starting node.</p>
+<p>All ancestors of the new node must already exist, unless the <strong>-autocreate</strong> option is set. It is also an error if a node already exists, unless the <strong>-allowduplicates</strong> option is set.</p>
+<p><em>Option</em> and <em>value</em> may have any of the values accepted by the <strong>entry configure</strong> operation described in the <strong>ENTRY OPERATIONS</strong> section below. This command returns a list of the ids of the new entries.</p>
+</dd>
+<dt><em>pathName</em> <strong>move</strong> <em>tagOrId</em> <em>how</em> <em>destId</em></dt>
+<dd><p>Moves the node given by <em>tagOrId</em> to the destination node. The node can not be an ancestor of the destination. <em>DestId</em> is the id of the destination node and can not be the root of the tree. In conjunction with <em>how</em>, it describes how the move is performed.</p>
+<dl>
+<dt>before</dt>
+<dd>Moves the node before the destination node.
+</dd>
+<dt>after</dt>
+<dd>Moves the node after the destination node.
+</dd>
+<dt>into</dt>
+<dd>Moves the node to the end of the destination's list of children.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>nearest</strong> <em>x</em> <em>y</em> ?<em>varName</em>?</dt>
+<dd><p>Returns the id of the node entry closest to the given X-Y screen coordinate. The optional argument <em>varName</em> is the name of variable which is set to either button or select to indicate over what part of the node the coordinate lies. If the coordinate is not directly over any node, then <em>varName</em> will contain the empty string.</p>
+</dd>
+<dt><em>pathName</em> <strong>open</strong> ?<strong>-recurse</strong>? <em>tagOrId...</em></dt>
+<dd><p>Opens the one or more nodes specified by <em>tagOrId</em>. If a node is not already open, the Tcl script specified by the <strong>-opencommand</strong> option is invoked. If the <strong>-recurse</strong> flag is present, then each descendant is recursively opened.</p>
+</dd>
+<dt><em>pathName</em> <strong>range</strong> ?<strong>-open</strong>? <em>first</em> <em>last</em></dt>
+<dd><p>Returns the ids in depth-first order of the nodes between the <em>first</em> and <em>last</em> ids. If the <strong>-open</strong> flag is present, it indicates to consider only open nodes. If <em>last</em> is before <em>first</em>, then the ids are returned in reverse order.</p>
+</dd>
+<dt><em>pathName</em> <strong>scan</strong> <em>option</em> <em>args</em></dt>
+<dd><p>This command implements scanning. It has two forms, depending on <em>option</em>:</p>
+<dl>
+<dt><em>pathName</em> <strong>scan mark</strong> <em>x</em> <em>y</em></dt>
+<dd><p>Records <em>x</em> and <em>y</em> and the current view in the treeview window; used in conjunction with later <strong>scan dragto</strong> commands. Typically this command is associated with a mouse button press in the widget. It returns an empty string.</p>
+</dd>
+<dt><em>pathName</em> <strong>scan dragto</strong> <em>x</em> <em>y</em>.</dt>
+<dd><p>Computes the difference between its <em>x</em> and <em>y</em> arguments and the <em>x</em> and <em>y</em> arguments to the last <strong>scan mark</strong> command for the widget. It then adjusts the view by 10 times the difference in coordinates. This command is typically associated with mouse motion events in the widget, to produce the effect of dragging the list at high speed through the window. The return value is an empty string.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>see</strong> ?<strong>-anchor</strong> <em>anchor</em>? <em>tagOrId</em></dt>
+<dd><p>Adjusts the view of entries so that the node given by <em>tagOrId</em> is visible in the widget window. It is an error if <strong>tagOrId</strong> is a tag that refers to more than one node. By default the node's entry is displayed in the middle of the window. This can changed using the <strong>-anchor</strong> flag. Its value is a Tk anchor position.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection</strong> <em>option</em> <em>arg</em></dt>
+<dd><p>This command is used to adjust the selection within a <strong>treeview</strong> widget. It has several forms, depending on <em>option</em>:</p>
+<dl>
+<dt><em>pathName</em> <strong>selection anchor</strong> <em>tagOrId</em></dt>
+<dd><p>Sets the selection anchor to the node given by <em>tagOrId</em>. If <em>tagOrId</em> refers to a non-existent node, then the closest node is used. The selection anchor is the end of the selection that is fixed while dragging out a selection with the mouse. The special id <strong>anchor</strong> may be used to refer to the anchor node.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection cancel</strong></dt>
+<dd><p>Clears the temporary selection of entries back to the current anchor. Temporary selections are created by the <strong>selection mark</strong> operation.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection clear</strong> <em>first</em> ?<em>last</em>?</dt>
+<dd><p>Removes the entries between <em>first</em> and <em>last</em> (inclusive) from the selection. Both <em>first</em> and <em>last</em> are ids representing a range of entries. If <em>last</em> isn't given, then only <em>first</em> is deselected. Entries outside the selection are not affected.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection clearall</strong></dt>
+<dd><p>Clears the entire selection.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection mark</strong> <em>tagOrId</em></dt>
+<dd><p>Sets the selection mark to the node given by <em>tagOrId</em>. This causes the range of entries between the anchor and the mark to be temporarily added to the selection. The selection mark is the end of the selection that is fixed while dragging out a selection with the mouse. The special id <strong>mark</strong> may be used to refer to the current mark node. If <em>tagOrId</em> refers to a non-existent node, then the mark is ignored. Resetting the mark will unselect the previous range. Setting the anchor finalizes the range.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection includes</strong> <em>tagOrId</em></dt>
+<dd><p>Returns 1 if the node given by <em>tagOrId</em> is currently selected, 0 if it isn't.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection present</strong></dt>
+<dd><p>Returns 1 if any nodes are currently selected and 0 otherwise.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection set</strong> <em>first</em> ?<em>last</em>?</dt>
+<dd><p>Selects all of the nodes in the range between <em>first</em> and <em>last</em>, inclusive, without affecting the selection state of nodes outside that range.</p>
+</dd>
+<dt><em>pathName</em> <strong>selection toggle</strong> <em>first</em> ?<em>last</em>?</dt>
+<dd><p>Selects/deselects nodes in the range between <em>first</em> and <em>last</em>, inclusive, from the selection. If a node is currently selected, it becomes deselected, and visa versa.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>show</strong> ?<strong>flags</strong>? <em>tagOrId</em>...</dt>
+<dd><p>Exposes all nodes matching the criteria given by <em>flags</em>. This is the inverse of the <strong>hide</strong> operation. The search is performed recursively for each node given by <em>tagOrId</em>. The valid flags are described below:</p>
+<dl>
+<dt>-name <em>pattern</em></dt>
+<dd>Specifies pattern to match against node names.
+</dd>
+<dt>-full <em>pattern</em></dt>
+<dd>Specifies pattern to match against node pathnames.
+</dd>
+<dt>-<em>option</em> <em>pattern</em></dt>
+<dd>Specifies pattern to match against the entry's configuration option.
+</dd>
+<dt>-exact</dt>
+<dd>Match patterns exactly. The is the default.
+</dd>
+<dt>-glob</dt>
+<dd><p><strong>-glob</strong> Use global pattern matching. Matching is done in a fashion similar to that used by the C-shell. For the two strings to match, their contents must be identical except that the following special sequences may appear in pattern:</p>
+<dl>
+<dt>*</dt>
+<dd>Matches any sequence of characters in string, including a null string.
+</dd>
+<dt>?</dt>
+<dd>Matches any single character in string.
+</dd>
+<dt>[<em>chars]</em></dt>
+<dd>Matches any character in the set given by <em>chars</em>. If a sequence of the form <em>x</em>-<em>y</em> appears in <em>chars</em>, then any character between <em>x</em> and <em>y</em>, inclusive, will match.
+</dd>
+<dt>\\<em>x</em></dt>
+<dd>Matches the single character <em>x</em>. This provides a way of avoiding the special interpretation of the characters *?[]\ in the pattern.
+</dd>
+</dl>
+</dd>
+<dt>-regexp</dt>
+<dd>Use regular expression pattern matching (i.e. the same as implemented by the <strong>regexp</strong> command).
+</dd>
+<dt>-nonmatching</dt>
+<dd>Expose nodes that don't match.
+</dd>
+<dt>--</dt>
+<dd>Indicates the end of flags.
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>sort</strong> ?<em>operation</em>? <em>args...</em></dt>
+<dd><p>…</p>
+<dl>
+<dt><em>pathName</em> <strong>sort auto</strong> ?<em>boolean</em></dt>
+<dd><p>Turns on/off automatic sorting of node entries. If <em>boolean</em> is true, entries will be automatically sorted as they are opened, closed, inserted, or deleted. If no <em>boolean</em> argument is provided, the current state is returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>sort cget</strong> <em>option</em></dt>
+<dd><p>Returns the current value of the configuration option given by <em>option</em>. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>sort configure</strong> ?<em>option</em>? ?<em>value</em> <em>option</em> <em>value</em> <em>...</em>?</dt>
+<dd><p>Query or modify the sorting configuration options of the widget. If no <em>option</em> is specified, returns a list describing all of the available options for <em>pathName</em> (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given sorting option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described below:</p>
+<dl>
+<dt>-column <em>string</em></dt>
+<dd>Specifies the column to sort. Entries in the widget are rearranged according to this column. If <em>column</em> is &quot;&quot; then no sort is performed.
+</dd>
+<dt>-command <em>string</em></dt>
+<dd>Specifies a Tcl procedure to be called when sorting nodes. The procedure is called with three arguments: the pathname of the widget and the fields of two entries. The procedure returns 1 if the first node is greater than the second, -1 is the second is greater, and 0 if equal.
+</dd>
+<dt>-decreasing <em>boolean</em></dt>
+<dd>Indicates to sort in ascending/descending order. If <em>boolean</em> is true, then the entries as in descending order. The default is no.
+</dd>
+<dt>-mode <em>string</em></dt>
+<dd><p>Specifies how to compare entries when sorting. <em>String</em> may be one of the following:</p>
+<dl>
+<dt>ascii</dt>
+<dd>Use string comparison based upon the ASCII collation order.
+</dd>
+<dt>dictionary</dt>
+<dd>Use dictionary-style comparison. This is the same as ascii except (a) case is ignored except as a tie-breaker and (b) if two strings contain embedded numbers, the numbers compare as integers, not characters. For example, &quot;bigBoy&quot; sorts between &quot;bigbang&quot; and &quot;bigboy&quot;, and &quot;x10y&quot; sorts between &quot;x9y&quot; and &quot;x11y&quot;.
+</dd>
+<dt>integer</dt>
+<dd>Compares fields as integers.
+</dd>
+<dt>real</dt>
+<dd>Compares fields as floating point numbers.
+</dd>
+<dt>command</dt>
+<dd>Use the Tcl proc specified by the <strong>-command</strong> option to compare entries when sorting. If no command is specified, the sort reverts to ascii sorting.
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>sort once</strong> ?<em>flags</em>? <em>tagOrId...</em></dt>
+<dd><p>Sorts the children for each entries specified by <em>tagOrId</em>. By default, entries are sorted by name, but you can specify a Tcl proc to do your own comparisons.</p>
+<dl>
+<dt>-recurse</dt>
+<dd>Recursively sort the entire branch, not just the children.
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>tag</strong> <em>operation</em> <em>args</em></dt>
+<dd><p>Tags are a general means of selecting and marking nodes in the tree. A tag is just a string of characters, and it may take any form except that of an integer. The same tag may be associated with many different nodes.</p>
+<p>Both <em>operation</em> and its arguments determine the exact behavior of the command. The operations available for tags are listed below.</p>
+<dl>
+<dt><em>pathName</em> <strong>tag add</strong> <em>string</em> <em>id</em>...</dt>
+<dd><p>Adds the tag <em>string</em> to one of more entries.</p>
+</dd>
+<dt><em>pathName</em> <strong>tag delete</strong> <em>string</em> <em>id</em>...</dt>
+<dd><p>Deletes the tag <em>string</em> from one or more entries.</p>
+</dd>
+<dt><em>pathName</em> <strong>tag forget</strong> <em>string</em></dt>
+<dd><p>Removes the tag <em>string</em> from all entries. It's not an error if no entries are tagged as <em>string</em>.</p>
+</dd>
+<dt><em>pathName</em> <strong>tag names</strong> ?<em>id</em>?</dt>
+<dd><p>Returns a list of tags used. If an <em>id</em> argument is present, only those tags used by the node designated by <em>id</em> are returned.</p>
+</dd>
+<dt><em>pathName</em> <strong>tag nodes</strong> <em>string</em></dt>
+<dd><p>Returns a list of ids that have the tag <em>string</em>. If no node is tagged as <em>string</em>, then an empty string is returned.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>text</strong> <em>operation</em> ?<em>args</em>?</dt>
+<dd><p>This operation is used to provide text editing for cells (data fields in a column) or entry labels. It has several forms, depending on <em>operation</em>:</p>
+<dl>
+<dt><em>pathName</em> <strong>text apply</strong></dt>
+<dd><p>Applies the edited buffer, replacing the entry label or data field. The edit window is hidden.</p>
+</dd>
+<dt><em>pathName</em> <strong>text cancel</strong></dt>
+<dd><p>Cancels the editing operation, reverting the entry label or data value back to the previous value. The edit window is hidden.</p>
+</dd>
+<dt><em>pathName</em> <strong>text cget</strong> <em>value</em></dt>
+<dd><p>Returns the current value of the configuration option given by <em>option</em>. <em>Option</em> may have any of the values accepted by the <strong>configure</strong> operation described below.</p>
+</dd>
+<dt><em>pathName</em> <strong>text configure</strong> ?<em>option</em> <em>value</em>?</dt>
+<dd><p>Query or modify the configuration options of the edit window. If no <em>option</em> is specified, returns a list describing all of the available options (see <strong>Tk_ConfigureInfo</strong> for information on the format of this list). If <em>option</em> is specified with no <em>value</em>, then the command returns a list describing the one named option (this list will be identical to the corresponding sublist of the value returned if no <em>option</em> is specified). If one or more <em>option-value</em> pairs are specified, then the command modifies the given widget option(s) to have the given value(s); in this case the command returns an empty string. <em>Option</em> and <em>value</em> are described in the section <strong>TEXT EDITING OPTIONS</strong> below.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>text delete</strong> <em>first</em> <em>last</em></dt>
+<dd><p>Deletes the characters in the edit buffer between the two given character positions.</p>
+</dd>
+<dt><em>pathName</em> <strong>text get</strong> ?<em>-root</em>? <em>x</em> <em>y</em></dt>
+<dd><p>…</p>
+</dd>
+<dt><em>pathName</em> <strong>text icursor</strong> <em>index</em></dt>
+<dd><p>…</p>
+</dd>
+<dt><em>pathName</em> <strong>text index</strong> <em>index</em></dt>
+<dd><p>Returns the text index of given <em>index</em>.</p>
+</dd>
+<dt><em>pathName</em> <strong>text insert</strong> <em>index</em> <em>string</em></dt>
+<dd><p>Insert the text string <em>string</em> into the edit buffer at the index <em>index</em>. For example, the index 0 will prepend the buffer.</p>
+</dd>
+<dt><em>pathName</em> <strong>text selection</strong> <em>args</em></dt>
+<dd><p>This operation controls the selection of the editing window. Note that this differs from the selection of entries. It has the following forms:</p>
+<dl>
+<dt><em>pathName</em> <strong>text selection adjust</strong> <em>index</em></dt>
+<dd><p>Adjusts either the first or last index of the selection.</p>
+</dd>
+<dt><em>pathName</em> <strong>text selection clear</strong></dt>
+<dd><p>Clears the selection.</p>
+</dd>
+<dt><em>pathName</em> <strong>text selection from</strong> <em>index</em></dt>
+<dd><p>Sets the anchor of the selection.</p>
+</dd>
+<dt><em>pathName</em> <strong>text selection present</strong></dt>
+<dd><p>Indicates if a selection is present.</p>
+</dd>
+<dt><em>pathName</em> <strong>text selection range</strong> <em>start</em> <em>end</em></dt>
+<dd><p>Sets both the anchor and mark of the selection.</p>
+</dd>
+<dt><em>pathName</em> <strong>text selection to</strong> <em>index</em></dt>
+<dd><p>Sets the unanchored end (mark) of the selection.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>toggle</strong> <em>tagOrId</em></dt>
+<dd><p>Opens or closes the node given by <em>tagOrId</em>. If the corresponding <strong>-opencommand</strong> or <strong>-closecommand</strong> option is set, then that command is also invoked.</p>
+</dd>
+<dt><em>pathName</em> <strong>xview</strong> <em>args</em></dt>
+<dd><p>This command is used to query and change the horizontal position of the information in the widget's window. It can take any of the following forms:</p>
+<dl>
+<dt><em>pathName</em> <strong>xview</strong></dt>
+<dd><p>Returns a list containing two elements. Each element is a real fraction between 0 and 1; together they describe the horizontal span that is visible in the window. For example, if the first element is .2 and the second element is .6, 20% of the <strong>treeview</strong> widget's text is off- screen to the left, the middle 40% is visible in the window, and 40% of the text is off-screen to the right. These are the same values passed to scrollbars via the <strong>-xscrollcommand</strong> option.</p>
+</dd>
+<dt><em>pathName</em> <strong>xview</strong> <em>tagOrId</em></dt>
+<dd><p>Adjusts the view in the window so that the character position given by <em>tagOrId</em> is displayed at the left edge of the window. Character positions are defined by the width of the character <strong>0</strong>.</p>
+</dd>
+<dt><em>pathName</em> <strong>xview moveto</strong> <em>fraction</em></dt>
+<dd><p>Adjusts the view in the window so that <em>fraction</em> of the total width of the <strong>treeview</strong> widget's text is off-screen to the left. <em>fraction</em> must be a fraction between 0 and 1.</p>
+</dd>
+<dt><em>pathName</em> <strong>xview scroll</strong> <em>number</em> <em>what</em></dt>
+<dd><p>This command shifts the view in the window left or right according to <em>number</em> and <em>what</em>. <em>Number</em> must be an integer. <em>What</em> must be either <strong>units</strong> or <strong>pages</strong> or an abbreviation of one of these. If <em>what</em> is <strong>units</strong>, the view adjusts left or right by <em>number</em> character units (the width of the <strong>0</strong> character) on the display; if it is <strong>pages</strong> then the view adjusts by <em>number</em> screenfuls. If <em>number</em> is negative then characters farther to the left become visible; if it is positive then characters farther to the right become visible.</p>
+</dd>
+</dl>
+</dd>
+<dt><em>pathName</em> <strong>yview</strong> <em>?args</em>?</dt>
+<dd><p>This command is used to query and change the vertical position of the text in the widget's window. It can take any of the following forms:</p>
+<dl>
+<dt><em>pathName</em> <strong>yview</strong></dt>
+<dd><p>Returns a list containing two elements, both of which are real fractions between 0 and 1. The first element gives the position of the node at the top of the window, relative to the widget as a whole (0.5 means it is halfway through the treeview window, for example). The second element gives the position of the node just after the last one in the window, relative to the widget as a whole. These are the same values passed to scrollbars via the <strong>-yscrollcommand</strong> option.</p>
+</dd>
+<dt><em>pathName</em> <strong>yview</strong> <em>tagOrId</em></dt>
+<dd><p>Adjusts the view in the window so that the node given by <em>tagOrId</em> is displayed at the top of the window.</p>
+</dd>
+<dt><em>pathName</em> <strong>yview moveto</strong> <em>fraction</em></dt>
+<dd><p>Adjusts the view in the window so that the node given by <em>fraction</em> appears at the top of the window. <em>Fraction</em> is a fraction between 0 and 1; 0 indicates the first node, 0.33 indicates the node one-third the way through the <strong>treeview</strong> widget, and so on.</p>
+</dd>
+<dt><em>pathName</em> <strong>yview scroll</strong> <em>number</em> <em>what</em></dt>
+<dd><p>This command adjusts the view in the window up or down according to <em>number</em> and <em>what</em>. <em>Number</em> must be an integer. <em>What</em> must be either <strong>units</strong> or <strong>pages</strong>. If <em>what</em> is <strong>units</strong>, the view adjusts up or down by <em>number</em> lines; if it is <strong>pages</strong> then the view adjusts by <em>number</em> screenfuls. If <em>number</em> is negative then earlier nodes become visible; if it is positive then later nodes become visible.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<h1 id="treeview-options">TREEVIEW OPTIONS</h1>
+<p>In addition to the <strong>configure</strong> operation, widget configuration options may also be set by the Tk <strong>option</strong> command. The class resource name is TreeView.</p>
+<pre><code>option add *TreeView.Foreground white
+option add *TreeView.Background blue</code></pre>
+<p>The following widget options are available:</p>
+<dl>
+<dt>-activebackground <em>color</em></dt>
+<dd>Sets the background color for active entries. A node is active when the mouse passes over it's entry or using the <strong>activate</strong> operation.
+</dd>
+<dt>-activeforeground <em>color</em></dt>
+<dd>Sets the foreground color of the active node. A node is active when the mouse passes over it's entry or using the <strong>activate</strong> operation.
+</dd>
+<dt>-activeicons <em>images</em></dt>
+<dd>Specifies images to be displayed for an entry's icon when it is active. <em>Images</em> is a list of two Tk images: the first image is displayed when the node is open, the second when it is closed.
+</dd>
+<dt>-autocreate <em>boolean</em></dt>
+<dd>If <em>boolean</em> is true, automatically create missing ancestor nodes when inserting new nodes. Otherwise flag an error. The default is no.
+</dd>
+<dt>-allowduplicates <em>boolean</em></dt>
+<dd>If <em>boolean</em> is true, allow nodes with duplicate pathnames when inserting new nodes. Otherwise flag an error. The default is no.
+</dd>
+<dt>-background <em>color</em></dt>
+<dd>Sets the background color of the widget. The default is white.
+</dd>
+<dt>-borderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border around the outside edge of the widget. The <strong>-relief</strong> option determines if the border is to be drawn. The default is 2.
+</dd>
+<dt>-closecommand <em>string</em></dt>
+<dd><p>Specifies a Tcl script to be invoked when a node is closed. You can overrider this for individual entries using the entry's <strong>-closecommand</strong> option. The default is &quot;&quot;. Percent substitutions are performed on <em>string</em> before it is executed. The following substitutions are valid:</p>
+<dl>
+<dt>%W</dt>
+<dd>The pathname of the widget.
+</dd>
+<dt>%p</dt>
+<dd>The name of the node.
+</dd>
+<dt>%P</dt>
+<dd>The full pathname of the node.
+</dd>
+<dt>%#</dt>
+<dd>The id of the node.
+</dd>
+<dt>%%</dt>
+<dd>Translates to a single percent.
+</dd>
+</dl>
+</dd>
+<dt>-cursor <em>cursor</em></dt>
+<dd>Specifies the widget's cursor. The default cursor is &quot;&quot;.
+</dd>
+<dt>-dashes <em>number</em></dt>
+<dd>Sets the dash style of the horizontal and vertical lines drawn connecting entries. <em>Number</em> is the length in pixels of the dashes and gaps in the line. If <em>number</em> is 0, solid lines will be drawn. The default is 1 (dotted).
+</dd>
+<dt>-exportselection <em>boolean</em></dt>
+<dd>Indicates if the selection is exported. If the widget is exporting its selection then it will observe the standard X11 protocols for handling the selection. Selections are available as type <strong>STRING</strong>; the value of the selection will be the label of the selected nodes, separated by newlines. The default is no.
+</dd>
+<dt>-flat <em>boolean</em></dt>
+<dd>Indicates whether to display the tree as a flattened list. If <em>boolean</em> is true, then the hierarchy will be a list of full paths for the nodes. This option also has affect on sorting. See the <strong>SORT OPERATIONS</strong> section for more information. The default is no.
+</dd>
+<dt>-focusdashes <em>dashList</em></dt>
+<dd>Sets the dash style of the outline rectangle drawn around the entry label of the node that current has focus. <em>Number</em> is the length in pixels of the dashes and gaps in the line. If <em>number</em> is 0, a solid line will be drawn. The default is 1.
+</dd>
+<dt>-focusforeground <em>color</em></dt>
+<dd>Sets the color of the focus rectangle. The default is black.
+</dd>
+<dt>-font <em>fontName</em></dt>
+<dd>Specifies the font for entry labels. You can override this for individual entries with the entry's <strong>-font</strong> configuration option. The default is *-Helvetica-Bold-R-Normal-*-12-120-*.
+</dd>
+<dt>-foreground <em>color</em></dt>
+<dd>Sets the text color of entry labels. You can override this for individual entries with the entry's <strong>-foreground</strong> configuration option. The default is black.
+</dd>
+<dt>-height <em>pixels</em></dt>
+<dd>Specifies the requested height of widget. The default is 400.
+</dd>
+<dt>-hideroot <em>boolean</em></dt>
+<dd>If <em>boolean</em> is true, it indicates that no entry for the root node should be displayed. The default is no.
+</dd>
+<dt>-highlightbackground <em>color</em></dt>
+<dd>Specifies the normal color of the traversal highlight region when the widget does not have the input focus.
+</dd>
+<dt>-highlightcolor <em>color</em></dt>
+<dd>Specifies the color of the traversal highlight rectangle when the widget has the input focus. The default is black.
+</dd>
+<dt>-highlightthickness <em>pixels</em></dt>
+<dd>Specifies the width of the highlight rectangle indicating when the widget has input focus. The value may have any of the forms acceptable to <strong>Tk_GetPixels</strong>. If the value is zero, no focus highlight will be displayed. The default is 2.
+</dd>
+<dt>-icons <em>images</em></dt>
+<dd>Specifies images for the entry's icon. <em>Images</em> is a list of two Tk images: the first image is displayed when the node is open, the second when it is closed.
+</dd>
+<dt>-linecolor <em>color</em></dt>
+<dd>Sets the color of the connecting lines drawn between entries. The default is black.
+</dd>
+<dt>-linespacing <em>pixels</em></dt>
+<dd>Sets the number of pixels spacing between entries. The default is 0.
+</dd>
+<dt>-linewidth <em>pixels</em></dt>
+<dd>Set the width of the lines drawn connecting entries. If <em>pixels</em> is 0, no vertical or horizontal lines are drawn. The default is 1.
+</dd>
+<dt>-opencommand <em>string</em></dt>
+<dd><p>Specifies a Tcl script to be invoked when a node is open. You can override this for individual entries with the entry's <strong>-opencommand</strong> configuration option. The default is &quot;&quot;. Percent substitutions are performed on <em>string</em> before it is executed. The following substitutions are valid:</p>
+<dl>
+<dt>%W</dt>
+<dd>The pathname of the widget.
+</dd>
+<dt>%p</dt>
+<dd>The name of the node.
+</dd>
+<dt>%P</dt>
+<dd>The full pathname of the node.
+</dd>
+<dt>%#</dt>
+<dd>The id of the node.
+</dd>
+<dt>%%</dt>
+<dd>Translates to a single percent.
+</dd>
+</dl>
+</dd>
+<dt>-relief <em>relief</em></dt>
+<dd>Specifies the 3-D effect for the widget. <em>Relief</em> specifies how the <strong>treeview</strong> widget should appear relative to widget it is packed into; for example, raised means the <strong>treeview</strong> widget should appear to protrude. The default is sunken.
+</dd>
+<dt>-scrollmode <em>mode</em></dt>
+<dd><p>Specifies the style of scrolling to be used. The following styles are valid. This is the default is hierbox.</p>
+<dl>
+<dt>listbox</dt>
+<dd>Like the <strong>listbox</strong> widget, the last entry can always be scrolled to the top of the widget window. This allows the scrollbar thumb to shrink as the last entry is scrolled upward.
+</dd>
+<dt>hierbox</dt>
+<dd>Like the <strong>hierbox</strong> widget, the last entry can only be viewed at the bottom of the widget window. The scrollbar stays a constant size.
+</dd>
+<dt>canvas</dt>
+<dd>Like the <strong>canvas</strong> widget, the entries are bound within the scrolling area.
+</dd>
+</dl>
+</dd>
+<dt>-selectbackground <em>color</em></dt>
+<dd>Sets the background color selected node entries. The default is #ffffea.
+</dd>
+<dt>-selectborderwidth <em>pixels</em></dt>
+<dd>Sets the width of the raised 3-D border drawn around the labels of selected entries. The default is 0. <strong>-selectcommand</strong> <em>string</em> Specifies a Tcl script to invoked when the set of selected nodes changes. The default is &quot;&quot;.
+</dd>
+<dt>-selectforeground <em>color</em></dt>
+<dd>Sets the color of the labels of selected node entries. The default is black.
+</dd>
+<dt>-selectmode <em>mode</em></dt>
+<dd>Specifies the selection mode. If <em>mode</em> is single, only one node can be selected at a time. If multiple more than one node can be selected. The default is single.
+</dd>
+<dt>-separator <em>string</em></dt>
+<dd>Specifies the character sequence to use when spliting the path components. The separator may be several characters wide (such as &quot;::&quot;) Consecutive separators in a pathname are treated as one. If <em>string</em> is the empty string, the pathnames are Tcl lists. Each element is a path component. The default is &quot;&quot;.
+</dd>
+<dt>-showtitles <em>boolean</em></dt>
+<dd>If <em>boolean</em> is false, column titles are not be displayed. The default is yes.
+</dd>
+<dt>-sortselection <em>boolean</em></dt>
+<dd>If <em>boolean</em> is true, nodes in the selection are ordered as they are currently displayed (depth-first or sorted), not in the order they were selected. The default is no.
+</dd>
+<dt>-takefocus <em>focus</em></dt>
+<dd>Provides information used when moving the focus from window to window via keyboard traversal (e.g., Tab and Shift-Tab). If <em>focus</em> is 0, this means that this window should be skipped entirely during keyboard traversal. 1 means that the this window should always receive the input focus. An empty value means that the traversal scripts make the decision whether to focus on the window. The default is &quot;1&quot;.
+</dd>
+<dt>-trim <em>string</em></dt>
+<dd>Specifies a string leading characters to trim from entry pathnames before parsing. This only makes sense if the <strong>-separator</strong> is also set. The default is &quot;&quot;.
+</dd>
+<dt>-width <em>pixels</em></dt>
+<dd>Sets the requested width of the widget. If <em>pixels</em> is 0, then the with is computed from the contents of the <strong>treeview</strong> widget. The default is 200.
+</dd>
+<dt>-xscrollcommand <em>string</em></dt>
+<dd>Specifies the prefix for a command used to communicate with horizontal scrollbars. Whenever the horizontal view in the widget's window changes, the widget will generate a Tcl command by concatenating the scroll command and two numbers. If this option is not specified, then no command will be executed.
+</dd>
+<dt>-xscrollincrement <em>pixels</em></dt>
+<dd>Sets the horizontal scrolling distance. The default is 20 pixels.
+</dd>
+<dt>-yscrollcommand <em>string</em></dt>
+<dd>Specifies the prefix for a command used to communicate with vertical scrollbars. Whenever the vertical view in the widget's window changes, the widget will generate a Tcl command by concatenating the scroll command and two numbers. If this option is not specified, then no command will be executed.
+</dd>
+<dt>-yscrollincrement <em>pixels</em></dt>
+<dd>Sets the vertical scrolling distance. The default is 20 pixels.
+</dd>
+</dl>
+<h1 id="entry-options">ENTRY OPTIONS</h1>
+<p>Many widget configuration options have counterparts in entries. For example, there is a <strong>-closecommand</strong> configuration option for both widget itself and for individual entries. Options set at the widget level are global for all entries. If the entry configuration option is set, then it overrides the widget option. This is done to avoid wasting memory by replicated options. Most entries will have redundant options.</p>
+<p>There is no resource class or name for entries.</p>
+<dl>
+<dt>-activeicons <em>images</em></dt>
+<dd>Specifies images to be displayed as the entry's icon when it is active. This overrides the global <strong>-activeicons</strong> configuration option for the specific entry. <em>Images</em> is a list of two Tk images: the first image is displayed when the node is open, the second when it is closed.
+</dd>
+<dt>-bindtags <em>tagList</em></dt>
+<dd>Specifies the binding tags for nodes. <em>TagList</em> is a list of binding tag names. The tags and their order will determine how events are handled for nodes. Each tag in the list matching the current event sequence will have its Tcl command executed. The default value is all.
+</dd>
+<dt>-button <em>string</em></dt>
+<dd>Indicates whether a button should be displayed on the left side of the node entry. <em>String</em> can be yes, no, or auto. If auto, then a button is automatically displayed if the node has children. This is the default.
+</dd>
+<dt>-closecommand <em>string</em></dt>
+<dd><p>Specifies a Tcl script to be invoked when the node is closed. This overrides the global <strong>-closecommand</strong> option for this entry. The default is &quot;&quot;. Percent substitutions are performed on <em>string</em> before it is executed. The following substitutions are valid:</p>
+<dl>
+<dt>%W</dt>
+<dd>The pathname of the widget.
+</dd>
+<dt>%p</dt>
+<dd>The name of the node.
+</dd>
+<dt>%P</dt>
+<dd>The full pathname of the node.
+</dd>
+<dt>%#</dt>
+<dd>The id of the node.
+</dd>
+<dt>%%</dt>
+<dd>Translates to a single percent.
+</dd>
+</dl>
+</dd>
+<dt>-data <em>string</em></dt>
+<dd>Sets data fields for the node. <em>String</em> is a list of name-value pairs to be set. The default is &quot;&quot;.
+</dd>
+<dt>-font <em>fontName</em></dt>
+<dd>Sets the font for entry labels. This overrides the widget's <strong>-font</strong> option for this node. The default is *-Helvetica-Bold-R- Normal-*-12-120-*.
+</dd>
+<dt>-foreground <em>color</em></dt>
+<dd>Sets the text color of the entry label. This overrides the widget's <strong>-foreground</strong> configuration option. The default is &quot;&quot;.
+</dd>
+<dt>-icons <em>images</em></dt>
+<dd>Specifies images to be displayed for the entry's icon. This overrides the global <strong>-icons</strong> configuration option. <em>Images</em> is a list of two Tk images: the first image is displayed when the node is open, the second when it is closed.
+</dd>
+<dt>-label <em>string</em></dt>
+<dd>Sets the text for the entry's label. If not set, this defaults to the name of the node. The default is &quot;&quot;.
+</dd>
+<dt>-opencommand <em>string</em></dt>
+<dd><p>Specifies a Tcl script to be invoked when the entry is opened. This overrides the widget's <strong>-opencommand</strong> option for this node. The default is &quot;&quot;. Percent substitutions are performed on <em>string</em> before it is executed. The following substitutions are valid:</p>
+<dl>
+<dt>%W</dt>
+<dd>The pathname of the widget.
+</dd>
+<dt>%p</dt>
+<dd>The name of the node.
+</dd>
+<dt>%P</dt>
+<dd>The full pathname of the node.
+</dd>
+<dt>%#</dt>
+<dd>The id of the node.
+</dd>
+<dt>%%</dt>
+<dd>Translates to a single percent.
+</dd>
+</dl>
+</dd>
+</dl>
+<h1 id="button-options">BUTTON OPTIONS</h1>
+<p>Button configuration options may also be set by the <strong>option</strong> command. The resource subclass is Button. The resource name is always button.</p>
+<pre><code>option add *TreeView.Button.Foreground white
+option add *TreeView.button.Background blue</code></pre>
+<p>The following are the configuration options available for buttons.</p>
+<dl>
+<dt>-activebackground <em>color</em></dt>
+<dd>Sets the background color of active buttons. A button is made active when the mouse passes over it or by the <strong>button activate</strong> operation.
+</dd>
+<dt>-activeforeground <em>color</em></dt>
+<dd>Sets the foreground color of active buttons. A button is made active when the mouse passes over it or by the <strong>button activate</strong> operation.
+</dd>
+<dt>-background <em>color</em></dt>
+<dd>Sets the background of the button. The default is white.
+</dd>
+<dt>-borderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border around the button. The <strong>-relief</strong> option determines if a border is to be drawn. The default is 1.
+</dd>
+<dt>-closerelief <em>relief</em></dt>
+<dd>Specifies the 3-D effect for the closed button. <em>Relief</em> indicates how the button should appear relative to the widget; for example, raised means the button should appear to protrude. The default is solid.
+</dd>
+<dt>-cursor <em>cursor</em></dt>
+<dd>Sets the widget's cursor. The default cursor is &quot;&quot;.
+</dd>
+<dt>-foreground <em>color</em></dt>
+<dd>Sets the foreground color of buttons. The default is black.
+</dd>
+<dt>-images <em>images</em></dt>
+<dd>Specifies images to be displayed for the button. <em>Images</em> is a list of two Tk images: the first image is displayed when the button is open, the second when it is closed. If the <em>images</em> is the empty string, then a plus/minus gadget is drawn. The default is &quot;&quot;.
+</dd>
+<dt>-openrelief <em>relief</em></dt>
+<dd>Specifies the 3-D effect of the open button. <em>Relief</em> indicates how the button should appear relative to the widget; for example, raised means the button should appear to protrude. The default is flat.
+</dd>
+<dt>-size <em>pixels</em></dt>
+<dd>Sets the requested size of the button. The default is 0.
+</dd>
+</dl>
+<h1 id="column-options">COLUMN OPTIONS</h1>
+<p>Column configuration options may also be set by the <strong>option</strong> command. The resource subclass is Column. The resource name is the name of the column.</p>
+<pre><code>option add *TreeView.Column.Foreground white
+option add *TreeView.treeView.Background blue</code></pre>
+<p>The following configuration options are available for columns.</p>
+<dl>
+<dt>-background <em>color</em></dt>
+<dd>Sets the background color of the column. This overrides the widget's <strong>-background</strong> option. The default is white.
+</dd>
+<dt>-borderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border of the column. The <strong>-relief</strong> option determines if a border is to be drawn. The default is 0.
+</dd>
+<dt>-edit <em>boolean</em></dt>
+<dd>Indicates if the column's data fields can be edited. If <em>boolean</em> is false, the data fields in the column may not be edited. The default is yes.
+</dd>
+<dt>-foreground <em>color</em></dt>
+<dd>Specifies the foreground color of the column. You can override this for individual entries with the entry's <strong>-foreground</strong> option. The default is black.
+</dd>
+<dt>-font <em>fontName</em></dt>
+<dd>Sets the font for a column. You can override this for individual entries with the entry's <strong>-font</strong> option. The default is *-Helvetica-Bold-R-Normal-*-12-120-*.
+</dd>
+<dt>-hide <em>boolean</em></dt>
+<dd>If <em>boolean</em> is true, the column is not displayed. The default is yes.
+</dd>
+<dt>-justify <em>justify</em></dt>
+<dd>Specifies how the column data fields title should be justified within the column. This matters only when the column is wider than the data field to be display. <em>Justify</em> must be left, right, or center. The default is left.
+</dd>
+<dt>-pad <em>pad</em></dt>
+<dd>Specifies how much padding for the left and right sides of the column. <em>Pad</em> is a list of one or two screen distances. If <em>pad</em> has two elements, the left side of the column is padded by the first distance and the right side by the second. If <em>pad</em> has just one distance, both the left and right sides are padded evenly. The default is 2.
+</dd>
+<dt>-relief <em>relief</em></dt>
+<dd>Specifies the 3-D effect of the column. <em>Relief</em> specifies how the column should appear relative to the widget; for example, raised means the column should appear to protrude. The default is flat.
+</dd>
+<dt>-state <em>state</em></dt>
+<dd>Sets the state of the column. If <em>state</em> is disable then the column title can not be activated nor invoked. The default is normal.
+</dd>
+<dt>-text <em>string</em></dt>
+<dd>Sets the title for the column. The default is &quot;&quot;.
+</dd>
+<dt>-titleforeground <em>color</em></dt>
+<dd>Sets the foreground color of the column title. The default is black.
+</dd>
+<dt>-titleshadow <em>color</em></dt>
+<dd>Sets the color of the drop shadow of the column title. The default is &quot;&quot;.
+</dd>
+<dt>-width <em>pixels</em></dt>
+<dd>Sets the requested width of the column. This overrides the computed with of the column. If <em>pixels</em> is 0, the width is computed as from the contents of the column. The default is 0.
+</dd>
+</dl>
+<h1 id="text-editing-options">TEXT EDITING OPTIONS</h1>
+<p>Text edit window configuration options may also be set by the <strong>option</strong> command. The resource class is TreeViewEditor. The resource name is always edit.</p>
+<pre><code>option add *TreeViewEditor.Foreground white
+option add *edit.Background blue</code></pre>
+<p>The following are the configuration options available for the text editing window.</p>
+<dl>
+<dt>-background <em>color</em></dt>
+<dd>Sets the background of the text edit window. The default is white.
+</dd>
+<dt>-borderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border around the edit window. The <strong>-relief</strong> option determines if a border is to be drawn. The default is 1.
+</dd>
+<dt>-exportselection <em>boolean</em></dt>
+<dd>Indicates if the text selection is exported. If the edit window is exporting its selection then it will observe the standard X11 protocols for handling the selection. Selections are available as type <strong>STRING</strong>. The default is no.
+</dd>
+<dt>-relief <em>relief</em></dt>
+<dd>Specifies the 3-D effect of the edit window. <em>Relief</em> indicates how the background should appear relative to the edit window; for example, raised means the background should appear to protrude. The default is solid.
+</dd>
+<dt>-selectbackground <em>color</em></dt>
+<dd>Sets the background of the selected text in the edit window. The default is white.
+</dd>
+<dt>-selectborderwidth <em>pixels</em></dt>
+<dd>Sets the width of the 3-D border around the selected text in the edit window. The <strong>-selectrelief</strong> option determines if a border is to be drawn. The default is 1.
+</dd>
+<dt>-selectforeground <em>color</em></dt>
+<dd>Sets the foreground of the selected text in the edit window. The default is white.
+</dd>
+<dt>-selectrelief <em>relief</em></dt>
+<dd>Specifies the 3-D effect of the selected text in the edit window. <em>Relief</em> indicates how the text should appear relative to the edit window; for example, raised means the text should appear to protrude. The default is flat.
+</dd>
+</dl>
+<h1 id="default-bindings">DEFAULT BINDINGS</h1>
+<p>Tk automatically creates class bindings for treeviews that give them Motif-like behavior. Much of the behavior of a <strong>treeview</strong> widget is determined by its <strong>-selectmode</strong> option, which selects one of two ways of dealing with the selection.</p>
+<p>If the selection mode is <strong>single</strong>, only one node can be selected at a time. Clicking button 1 on an node selects it and deselects any other selected item.</p>
+<p>If the selection mode is <strong>multiple</strong>, any number of entries may be selected at once, including discontiguous ranges. Clicking Control- Button-1 on a node entry toggles its selection state without affecting any other entries. Pressing Shift-Button-1 on a node entry selects it, extends the selection.</p>
+<dl>
+<dt>[1]</dt>
+<dd>In <strong>extended</strong> mode, the selected range can be adjusted by pressing button 1 with the Shift key down: this modifies the selection to consist of the entries between the anchor and the entry under the mouse, inclusive. The un-anchored end of this new selection can also be dragged with the button down.
+</dd>
+<dt>[2]</dt>
+<dd>In <strong>extended</strong> mode, pressing button 1 with the Control key down starts a toggle operation: the anchor is set to the entry under the mouse, and its selection state is reversed. The selection state of other entries isn't changed. If the mouse is dragged with button 1 down, then the selection state of all entries between the anchor and the entry under the mouse is set to match that of the anchor entry; the selection state of all other entries remains what it was before the toggle operation began.
+</dd>
+<dt>[3]</dt>
+<dd>If the mouse leaves the treeview window with button 1 down, the window scrolls away from the mouse, making information visible that used to be off-screen on the side of the mouse. The scrolling continues until the mouse re-enters the window, the button is released, or the end of the hierarchy is reached.
+</dd>
+<dt>[4]</dt>
+<dd>Mouse button 2 may be used for scanning. If it is pressed and dragged over the <strong>treeview</strong> widget, the contents of the hierarchy drag at high speed in the direction the mouse moves.
+</dd>
+<dt>[5]</dt>
+<dd>If the Up or Down key is pressed, the location cursor (active entry) moves up or down one entry. If the selection mode is <strong>browse</strong> or <strong>extended</strong> then the new active entry is also selected and all other entries are deselected. In <strong>extended</strong> mode the new active entry becomes the selection anchor.
+</dd>
+<dt>[6]</dt>
+<dd>In <strong>extended</strong> mode, Shift-Up and Shift-Down move the location cursor (active entry) up or down one entry and also extend the selection to that entry in a fashion similar to dragging with mouse button 1.
+</dd>
+<dt>[7]</dt>
+<dd>The Left and Right keys scroll the <strong>treeview</strong> widget view left and right by the width of the character <strong>0</strong>. Control-Left and Control-Right scroll the <strong>treeview</strong> widget view left and right by the width of the window. Control-Prior and Control-Next also scroll left and right by the width of the window.
+</dd>
+<dt>[8]</dt>
+<dd>The Prior and Next keys scroll the <strong>treeview</strong> widget view up and down by one page (the height of the window).
+</dd>
+<dt>[9]</dt>
+<dd>The Home and End keys scroll the <strong>treeview</strong> widget horizontally to the left and right edges, respectively.
+</dd>
+<dt>[10]</dt>
+<dd>Control-Home sets the location cursor to the the first entry, selects that entry, and deselects everything else in the widget.
+</dd>
+<dt>[11]</dt>
+<dd>Control-End sets the location cursor to the the last entry, selects that entry, and deselects everything else in the widget.
+</dd>
+<dt>[12]</dt>
+<dd>In <strong>extended</strong> mode, Control-Shift-Home extends the selection to the first entry and Control-Shift-End extends the selection to the last entry.
+</dd>
+<dt>[13]</dt>
+<dd>In <strong>multiple</strong> mode, Control-Shift-Home moves the location cursor to the first entry and Control-Shift-End moves the location cursor to the last entry.
+</dd>
+<dt>[14]</dt>
+<dd>The space and Select keys make a selection at the location cursor (active entry) just as if mouse button 1 had been pressed over this entry.
+</dd>
+<dt>[15]</dt>
+<dd>In <strong>extended</strong> mode, Control-Shift-space and Shift-Select extend the selection to the active entry just as if button 1 had been pressed with the Shift key down.
+</dd>
+<dt>[16]</dt>
+<dd>In <strong>extended</strong> mode, the Escape key cancels the most recent selection and restores all the entries in the selected range to their previous selection state.
+</dd>
+<dt>[17]</dt>
+<dd>Control-slash selects everything in the widget, except in <strong>single</strong> and <strong>browse</strong> modes, in which case it selects the active entry and deselects everything else.
+</dd>
+<dt>[18]</dt>
+<dd>Control-backslash deselects everything in the widget, except in <strong>browse</strong> mode where it has no effect.
+</dd>
+<dt>[19]</dt>
+<dd>The F16 key (labelled Copy on many Sun workstations) or Meta-w copies the selection in the widget to the clipboard, if there is a selection.
+</dd>
+</dl>
+<p>The behavior of <strong>treeview</strong> widgets can be changed by defining new bindings for individual widgets or by redefining the class bindings.</p>
+<h2 id="widget-bindings">WIDGET BINDINGS</h2>
+<p>In addition to the above behavior, the following additional behavior is defined by the default widget class (TreeView) bindings.</p>
+<dl>
+<dt>&lt;ButtonPress-2&gt;</dt>
+<dd>Starts scanning.
+</dd>
+<dt>&lt;B2-Motion&gt;</dt>
+<dd>Adjusts the scan.
+</dd>
+<dt>&lt;ButtonRelease-2&gt;</dt>
+<dd>Stops scanning.
+</dd>
+<dt>&lt;B1-Leave&gt;</dt>
+<dd>Starts auto-scrolling.
+</dd>
+<dt>&lt;B1-Enter&gt;</dt>
+<dd>Starts auto-scrolling
+</dd>
+<dt>&lt;KeyPress-Up&gt;</dt>
+<dd>Moves the focus to the previous entry.
+</dd>
+<dt>&lt;KeyPress-Down&gt;</dt>
+<dd>Moves the focus to the next entry.
+</dd>
+<dt>&lt;Shift-KeyPress-Up&gt;</dt>
+<dd>Moves the focus to the previous sibling.
+</dd>
+<dt>&lt;Shift-KeyPress-Down&gt;</dt>
+<dd>Moves the focus to the next sibling.
+</dd>
+<dt>&lt;KeyPress-Prior&gt;</dt>
+<dd>Moves the focus to first entry. Closed or hidden entries are ignored.
+</dd>
+<dt>&lt;KeyPress-Next&gt;</dt>
+<dd>Move the focus to the last entry. Closed or hidden entries are ignored.
+</dd>
+<dt>&lt;KeyPress-Left&gt;</dt>
+<dd>Closes the entry. It is not an error if the entry has no children.
+</dd>
+<dt>&lt;KeyPress-Right&gt;</dt>
+<dd>Opens the entry, displaying its children. It is not an error if the entry has no children.
+</dd>
+<dt>&lt;KeyPress-space&gt;</dt>
+<dd>In &quot;single&quot; select mode this selects the entry. In &quot;multiple&quot; mode, it toggles the entry (if it was previous selected, it is not deselected).
+</dd>
+<dt>&lt;KeyRelease-space&gt;</dt>
+<dd>Turns off select mode.
+</dd>
+<dt>&lt;KeyPress-Return&gt;</dt>
+<dd>Sets the focus to the current entry.
+</dd>
+<dt>&lt;KeyRelease-Return&gt;</dt>
+<dd>Turns off select mode.
+</dd>
+<dt>&lt;KeyPress&gt;</dt>
+<dd>Moves to the next entry whose label starts with the letter typed.
+</dd>
+<dt>&lt;KeyPress-Home&gt;</dt>
+<dd>Moves the focus to first entry. Closed or hidden entries are ignored.
+</dd>
+<dt>&lt;KeyPress-End&gt;</dt>
+<dd>Move the focus to the last entry. Closed or hidden entries are ignored.
+</dd>
+<dt>&lt;KeyPress-F1&gt;</dt>
+<dd>Opens all entries.
+</dd>
+<dt>&lt;KeyPress-F2&gt;</dt>
+<dd>Closes all entries (except root).
+</dd>
+</dl>
+<h2 id="button-bindings">BUTTON BINDINGS</h2>
+<p>Buttons have bindings. There are associated with the &quot;all&quot; bindtag (see the entry's -bindtag option). You can use the <strong>bind</strong> operation to change them.</p>
+<dl>
+<dt>&lt;Enter&gt;</dt>
+<dd>Highlights the button of the current entry.
+</dd>
+<dt>&lt;Leave&gt;</dt>
+<dd>Returns the button back to its normal state.
+</dd>
+<dt>&lt;ButtonRelease-1&gt;</dt>
+<dd>Adjust the view so that the current entry is visible.
+</dd>
+</dl>
+<h2 id="entry-bindings-1">ENTRY BINDINGS</h2>
+<p>Entries have default bindings. There are associated with the &quot;all&quot; bindtag (see the entry's -bindtag option). You can use the <strong>bind</strong> operation to modify them.</p>
+<dl>
+<dt>&lt;Enter&gt;</dt>
+<dd>Highlights the current entry.
+</dd>
+<dt>&lt;Leave&gt;</dt>
+<dd>Returns the entry back to its normal state.
+</dd>
+<dt>&lt;ButtonPress-1&gt;</dt>
+<dd>Sets the selection anchor the current entry.
+</dd>
+<dt>&lt;Double-ButtonPress-1&gt;</dt>
+<dd>Toggles the selection of the current entry.
+</dd>
+<dt>&lt;B1-Motion&gt;</dt>
+<dd>For &quot;multiple&quot; mode only. Saves the current location of the pointer for auto-scrolling. Resets the selection mark.
+</dd>
+<dt>&lt;ButtonRelease-1&gt;</dt>
+<dd>For &quot;multiple&quot; mode only. Sets the selection anchor to the current entry.
+</dd>
+<dt>&lt;Shift-ButtonPress-1&gt;</dt>
+<dd>For &quot;multiple&quot; mode only. Extends the selection.
+</dd>
+<dt>&lt;Shift-Double-ButtonPress-1&gt;</dt>
+<dd>Place holder. Does nothing.
+</dd>
+<dt>&lt;Shift-B1-Motion&gt;</dt>
+<dd>Place holder. Does nothing.
+</dd>
+<dt>&lt;Shift-ButtonRelease-1&gt;</dt>
+<dd>Stop auto-scrolling.
+</dd>
+<dt>&lt;Control-ButtonPress-1&gt;</dt>
+<dd>For &quot;multiple&quot; mode only. Toggles and extends the selection.
+</dd>
+<dt>&lt;Control-Double-ButtonPress-1&gt;</dt>
+<dd>Place holder. Does nothing.
+</dd>
+<dt>&lt;Control-B1-Motion&gt;</dt>
+<dd>Place holder. Does nothing.
+</dd>
+<dt>&lt;Control-ButtonRelease-1&gt;</dt>
+<dd>Stops auto-scrolling.
+</dd>
+<dt>&lt;Control-Shift-ButtonPress-1&gt;</dt>
+<dd>???
+</dd>
+<dt>&lt;Control-Shift-Double-ButtonPress-1&gt;</dt>
+<dd>Place holder. Does nothing.
+</dd>
+<dt>&lt;Control-Shift-B1-Motion&gt;</dt>
+<dd>Place holder. Does nothing.
+</dd>
+</dl>
+<h2 id="column-bindings">COLUMN BINDINGS</h2>
+<p>Columns have bindings too. They are associated with the column's &quot;all&quot; bindtag (see the column -bindtag option). You can use the <strong>column bind</strong> operation to change them.</p>
+<dl>
+<dt>&lt;Enter&gt;</dt>
+<dd>Highlights the current column title.
+</dd>
+<dt>&lt;Leave&gt;</dt>
+<dd>Returns the column back to its normal state.
+</dd>
+<dt>&lt;ButtonRelease-1&gt;</dt>
+<dd>Invokes the command (see the column's -command option) if one if specified.
+</dd>
+</dl>
+<h2 id="column-rule-bindings">COLUMN RULE BINDINGS</h2>
+<dl>
+<dt>&lt;Enter&gt;</dt>
+<dd>Highlights the current and activates the ruler.
+</dd>
+<dt>&lt;Leave&gt;</dt>
+<dd>Returns the column back to its normal state. Deactivates the ruler.
+</dd>
+<dt>&lt;ButtonPress-1&gt;</dt>
+<dd>Sets the resize anchor for the column.
+</dd>
+<dt>&lt;B1-Motion&gt;</dt>
+<dd>Sets the resize mark for the column.
+</dd>
+<dt>&lt;ButtonRelease-1&gt;</dt>
+<dd>Adjust the size of the column, based upon the resize anchor and mark positions.
+</dd>
+</dl>
+<h1 id="example">EXAMPLE</h1>
+<p>The <strong>treeview</strong> command creates a new widget.</p>
+<pre><code>treeview .h -bg white</code></pre>
+<p>A new Tcl command .h is also created. This command can be used to query and modify the <strong>treeview</strong> widget. For example, to change the background color of the table to &quot;green&quot;, you use the new command and the widget's <strong>configure</strong> operation.</p>
+<pre><code># Change the background color.
+.h configure -background &quot;green&quot;</code></pre>
+<p>By default, the <strong>treeview</strong> widget will automatically create a new tree object to contain the data. The name of the new tree is the pathname of the widget. Above, the new tree object name is &quot;.h&quot;. But you can use the <strong>-tree</strong> option to specify the name of another tree.</p>
+<pre><code># View the tree &quot;myTree&quot;.
+.h configure -tree &quot;myTree&quot;</code></pre>
+<p>When a new tree is created, it contains only a root node. The node is automatically opened. The id of the root node is always 0 (you can use also use the special id root). The <strong>insert</strong> operation lets you insert one or more new entries into the tree. The last argument is the node's <em>pathname</em>.</p>
+<pre><code># Create a new entry named &quot;myEntry&quot;
+set id [.h insert end &quot;myEntry&quot;]</code></pre>
+<p>This appends a new node named &quot;myEntry&quot;. It will positioned as the last child of the root of the tree (using the position &quot;end&quot;). You can supply another position to order the node within its siblings.</p>
+<pre><code># Prepend &quot;fred&quot;.
+set id [.h insert 0 &quot;fred&quot;]</code></pre>
+<p>Entry names do not need to be unique. By default, the node's label is its name. To supply a different text label, add the <strong>-label</strong> option.</p>
+<pre><code># Create a new node named &quot;fred&quot;
+set id [.h insert end &quot;fred&quot; -label &quot;Fred Flintstone&quot;]</code></pre>
+<p>The <strong>insert</strong> operation returns the id of the new node. You can also use the <strong>index</strong> operation to get this information.</p>
+<pre><code># Get the id of &quot;fred&quot;
+.h index &quot;fred&quot;</code></pre>
+<p>To insert a node somewhere other than root, use the <strong>-at</strong> switch. It takes the id of the node where the new child will be added.</p>
+<pre><code># Create a new node &quot;barney&quot; in &quot;fred&quot;.
+.h insert -at $id end &quot;barney&quot;</code></pre>
+<p>A pathname describes the path to an entry in the hierarchy. It's a list of entry names that compose the path in the tree. Therefore, you can also add &quot;barney&quot; to &quot;fred&quot; as follows.</p>
+<pre><code># Create a new sub-entry of &quot;fred&quot;
+.h insert end &quot;fred barney&quot;</code></pre>
+<p>Every name in the list is ancestor of the next. All ancestors must already exist. That means that an entry &quot;fred&quot; is an ancestor of &quot;barney&quot; and must already exist. But you can use the <strong>-autocreate</strong> configuration option to force the creation of ancestor nodes.</p>
+<pre><code># Force the creation of ancestors.
+.h configure -autocreate yes
+.h insert end &quot;fred barney wilma betty&quot;</code></pre>
+<p>Sometimes the pathname is already separated by a character sequence rather than formed as a list. A file name is a good example of this. You can use the <strong>-separator</strong> option to specify a separator string to split the path into its components. Each pathname inserted is automatically split using the separator string as a separator. Multiple separators are treated as one.</p>
+<pre><code>.h configure -separator /
+.h insert end &quot;/usr/local/tcl/bin&quot;</code></pre>
+<p>If the path is prefixed by extraneous characters, you can automatically trim it off using the <strong>-trim</strong> option. It removed the string from the path before it is parsed.</p>
+<pre><code>.h configure -trim C:/windows -separator /
+.h insert end &quot;C:/window/system&quot;</code></pre>
+<p>You can insert more than one entry at a time with the <strong>insert</strong> operation. This can be much faster than looping over a list of names.</p>
+<pre><code># The slow way
+foreach f [glob $dir/*] {
+    .h insert end $f
+}
+# The fast way
+eval .h insert end [glob $dir/*]</code></pre>
+<p>In this case, the <strong>insert</strong> operation will return a list of ids of the new entries.</p>
+<p>You can delete entries with the <strong>delete</strong> operation. It takes one or more tags of ids as its argument. It deletes the entry and all its children.</p>
+<pre><code>.h delete $id</code></pre>
+<p>Entries have several configuration options. They control the appearance of the entry's icon and label. We have already seen the <strong>-label</strong> option that sets the entry's text label. The <strong>entry configure</strong> operation lets you set or modify an entry's configuration options.</p>
+<pre><code>.h entry configure $id -color red -font fixed</code></pre>
+<p>You can hide an entry and its children using the <strong>-hide</strong> option.</p>
+<pre><code>.h entry configure $id -hide yes</code></pre>
+<p>More that one entry can be configured at once. All entries specified are configured with the same options.</p>
+<pre><code>.h entry configure $i1 $i2 $i3 $i4 -color brown</code></pre>
+<p>An icon is displayed for each entry. It's a Tk image drawn to the left of the label. You can set the icon with the entry's <strong>-icons</strong> option. It takes a list of two image names: one to represent the open entry, another when it is closed.</p>
+<pre><code>set im1 [image create photo -file openfolder.gif]
+set im2 [image create photo -file closefolder.gif]
+.h entry configure $id -icons &quot;$im1 $im2&quot;</code></pre>
+<p>If <strong>-icons</strong> is set to the empty string, no icons are display.</p>
+<p>If an entry has children, a button is displayed to the left of the icon. Clicking the mouse on this button opens or closes the sub- hierarchy. The button is normally a + or - symbol, but can be configured in a variety of ways using the <strong>button configure</strong> operation. For example, the + and - symbols can be replaced with Tk images.</p>
+<pre><code>set im1 [image create photo -file closefolder.gif]
+set im2 [image create photo -file downarrow.gif]
+.h button configure $id -images &quot;$im1 $im2&quot; \
+    -openrelief raised -closerelief raised</code></pre>
+<p>Entries can contain an arbitrary number of <em>data</em> <em>fields</em>. Data fields are name-value pairs. Both the value and name are strings. The entry's <strong>-data</strong> option lets you set data fields.</p>
+<pre><code>.h entry configure $id -data {mode 0666 group users}</code></pre>
+<p>The <strong>-data</strong> takes a list of name-value pairs.</p>
+<p>You can display these data fields as <em>columns</em> in the <strong>treeview</strong> widget. You can create and configure columns with the <strong>column</strong> operation. For example, to add a new column to the widget, use the <strong>column insert</strong> operation. The last argument is the name of the data field that you want to display.</p>
+<pre><code>.h column insert end &quot;mode&quot;</code></pre>
+<p>The column title is displayed at the top of the column. By default, it's is the field name. You can override this using the column's <strong>-text</strong> option.</p>
+<pre><code>.h column insert end &quot;mode&quot; -text &quot;File Permissions&quot;</code></pre>
+<p>Columns have several configuration options. The <strong>column configure</strong> operation lets you query or modify column options.</p>
+<pre><code>.h column configure &quot;mode&quot; -justify left</code></pre>
+<p>The <strong>-justify</strong> option says how the data is justified within in the column. The <strong>-hide</strong> option indicates whether the column is displayed.</p>
+<pre><code>.h column configure &quot;mode&quot; -hide yes</code></pre>
+<p>Entries can be selected by clicking on the mouse. Selected entries are drawn using the colors specified by the <strong>-selectforeground</strong> and <strong>-selectbackground</strong> configuration options. The selection itself is managed by the <strong>selection</strong> operation.</p>
+<pre><code># Clear all selections
+.h selection clear 0 end
+# Select the root node
+.h selection set 0</code></pre>
+<p>The <strong>curselection</strong> operation returns a list of ids of all the selected entries.</p>
+<pre><code>set ids [.h curselection]</code></pre>
+<p>You can use the <strong>get</strong> operation to convert the ids to their pathnames.</p>
+<pre><code>set names [eval .h get -full $ids]</code></pre>
+<p>If a treeview is exporting its selection (using the <strong>-exportselection</strong> option), then it will observe the standard X11 protocols for handling the selection. Treeview selections are available as type <strong>STRING</strong>; the value of the selection will be the pathnames of the selected entries, separated by newlines.</p>
+<p>The <strong>treeview</strong> supports two modes of selection: single and multiple. In single select mode, only one entry can be selected at a time, while multiple select mode allows several entries to be selected. The mode is set by the widget's <strong>-selectmode</strong> option.</p>
+<pre><code>.h configure -selectmode &quot;multiple&quot;</code></pre>
+<p>You can be notified when the list of selected entries changes. The widget's <strong>-selectcommand</strong> specifies a Tcl procedure that is called whenever the selection changes.</p>
+<pre><code>proc SelectNotify { widget } {
+   set ids [$widget curselection]
+}
+.h configure -selectcommand &quot;SelectNotify .h&quot;</code></pre>
+<p>The widget supports the standard Tk scrolling and scanning operations. The <strong>treeview</strong> can be both horizontally and vertically. You can attach scrollbars to the <strong>treeview</strong> the same way as the listbox or canvas widgets.</p>
+<pre><code>scrollbar .xbar -orient horizontal -command &quot;.h xview&quot;
+scrollbar .ybar -orient vertical -command &quot;.h yview&quot;
+.h configure -xscrollcommand &quot;.xbar set&quot; \
+    -yscrollcommand &quot;.ybar set&quot;</code></pre>
+<p>There are three different modes of scrolling: listbox, canvas, and hierbox. In listbox mode, the last entry can always be scrolled to the top of the widget. In hierbox mode, the last entry is always drawn at the bottom of the widget. The scroll mode is set by the widget's <strong>-selectmode</strong> option.</p>
+<pre><code>.h configure -scrollmode &quot;listbox&quot;</code></pre>
+<p>Entries can be programmatically opened or closed using the <strong>open</strong> and <strong>close</strong> operations respectively.</p>
+<pre><code>.h open $id
+.h close $id</code></pre>
+<p>When an entry is opened, a Tcl procedure can be automatically invoked. The <strong>-opencommand</strong> option specifies this procedure. This procedure can lazily insert entries as needed.</p>
+<pre><code>proc AddEntries { dir } {
+   eval .h insert end [glob -nocomplain $dir/*]
+}
+.h configure -opencommand &quot;AddEntries %P&quot;</code></pre>
+<p>Now when an entry is opened, the procedure AddEntries is called and adds children to the entry. Before the command is invoked, special &quot;%&quot; substitutions (like <strong>bind</strong>) are performed. Above, %P is translated to the pathname of the entry.</p>
+<p>The same feature exists when an entry is closed. The <strong>-closecommand</strong> option specifies the procedure.</p>
+<pre><code>proc DeleteEntries { id } {
+   .h entry delete $id 0 end
+}
+.h configure -closecommand &quot;DeleteEntries %#&quot;</code></pre>
+<p>When an entry is closed, the procedure DeleteEntries is called and deletes the entry's children using the <strong>entry delete</strong> operation (%# is the id of entry).</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>treeview, widget</p>
+</body>
+</html>

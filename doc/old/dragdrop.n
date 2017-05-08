@@ -321,9 +321,9 @@ necessary, and the command associated with the \fIdataType\fR is returned.
 Otherwise, it concatenates the \fIcommand\fR and any extra \fIarg\fR strings,
 and registers a new \fIdataType\fR with this command.
 .PP
+.RS
 The following substitutions are made in the \fIcommand\fR string
 before it is executed:
-.RS
 .TP
 \fB%i\fR
 Replaced with the name of the interpreter for the target application.
@@ -333,7 +333,6 @@ Replaced with the value returned from the "-packagecmd" command.
 .TP
 \fB%w\fR
 Replaced with the window path name for the target window.
-.RE
 .LP
 A typical source handler contains one or more "send" commands which
 transfer data to the remote application.  The target window is then
@@ -348,7 +347,6 @@ the incoming data differently.  If an error is encountered during the
 communication process, the rejection symbol is posted on the token window
 to indicate failure.
 .RE
-.sp
 .TP
 \fBdrag&drop target\fR
 Returns a list of path names for widgets registered as drag&drop
@@ -364,9 +362,9 @@ a Tcl command that specifies how the target will make use of the data.
 This command is invoked indirectly after a source has transferred data
 to a target application.
 .PP
+.RS
 The following substitutions are made in the \fIcommand\fR string
 before it is executed:
-.RS
 .TP
 \fB%v\fR
 In the simplest case, the source window does not have a handler command

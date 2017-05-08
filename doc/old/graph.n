@@ -1026,7 +1026,6 @@ Returns the current value of the element configuration option given by
 for the element \fBconfigure\fR operation.
 .TP
 \fIpathName \fBelement closest \fIx y\fR \fIvarName\fR ?\fIoption value\fR?... ?\fIelemName\fR?...
-
 Searches for the data point closest to the window coordinates \fIx\fR
 and \fIy\fR.  By default, all elements are searched.  Hidden elements
 (see the \fB\-hide\fR option is false) are ignored.  You can limit the

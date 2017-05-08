@@ -1,0 +1,12 @@
+#!/bin/bash
+
+last=$(echo "${@: -1}")
+dir=${0%/*}
+base=${last##*/}
+base=${base%.*}
+end=${1##*.}
+
+[[ "$end" == "$base" ]] && end=n
+
+    tclsh $dir/man2markdown.tcl $@ > $dir/../$base.md || exit 1
+

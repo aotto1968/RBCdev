@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, bitmap" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">bitmap</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#introduction">INTRODUCTION</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#operations">OPERATIONS</a></li>
+<li><a href="#limitations">LIMITATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>bitmap - Define a new bitmap from a Tcl script</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>bitmap define</strong> <em>bitmapName</em> <em>data</em> ?<em>option</em> <em>value</em>?...</p>
+<p><strong>bitmap compose</strong> <em>bitmapName</em> <em>text</em> ?<em>option</em> <em>value</em>?...</p>
+<p><strong>bitmap exists</strong> <em>bitmapName</em></p>
+<p><strong>bitmap source</strong> <em>bitmapName</em></p>
+<p><strong>bitmap data</strong> <em>bitmapName</em></p>
+<p><strong>bitmap height</strong> <em>bitmapName</em></p>
+<p><strong>bitmap width</strong> <em>bitmapName</em></p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>bitmap</strong> command lets you create new bitmaps directly from your Tcl script. The bitmap can be specified as a list of data or a text string which is converted into a bitmap. You can arbitrarily scale or rotate the bitmap too.</p>
+<h1 id="introduction">INTRODUCTION</h1>
+<p>Bitmaps are commonly used within Tk. In label and button widgets, you display bitmaps them instead of text strings and in the canvas and text widgets, they're used for stippling. But Tk let's you can create new bitmaps only by reading the bitmap data from a file. This makes bitmaps cumbersome to manage, especially in packaging the program as a <strong>wish</strong> script, since each bitmap must be its own file. It would be nicer if you could create new bitmaps directly from your Tcl script.</p>
+<p>The <strong>bitmap</strong> command lets you do just that. You can specify the bitmap as in various formats (such as the X11 bitmap format). You can also compose a bitmap from a text string. The <strong>bitmap</strong> command also lets you and arbitrarily rotate or scale the bitmap. For example, you could use this to create button widgets with the text label rotated 90 degrees.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; bitmap.mann You can define a new bitmap with the <strong>define</strong> operation. For example, let's say you are using the X11 bitmap &quot;gray1&quot;. Normally to use it, you would specify the location of the file.</p>
+<pre><code>label .l -bitmap @/usr/X11R6/include/X11/bitmaps/gray1</code></pre>
+<p>But you can simply cut and paste the contents of &quot;gray1&quot; into the <strong>bitmap</strong> command.</p>
+<pre><code>bitmap define gray1 {
+    #define gray1_width 2
+    #define gray1_height 2
+    static char gray1_bits[] = {
+       0x01, 0x02};
+}
+label .l -bitmap gray1</code></pre>
+<p>Tk will recognize &quot;gray1&quot; as a bitmap which can now be used with any widget that accepts bitmaps.</p>
+<p>The bitmap data can be specified in a mulitude of forms. The following commands are all equivalent.</p>
+<pre><code>bitmap define gray1 {
+    #define gray1_width 2
+    #define gray1_height 2
+    static char gray1_bits[] = {
+       0x01, 0x02};
+}
+bitmap define gray1 { { 2 2 } { 0x01, 0x02 } }
+bitmap define gray1 { { 2 2 } { 0x01 0x02 } }
+bitmap define gray1 { { 2 2 } { 1 2 } }</code></pre>
+<p>Either the data is in the standard X11 bitmap form, or it's a list of two lists. The first list contains the height and width of the bitmap. The second list is the bitmap source data. Each element of that list is an hexadecimal number specifying which pixels are foreground (1) and which are background (0) of the bitmap. Note that the format of the source data is exactly that of the XBM format.</p>
+<p>You can scale or rotate the bitmap as you create it, by using the <strong>-scale</strong> or<strong>-rotate</strong> options.</p>
+<pre><code>bitmap define gray1 {
+    #define gray1_width 2
+    #define gray1_height 2
+    static char gray1_bits[] = {
+       0x01, 0x02};
+} -scale 2.0 -rotate 90.0</code></pre>
+<p>In addition, you can compose bitmaps from text strings. This makes it easy to create rotated buttons or labels. The text string can have multi-line.</p>
+<pre><code>bitmap compose rot_text &quot;This is rotated\ntext&quot; \
+  -rotate 90.0 -font fixed</code></pre>
+<p>There are also a number of ways to query bitmaps. This isn't limited to bitmaps that you create, but any bitmap.</p>
+<pre><code>bitmap exists rot_text
+bitmap width rot_text
+bitmap height rot_text
+bitmap data rot_text
+bitmap source rot_text</code></pre>
+<p>The <strong>exists</strong> operation indicates if a bitmap by that name is defined. You can query the dimensions of the bitmap using the <strong>width</strong> and <strong>height</strong> operations. The <strong>data</strong> operation returns the list of the data used to create the bitmap. For example, you could query the data of a bitmap and <strong>send</strong> it across the network to another Tk application.</p>
+<pre><code>set data [bitmap data @/usr/X11R6/include/X11/bitmaps/ghost.xbm]
+send {wish #2} bitmap define ghost $data</code></pre>
+<h1 id="operations">OPERATIONS</h1>
+<p>The following operations are available for <strong>bitmap</strong>:</p>
+<dl>
+<dt>bitmap</dt>
+<dd><p>compose__ <em>bitmapName</em> <em>text</em> ?<em>option</em> <em>value</em>?... Creates a bitmap <em>bitmapName</em> from the text string <em>text</em>. A bitmap <em>bitmapName</em> can not already exist. The following options are available.</p>
+<dl>
+<dt>-font <em>fontName</em></dt>
+<dd>Specifies a font to use when drawing text into the bitmap. If this option isn't specified then <em>fontName</em> defaults to *-Helvetica-Bold-R-Normal-*-140-*.
+</dd>
+<dt>-rotate <em>theta</em></dt>
+<dd>Specifies the angle of rotation of the text in the bitmap. <em>Theta</em> is a real number representing the angle in degrees. It defaults to 0.0 degrees.
+</dd>
+<dt>-scale <em>value</em></dt>
+<dd>Specifies the scale of the bitmap. <em>Value</em> is a real number representing the scale. A scale of 1.0 indicates no scaling is necessary, while 2.0 would double the size of the bitmap. There is no way to specify differents scales for the width and height of the bitmap. The default scale is 1.0.
+</dd>
+</dl>
+</dd>
+<dt>bitmap data <em>bitmapName</em></dt>
+<dd>Returns a list of both the dimensions of the bitmap <em>bitmapName</em> and its source data.
+</dd>
+<dt>bitmap</dt>
+<dd><p>define__ <em>bitmapName</em> <em>data</em> ?<em>option</em> <em>value</em>?... Associates <em>bitmapName</em> with in-memory bitmap data so that <em>bitmapName</em> can be used in later calls to <strong>Tk_GetBitmap</strong>. The <em>bitmapName</em> argument is the name of the bitmap; it must not previously have been defined in either a call to Tk_DefineBitmap or <strong>bitmap</strong>. The argument <em>data</em> describes the bitmap to be created. It is either the X11 bitmap format (a C structure) or a list of two lists: the dimensions and source data. The dimensions are a list of two numbers which are the width and height of the bitmap. The source data is a list of hexadecimal values in a format similar to the X11 or X10 bitmap format. The values may be optionally separated by commas and do not need to be prefixed with &quot;0x&quot;. The following options are available.</p>
+<dl>
+<dt>-rotate <em>theta</em></dt>
+<dd>Specifies how many degrees to rotate the bitmap. <em>Theta</em> is a real number representing the angle. The default is 0.0 degrees.
+</dd>
+<dt>-scale <em>value</em></dt>
+<dd>Specifies how to scale the bitmap. <em>Value</em> is a real number representing the scale. A scale of 1.0 indicates no scaling is necessary, while 2.0 would double the size of the bitmap. There is no way to specify differents scales for the width and height of the bitmap. The default scale is 1.0.
+</dd>
+</dl>
+</dd>
+<dt>bitmap exists <em>bitmapName</em></dt>
+<dd>Returns 1 if a bitmap <em>bitmapName</em> exists, otherwise 0.
+</dd>
+<dt>bitmap height <em>bitmapName</em></dt>
+<dd>Returns the height in pixels of the bitmap <em>bitmapName</em>.
+</dd>
+<dt>bitmap source <em>bitmapName</em></dt>
+<dd>Returns the source data of the bitmap <em>bitmapName</em>. The source data is a list of the hexadecimal values.
+</dd>
+<dt>bitmap width <em>bitmapName</em></dt>
+<dd>Returns the width in pixels of the bitmap <em>bitmapName</em>.
+</dd>
+</dl>
+<h1 id="limitations">LIMITATIONS</h1>
+<p>Tk currently offers no way of destroying bitmaps. Once a bitmap is created, it exists until the application terminates.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>bitmap</p>
+</body>
+</html>

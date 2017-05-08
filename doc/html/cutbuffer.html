@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, cut buffer, property" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">cutbuffer</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#operations">OPERATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>cutbuffer - Manipulate X cut buffer properties</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>cutbuffer</strong> <em>get</em> <em>?number?</em><br />
+<strong>cutbuffer</strong> <em>rotate</em> <em>?count?</em><br />
+<strong>cutbuffer</strong> <em>set</em> <em>value</em> <em>?number?</em></p>
+<h1 id="description">DESCRIPTION</h1>
+<p>The <strong>cutbuffer</strong> command allows you to read or modify the eight X cut buffer properties. You can also rotate the buffers properties.</p>
+<h1 id="operations">OPERATIONS</h1>
+<p>The following operations are available for the <strong>cutbuffer</strong> command:</p>
+<dl>
+<dt><strong>cutbuffer get</strong> <em>?number?</em></dt>
+<dd><p>Returns the value of a cutbuffer <em>number</em>. <em>Number</em> must be a number between 0 and 7. The default is 0. The cutbuffer is returned exactly, except that NUL bytes are converted to '@' characters. If a cut buffer <em>number</em> does not exist, then &quot;&quot; is returned.</p>
+</dd>
+<dt><strong>cutbuffer rotate</strong> <em>?count?</em></dt>
+<dd><p>Rotates the cut buffers by <em>count</em>. <em>Count</em> must be a number between -7 and 7. The default is 1.</p>
+</dd>
+<dt><strong>cutbuffer set</strong> <em>value</em> ?<em>number</em>?</dt>
+<dd><p>Sets the cutbuffer <em>number</em> to <em>value</em>. <em>Number</em> must be a number between 0 and 7. The default is 0.</p>
+</dd>
+</dl>
+<h1 id="keywords">KEYWORDS</h1>
+<p>cut buffer, property</p>
+</body>
+</html>

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+dir=${0%/*}
+base=${1##*/}
+base=${base%.*}
+
+pandoc -s \
+    --variable title=$base  \
+    --variable section="n"  \
+    --variable header="RBC Built-In Commands" \
+    --variable footer="RBC(0.2)" \
+    --variable keywords="tcl, tk, rbc, $(grep -C +3 KEYWORDS $1 | tail -n 1)" \
+    --variable lang="en" \
+    --variable adjusting="c" \
+    --include-in-header=html/template.css \
+    \
+    -t html -f markdown --highlight-style pygments \
+    --table-of-contents \
+    -o $dir/../html/$base.${2:-html}  $1

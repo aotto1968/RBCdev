@@ -1,0 +1,18 @@
+#!/bin/bash
+
+dir=${0%/*}
+base=${1##*/}
+base=${base%.*}
+
+  pandoc -s \
+    \
+    --variable title=$base                      \
+    --variable section="${2:-n}"                \
+    --variable header="RBC Built-In Commands"   \
+    --variable footer="RBC(0.2)"                \
+    --variable keywords="tcl, tk, rbc"          \
+    --variable lang="en"                        \
+    --variable adjusting="l"                    \
+    \
+    -t man -f markdown \
+    -o $dir/../man/$base.${2:-n} $1
