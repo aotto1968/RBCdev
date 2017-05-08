@@ -409,9 +409,7 @@ puts\ $vecName(:)
 .fi
 .SH VECTOR OPERATIONS
 .TP
-.B vector
-create__ \f[I]vecName\f[]?(\f[I]size\f[])?...
-?\f[I]switches\f[]?
+.B \f[B]vector create\f[] \f[I]vecName\f[]?(\f[I]size\f[])?... ?\f[I]switches\f[]?
 The \f[B]create\f[] operation creates a new vector \f[I]vecName\f[].
 Both a Tcl command and array variable \f[I]vecName\f[] are also created.
 The name \f[I]vecName\f[] must be unique, so another Tcl command or
@@ -456,12 +454,12 @@ Set \f[I]boolean\f[] to "true" to get the old behavior.
 .RE
 .RE
 .TP
-.B vector
-destroy__ \f[I]vecName\f[] ?\f[I]vecName...\f[]?
+.B \f[B]vector destroy\f[] \f[I]vecName\f[] ?\f[I]vecName...\f[]?
+\&...
 .RS
 .RE
 .TP
-.B vector expr \f[I]expression\f[]
+.B \f[B]vector expr\f[] \f[I]expression\f[]
 All binary operators take vectors as operands (remember that numbers are
 treated as one\-component vectors).
 The exact action of binary operators depends upon the length of the
@@ -494,13 +492,13 @@ Exponentiation.
 .RS
 .RE
 .TP
-.B *
-/ %__ Multiply, divide, remainder.
+.B * / %
+Multiply, divide, remainder.
 .RS
 .RE
 .TP
-.B +
-\-__ Add and subtract.
+.B + \-
+Add and subtract.
 .RS
 .RE
 .TP
@@ -700,8 +698,11 @@ Returns the vector components sorted in ascending order.
 .RS
 .RE
 .RE
-.PP
-\f[B]vector names\f[] ?\f[I]pattern\f[]?
+.TP
+.B \f[B]vector names\f[] ?\f[I]pattern\f[]?
+\&...
+.RS
+.RE
 .SH INSTANCE OPERATIONS
 .PP
 You can also use the vector\[aq]s Tcl command to query or modify it.
@@ -1036,12 +1037,11 @@ and \f[I]interp\->result\f[] will contain an error message.
 \f[B]Rbc_DeleteVector\f[]
 .PP
 Synopsis:
-.PP
-int \f[B]Rbc_DeleteVector\f[] (\f[I]vecPtr\f[])
-.PD 0
-.P
-.PD
+.TP
+.B int Rbc_DeleteVector (\f[I]vecPtr\f[])
 Rbc_Vector *\f[I]vecPtr\f[];
+.RS
+.RE
 .TP
 .B Description:
 Removes the vector pointed to by \f[I]vecPtr\f[].
@@ -1202,10 +1202,11 @@ When the client application is done with the vector, it should free the
 identifier.
 .PP
 The call\-back routine must of the following type.
-.PP
-typedef void (\f[B]Rbc_VectorChangedProc\f[]) (Tcl_Interp
-*\f[I]interp\f[], ClientData \f[I]clientData\f[], Rbc_VectorNotify
-\f[I]notify\f[]);
+.TP
+.B typedef void (Rbc_VectorChangedProc) (Tcl_Interp *\f[I]interp\f[],
+ClientData \f[I]clientData\f[], Rbc_VectorNotify \f[I]notify\f[]);
+.RS
+.RE
 .PP
 \f[I]ClientData\f[] is passed to this routine whenever it is called.
 You can use this to pass information to the call\-back.
@@ -1301,12 +1302,11 @@ updated or destroyed.
 \f[B]Rbc_FreeVectorId\f[]
 .PP
 Synopsis:
-.PP
-void \f[B]Rbc_FreeVectorId\f[] (\f[I]clientId\f[]);
-.PD 0
-.P
-.PD
+.TP
+.B void Rbc_FreeVectorId (\f[I]clientId\f[]);
 Rbc_VectorId \f[I]clientId\f[];
+.RS
+.RE
 .TP
 .B Description:
 Frees the client identifier.
@@ -1324,12 +1324,11 @@ the vector is updated or destroyed.
 \f[B]Rbc_NameOfVectorId\f[]
 .PP
 Synopsis:
-.PP
-char *\f[B]Rbc_NameOfVectorId\f[] (\f[I]clientId\f[]);
-.PD 0
-.P
-.PD
+.TP
+.B char *Rbc_NameOfVectorId (\f[I]clientId\f[]);
 Rbc_VectorId \f[I]clientId\f[];
+.RS
+.RE
 .TP
 .B Description:
 Retrieves the name of the vector associated with the client identifier

@@ -143,12 +143,13 @@ Returns the configuration information associated with the watch
 .B \f[B]watch names\f[] ?\f[I]state\f[]?
 Lists the names of the watches for a given state.
 \f[I]State\f[] may be one of the following: active, idle, or ignore.
-If a \f[I]state\f[] argument isn\[aq]t specified,
-.PD 0
-.P
-.PD
+If a \f[I]state\f[]
+.RS
+.TP
+.B argument isn\[aq]t specified,
 all watches are listed.
 .RS
+.RE
 .RE
 .SH KEYWORDS
 .PP

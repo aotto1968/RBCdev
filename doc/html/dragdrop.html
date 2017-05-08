@@ -51,25 +51,15 @@
 </dd>
 <dt><strong>drag&amp;drop source</strong> <em>window</em> ?<em>options</em>?</dt>
 <dd><p>Registers a new drag&amp;drop source window with the given options, or modifies the options for an existing window:</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>buttonBinding</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>ButtonBinding</strong> Switch: <strong>-button</strong> <em>n</em>
-</dd>
-</dl>
+<p>Name: <strong>buttonBinding</strong><br />
+Class: <strong>ButtonBinding</strong><br />
+Switch: <strong>-button</strong> <em>n</em></p>
 <p>Specifies the mouse button (integer 1-5) that will invoke the drag&amp;drop operation on the source window. This causes the following bindings to be added to the widget:</p>
 <p>bind <em>win</em> &lt;ButtonPress-<em>n</em>&gt; {drag&amp;drop drag %W %X %Y} bind <em>win</em> &lt;B<em>n</em>-Motion&gt; {drag&amp;drop drag %W %X %Y} bind <em>win</em> &lt;ButtonRelease-<em>n</em>&gt; {drag&amp;drop drop %W %X %Y}</p>
 <p>The default value is button 3. If the value &quot;0&quot; is specified, then no bindings are added; this enables the user to establish bindings manually.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>packageCommand</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Command</strong> Switch: <strong>-packagecmd</strong> <em>command</em>
-</dd>
-</dl>
+<p>Name: <strong>packageCommand</strong><br />
+Class: <strong>Command</strong><br />
+Switch: <strong>-packagecmd</strong> <em>command</em></p>
 <p>Specifies a Tcl command used to establish the appearance of the token window at the start of each drag&amp;drop operation. This command is automatically invoked by the <strong>drag&amp;drop drag</strong> command whenever the token window is about to be mapped for a drag operation. It should update the appearance of the token window to represent the data that is being moved.</p>
 <p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
 <dl>
@@ -91,69 +81,35 @@ return $str<br />
 </dd>
 </dl>
 <p>The return value is available later when the source and target communicate. If the source has a command associated with its data handler, then this value is substituted in place of &quot;%v&quot; in the source handler. Otherwise, it is substituted in place of &quot;%v&quot; in the target handler.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>rejectBackground</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Background</strong>
-</dd>
-<dt>Switch:</dt>
-<dd><strong>-rejectbg</strong> <em>color</em>
-</dd>
-</dl>
+<p>Name: <strong>rejectBackground</strong><br />
+Class: <strong>Background</strong><br />
+Switch: <strong>-rejectbg</strong> <em>color</em></p>
 <p>Specifies the color used to draw the background of the rejection symbol on the token window. The rejection symbol (a circle with a line through it--the international &quot;no&quot;) appears whenever communication fails.</p>
 <dl>
 <dt>Name:</dt>
 <dd><strong>rejectForeground</strong>
 </dd>
 <dt>Class:</dt>
-<dd><strong>Foreground</strong>
-</dd>
-<dt>Switch:</dt>
-<dd><strong>-rejectfg</strong> <em>color</em>
+<dd><strong>Foreground</strong> Switch: <strong>-rejectfg</strong> <em>color</em>
 </dd>
 </dl>
 <p>Specifies the color used to draw the foreground of the rejection symbol on the token window.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>rejectStipple</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Stipple</strong>
-</dd>
-<dt>Switch:</dt>
-<dd><strong>-rejectstipple</strong> <em>pattern</em>
-</dd>
-</dl>
+<p>Name: <strong>rejectStipple</strong><br />
+Class: <strong>Stipple</strong><br />
+Switch: <strong>-rejectstipple</strong> <em>pattern</em></p>
 <p>Specifies a stipple pattern used to draw the foreground of the rejection symbol on the token window. Any of the forms acceptable to Tk_GetBitmap can be used.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>selfTarget</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>SelfTarget</strong> Switch: <strong>-selftarget</strong> <em>boolean</em>
-</dd>
-</dl>
+<p>Name: <strong>selfTarget</strong><br />
+Class: <strong>SelfTarget</strong><br />
+Switch: <strong>-selftarget</strong> <em>boolean</em></p>
 <p>If the <em>boolean</em> value is true, and if a source widget is also registered as a compatible target, then the source will be able to transmit to itself during drag&amp;drop operations. This is primarily useful for complex sources such as a canvas widget, where items may be moved from place to place within the same widget. By default, this option is disabled.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>send</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Send</strong> Switch: <strong>-send</strong> <em>list</em>
-</dd>
-</dl>
+<p>Name: <strong>send</strong><br />
+Class: <strong>Send</strong><br />
+Switch: <strong>-send</strong> <em>list</em></p>
 <p>Specifies a <em>list</em> of <em>dataTypes</em> enabled for communication. Only <em>dataTypes</em> defined by commands of the form &quot;<strong>drag&amp;drop</strong> <strong>source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em> ?<em>command</em> <em>arg</em> <em>arg...</em>?&quot; are allowed. This list also determines the priority of the various <em>dataTypes</em>. When a token window is over a potential drag&amp;drop target, this list is searched from start to finish for a <em>dataType</em> that is also recognized by the target. The first matching <em>dataType</em> found determines the value that will be sent if the token is dropped. If no matching <em>dataType</em> is found, then the target is incompatible, and is ignored. By default, this option has the value &quot;all&quot;, indicating that all <em>dataTypes</em> should be considered in the order that they were defined for the source.</p>
 <p>Note that this option makes it easy to control a drag&amp;drop source. Setting the value to an empty string disables the source; setting the value back to &quot;all&quot; restores communication.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>siteCommand</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Command</strong> Switch: <strong>-sitecmd</strong> <em>command</em>
-</dd>
-</dl>
+<p>Name: <strong>siteCommand</strong><br />
+Class: <strong>Command</strong><br />
+Switch: <strong>-sitecmd</strong> <em>command</em></p>
 <p>Specifies a Tcl command used to update the appearance of the token window. If specified, this command is automatically invoked by the <strong>drag&amp;drop drag</strong> command whenever the token window is over a compatible drag&amp;drop target.</p>
 <p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
 <dl>
@@ -165,50 +121,26 @@ return $str<br />
 </dd>
 </dl>
 <p>Regardless of this command, border of the token window will become raised whenever the token is over a valid target. This command can be used to display other visual cues.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>tokenAnchor</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Anchor</strong> Switch: <strong>-tokenanchor</strong> <em>anchor</em>
-</dd>
-</dl>
+<p>Name: <strong>tokenAnchor</strong><br />
+Class: <strong>Anchor</strong><br />
+Switch: <strong>-tokenanchor</strong> <em>anchor</em></p>
 <p>Specifies how the token window is positioned relative to the mouse pointer coordinates passed to the <strong>drag&amp;drop</strong> <strong>drag</strong> command. Must be one of the values n, s, e, w, center, nw, ne, sw or se. For example, &quot;nw&quot; means to position the token such that its upper-left corner is at the mouse pointer. The default value is &quot;center&quot;.</p>
 <dl>
 <dt>Name:</dt>
 <dd><strong>tokenBackground</strong>
 </dd>
 <dt>Class:</dt>
-<dd><strong>Background</strong>
-</dd>
-<dt>Switch:</dt>
-<dd><strong>-tokenbg</strong> <em>color</em>
+<dd><strong>Background</strong> Switch: <strong>-tokenbg</strong> <em>color</em>
 </dd>
 </dl>
 <p>Specifies the color used to draw the background of the token window.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>tokenBorderWidth</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>BorderWidth</strong>
-</dd>
-<dt>Switch:</dt>
-<dd><strong>-tokenborderwidth</strong> <em>size</em>
-</dd>
-</dl>
+<p>Name: <strong>tokenBorderWidth</strong><br />
+Class: <strong>BorderWidth</strong><br />
+Switch: <strong>-tokenborderwidth</strong> <em>size</em></p>
 <p>Specifies the width in pixels of the border around the token window. This border becomes raised to indicate when the token is over a compatible drag&amp;drop target site. The value may have any of the forms acceptable to Tk_GetPixels. The default value is &quot;3&quot;.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>tokenCursor</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Cursor</strong>
-</dd>
-<dt>Switch:</dt>
-<dd><strong>-tokencursor</strong> <em>cursor</em>
-</dd>
-</dl>
+<p>Name: <strong>tokenCursor</strong><br />
+Class: <strong>Cursor</strong><br />
+Switch: <strong>-tokencursor</strong> <em>cursor</em></p>
 <p>Specifies the cursor used when a token window is active. The value may have any of the forms acceptable to Tk_GetCursor. The default value is &quot;center_ptr&quot;.</p>
 </dd>
 <dt><strong>drag&amp;drop source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em>? ?<em>command</em> <em>arg</em> <em>arg...</em>?</dt>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, Tcl\_TreeCreateNode, Tcl\_TreeDeleteNode" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeGetNode</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeGetNode - Finds the node from the ID.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>#include &lt;rbcTree.h&gt;</strong></p>
+<p>Rbc_TreeNode<br />
+<strong>Rbc_TreeGetNode</strong>(<em>tree</em>, <em>number</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<p>Rbc_Tree <em>tree</em> (in) Tree containing the requested node.</p>
+<p>unsigned int <em>number</em> (in) Serial number of the requested node.</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure returns a node in a tree object based upon a give serial number. The node is searched using the serial number.</p>
+<p>The arguments are as follows:</p>
+<dl>
+<dt><em>tree</em></dt>
+<dd>The tree containing the requested node.
+</dd>
+<dt><em>number</em></dt>
+<dd>The serial number of the requested node.
+</dd>
+</dl>
+<h1 id="returns">RETURNS</h1>
+<p>The node represented by the given serial number is returned. If no node with that ID exists in <em>tree</em> then NULL is returned.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example gets the node from a serial number.</p>
+<pre><code>unsigned int number;
+Rbc_TreeNode node;
+Rbc_TreeToken token;
+node = Rbc_TreeGetNode(token, number);
+if (node == NULL) {
+    printf(&quot;no node with ID %d exists\n&quot;, number);
+} else {
+    printf(&quot;node found: label is %s\n&quot;, Rbc_TreeNodeLabel(node));
+}</code></pre>
+<h1 id="keywords">KEYWORDS</h1>
+<p>Tcl_TreeCreateNode, Tcl_TreeDeleteNode</p>
+</body>
+</html>

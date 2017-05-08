@@ -375,7 +375,7 @@ Returns the number of tabs in the tabset.
 \&...
 .RS
 .TP
-.B \f[I]pathName\f[] tab cget \f[I]nameOrIndex\f[] \f[I]option\f[]
+.B \f[I]pathName\f[] \f[B]tab cget\f[] \f[I]nameOrIndex\f[] \f[I]option\f[]
 Returns the current value of the configuration option given by
 \f[I]option\f[].
 \f[I]Option\f[] may have any of the values accepted by the \f[B]tab

@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, tree, token" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeReleaseToken</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeReleaseToken - Releases token associated with tree object.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>#include &lt;rbcTree.h&gt;</strong></p>
+<p>int<br />
+<strong>Rbc_TreeReleaseToken</strong>(<em>token</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<p>Rbc_Tree <em>*token</em> (in) Token of tree to be released.</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure releases the token associated with a C-based tree data object. When all outstanding tokens for a tree data object have been released, then the data object itself will be freed. The arguments are as follows:</p>
+<dl>
+<dt>token</dt>
+<dd>Token of the tree data object to be released. This token was initialized either by <strong>Tcl_TreeGetToken</strong> <em>or</em> <em>Rbc_TreeCreate</em> earlier.
+</dd>
+</dl>
+<h1 id="returns">RETURNS</h1>
+<p>Nothing.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example creates and then releases a new token.</p>
+<pre><code>Rbc_Tree token;
+
+if (Rbc_TreeCreate(interp, &quot;myTree&quot;, &amp;token) != TCL_OK) {
+    return TCL_ERROR;
+}
+printf(&quot;tree is %s\n&quot;, Rbc_TreeName(token));
+
+/* Tree will be destroyed when the token is released. */
+Rbc_TreeReleaseToken(token);</code></pre>
+<h1 id="keywords">KEYWORDS</h1>
+<p>tree, token</p>
+</body>
+</html>

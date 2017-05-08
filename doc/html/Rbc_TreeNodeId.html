@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, Tcl\_TreeCreateNode, Tcl\_TreeDeleteNode" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeNodeId</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeNodeId - Returns the node serial number.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>#include &lt;rbcTree.h&gt;</strong></p>
+<p>unsigned int<br />
+<strong>Rbc_TreeNodeId</strong>(<em>node</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<p>Rbc_TreeNode <em>node</em> (in) Node whose ID is to be returned.</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure returns the node serial number. The node serial number is useful for programs that export the tree data object to the Tcl programming level. Since node labels (and therefore pathnames) are not unique, the ID can be used to uniquely identify a node.</p>
+<p>The arguments are as follows:</p>
+<dl>
+<dt><em>node</em></dt>
+<dd>The node whose serial number is returned. The serial number of the root node for example is always 0.
+</dd>
+</dl>
+<h1 id="returns">RETURNS</h1>
+<p>The serial number of the node. Nodes are given a unique serial number when they are created. You can use the ID to later retrieve the node using <strong>Rbc_TreeGetNode</strong>.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example prints the ID of a node.</p>
+<pre><code>printf(&quot;root ID is %s\n&quot;, Rbc_TreeNodeId(node));</code></pre>
+<h1 id="keywords">KEYWORDS</h1>
+<p>Tcl_TreeCreateNode, Tcl_TreeDeleteNode</p>
+</body>
+</html>

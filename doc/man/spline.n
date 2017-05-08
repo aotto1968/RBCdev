@@ -151,7 +151,7 @@ spline\ quadratic\ x\ y\ sx\ sy
 .fi
 .SH OPERATIONS
 .TP
-.B spline natural \f[I]x\f[] \f[I]y\f[] \f[I]sx\f[] \f[I]sy\f[]
+.B \f[B]spline natural\f[] \f[I]x\f[] \f[I]y\f[] \f[I]sx\f[] \f[I]sy\f[]
 Computes a cubic spline from the data points represented by the vectors
 \f[I]x\f[] and \f[I]y\f[] and interpolates new points using vector
 \f[I]sx\f[] as the x\-coordinates.
@@ -172,7 +172,7 @@ If \f[I]sy\f[] does not already exist, a new vector will be created.
 .RS
 .RE
 .TP
-.B spline quadratic \f[I]x\f[] \f[I]y\f[] \f[I]sx\f[] \f[I]sy\f[]
+.B \f[B]spline quadratic\f[] \f[I]x\f[] \f[I]y\f[] \f[I]sx\f[] \f[I]sy\f[]
 Computes a quadratic spline from the data points represented by the
 vectors \f[I]x\f[] and \f[I]y\f[] and interpolates new points using
 vector \f[I]sx\f[] as the x\-coordinates.

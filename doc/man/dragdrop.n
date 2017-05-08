@@ -110,16 +110,16 @@ Returns an empty string if no widgets have been registered.
 Registers a new drag&drop source window with the given options, or
 modifies the options for an existing window:
 .RS
-.TP
-.B Name:
-\f[B]buttonBinding\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]ButtonBinding\f[] Switch: \f[B]\-button\f[] \f[I]n\f[]
-.RS
-.RE
+.PP
+Name: \f[B]buttonBinding\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]ButtonBinding\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-button\f[] \f[I]n\f[]
 .PP
 Specifies the mouse button (integer 1\-5) that will invoke the drag&drop
 operation on the source window.
@@ -132,16 +132,16 @@ bind \f[I]win\f[] <B\f[I]n\f[]\-Motion> {drag&drop drag %W %X %Y} bind
 The default value is button 3.
 If the value "0" is specified, then no bindings are added; this enables
 the user to establish bindings manually.
-.TP
-.B Name:
-\f[B]packageCommand\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Command\f[] Switch: \f[B]\-packagecmd\f[] \f[I]command\f[]
-.RS
-.RE
+.PP
+Name: \f[B]packageCommand\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Command\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-packagecmd\f[] \f[I]command\f[]
 .PP
 Specifies a Tcl command used to establish the appearance of the token
 window at the start of each drag&drop operation.
@@ -200,21 +200,16 @@ communicate.
 If the source has a command associated with its data handler, then this
 value is substituted in place of "%v" in the source handler.
 Otherwise, it is substituted in place of "%v" in the target handler.
-.TP
-.B Name:
-\f[B]rejectBackground\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Background\f[]
-.RS
-.RE
-.TP
-.B Switch:
-\f[B]\-rejectbg\f[] \f[I]color\f[]
-.RS
-.RE
+.PP
+Name: \f[B]rejectBackground\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Background\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-rejectbg\f[] \f[I]color\f[]
 .PP
 Specifies the color used to draw the background of the rejection symbol
 on the token window.
@@ -227,46 +222,36 @@ international "no") appears whenever communication fails.
 .RE
 .TP
 .B Class:
-\f[B]Foreground\f[]
-.RS
-.RE
-.TP
-.B Switch:
-\f[B]\-rejectfg\f[] \f[I]color\f[]
+\f[B]Foreground\f[] Switch: \f[B]\-rejectfg\f[] \f[I]color\f[]
 .RS
 .RE
 .PP
 Specifies the color used to draw the foreground of the rejection symbol
 on the token window.
-.TP
-.B Name:
-\f[B]rejectStipple\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Stipple\f[]
-.RS
-.RE
-.TP
-.B Switch:
-\f[B]\-rejectstipple\f[] \f[I]pattern\f[]
-.RS
-.RE
+.PP
+Name: \f[B]rejectStipple\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Stipple\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-rejectstipple\f[] \f[I]pattern\f[]
 .PP
 Specifies a stipple pattern used to draw the foreground of the rejection
 symbol on the token window.
 Any of the forms acceptable to Tk_GetBitmap can be used.
-.TP
-.B Name:
-\f[B]selfTarget\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]SelfTarget\f[] Switch: \f[B]\-selftarget\f[] \f[I]boolean\f[]
-.RS
-.RE
+.PP
+Name: \f[B]selfTarget\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]SelfTarget\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-selftarget\f[] \f[I]boolean\f[]
 .PP
 If the \f[I]boolean\f[] value is true, and if a source widget is also
 registered as a compatible target, then the source will be able to
@@ -274,16 +259,16 @@ transmit to itself during drag&drop operations.
 This is primarily useful for complex sources such as a canvas widget,
 where items may be moved from place to place within the same widget.
 By default, this option is disabled.
-.TP
-.B Name:
-\f[B]send\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Send\f[] Switch: \f[B]\-send\f[] \f[I]list\f[]
-.RS
-.RE
+.PP
+Name: \f[B]send\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Send\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-send\f[] \f[I]list\f[]
 .PP
 Specifies a \f[I]list\f[] of \f[I]dataTypes\f[] enabled for
 communication.
@@ -307,16 +292,16 @@ defined for the source.
 Note that this option makes it easy to control a drag&drop source.
 Setting the value to an empty string disables the source; setting the
 value back to "all" restores communication.
-.TP
-.B Name:
-\f[B]siteCommand\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Command\f[] Switch: \f[B]\-sitecmd\f[] \f[I]command\f[]
-.RS
-.RE
+.PP
+Name: \f[B]siteCommand\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Command\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-sitecmd\f[] \f[I]command\f[]
 .PP
 Specifies a Tcl command used to update the appearance of the token
 window.
@@ -342,16 +327,16 @@ data being dragged.
 Regardless of this command, border of the token window will become
 raised whenever the token is over a valid target.
 This command can be used to display other visual cues.
-.TP
-.B Name:
-\f[B]tokenAnchor\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Anchor\f[] Switch: \f[B]\-tokenanchor\f[] \f[I]anchor\f[]
-.RS
-.RE
+.PP
+Name: \f[B]tokenAnchor\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Anchor\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-tokenanchor\f[] \f[I]anchor\f[]
 .PP
 Specifies how the token window is positioned relative to the mouse
 pointer coordinates passed to the \f[B]drag&drop\f[] \f[B]drag\f[]
@@ -367,52 +352,37 @@ The default value is "center".
 .RE
 .TP
 .B Class:
-\f[B]Background\f[]
-.RS
-.RE
-.TP
-.B Switch:
-\f[B]\-tokenbg\f[] \f[I]color\f[]
+\f[B]Background\f[] Switch: \f[B]\-tokenbg\f[] \f[I]color\f[]
 .RS
 .RE
 .PP
 Specifies the color used to draw the background of the token window.
-.TP
-.B Name:
-\f[B]tokenBorderWidth\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]BorderWidth\f[]
-.RS
-.RE
-.TP
-.B Switch:
-\f[B]\-tokenborderwidth\f[] \f[I]size\f[]
-.RS
-.RE
+.PP
+Name: \f[B]tokenBorderWidth\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]BorderWidth\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-tokenborderwidth\f[] \f[I]size\f[]
 .PP
 Specifies the width in pixels of the border around the token window.
 This border becomes raised to indicate when the token is over a
 compatible drag&drop target site.
 The value may have any of the forms acceptable to Tk_GetPixels.
 The default value is "3".
-.TP
-.B Name:
-\f[B]tokenCursor\f[]
-.RS
-.RE
-.TP
-.B Class:
-\f[B]Cursor\f[]
-.RS
-.RE
-.TP
-.B Switch:
-\f[B]\-tokencursor\f[] \f[I]cursor\f[]
-.RS
-.RE
+.PP
+Name: \f[B]tokenCursor\f[]
+.PD 0
+.P
+.PD
+Class: \f[B]Cursor\f[]
+.PD 0
+.P
+.PD
+Switch: \f[B]\-tokencursor\f[] \f[I]cursor\f[]
 .PP
 Specifies the cursor used when a token window is active.
 The value may have any of the forms acceptable to Tk_GetCursor.

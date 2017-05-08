@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, tree, token" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeDeleteNode</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#include-rbctree.h">include &lt;rbcTree.h&gt;</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#notifications">NOTIFICATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeDeleteNode - Deletes a node and its descendants.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<h1 id="include-rbctree.h">include &lt;rbcTree.h&gt;</h1>
+<p>Rbc_TreeNode<br />
+<strong>Rbc_TreeDeleteNode</strong>(<em>tree</em>, <em>node</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<p>Rbc_Tree <em>tree</em> (in) Tree containing the node.</p>
+<p>Rbc_TreeNode <em>node</em> (in) Node to be deleted.</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure deletes a given node and all it descendants from a tree data object.</p>
+<p>The arguments are as follows:</p>
+<dl>
+<dt><em>tree</em></dt>
+<dd>The tree containing the parent node.
+</dd>
+<dt><em>node</em></dt>
+<dd>Node to be deleted. The node and its descendant nodes are deleted. Each node's data values are deleted also. The reference count of the Tcl_Obj is decremented.
+</dd>
+</dl>
+<p>Since all tree objects must contain at least a root node, the root node itself can't be deleted unless the tree is released and destroyed. Therefore you can clear a tree by deleting its root, but the root node will remain until the tree is destroyed.</p>
+<h1 id="returns">RETURNS</h1>
+<p>Always returns TCL_OK. Errors generated in a notification callbacks are backgrounded (see <strong>Tcl_TreeCreateNotifyHandler</strong>).</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example deletes the root node.</p>
+<pre><code>Rbc_TreeNode root;
+
+root = Rbc_TreeRootNode(token);
+Rbc_TreeDeleteNode(token, root);</code></pre>
+<h1 id="notifications">NOTIFICATIONS</h1>
+<p><strong>Rbc_TreeDeleteNode</strong> can trigger tree notify events. You can be notified whenever a node is deleted by using the <strong>Rbc_TreeCreateNotifyHandler</strong>. A callback routine is registered that will be automatically invoked whenever a node is deleted via <strong>Rbc_TreeDeleteNode</strong> to the tree.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>tree, token</p>
+</body>
+</html>

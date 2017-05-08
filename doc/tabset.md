@@ -309,7 +309,8 @@ The following operations are available for tabset widgets:
 
 : …
 
-    *pathName* tab cget *nameOrIndex* *option*
+    *pathName* __tab cget__ *nameOrIndex* *option*
+
     :   Returns the current value of the configuration option
         given by *option*\.  *Option* may have any of the values
         accepted by the __tab configure__ operation described in the

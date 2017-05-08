@@ -115,8 +115,8 @@
 <dt>-invert</dt>
 <dd>Select non-matching nodes. Any node that <em>doesn't</em> match the given criteria will be selected.
 </dd>
-<dt>-key</dt>
-<dd><em>key</em> If pattern matching is selected (using the <strong>-exact</strong>, <strong>-glob</strong>, or <strong>-regexp</strong> switches), compare the values of the data field keyed by <em>key</em> instead of the node's label. If no pattern matching switches are set, then any node with this data key will match.
+<dt>-key <em>key</em></dt>
+<dd>If pattern matching is selected (using the <strong>-exact</strong>, <strong>-glob</strong>, or <strong>-regexp</strong> switches), compare the values of the data field keyed by <em>key</em> instead of the node's label. If no pattern matching switches are set, then any node with this data key will match.
 </dd>
 <dt>-leafonly</dt>
 <dd>Only test nodes with no children.
@@ -209,8 +209,8 @@
 <dt>-invert</dt>
 <dd>Select non-matching nodes. Any node that <em>doesn't</em> match the given criteria will be selected.
 </dd>
-<dt>-key</dt>
-<dd><em>key</em> Compare the values of the data field keyed by <em>key</em> instead of the node's label. If no pattern is given (<strong>-exact</strong>, <strong>-glob</strong>, or <strong>-regexp</strong> switches), then any node with this data key will match.
+<dt>-key <em>key</em></dt>
+<dd>Compare the values of the data field keyed by <em>key</em> instead of the node's label. If no pattern is given (<strong>-exact</strong>, <strong>-glob</strong>, or <strong>-regexp</strong> switches), then any node with this data key will match.
 </dd>
 <dt>-leafonly</dt>
 <dd>Only test nodes with no children.
@@ -276,8 +276,8 @@
 <dt>-label <em>string</em></dt>
 <dd>Designates the labels of the node as <em>string</em>. By default, nodes are labeled as node0, node1, etc.
 </dd>
-<dt>-node</dt>
-<dd><em>id</em> Designates the id for the node. Normally new ids are automatically generated. This allows you to create a node with a specific id. It is an error if the id is already used by another node in the tree.
+<dt>-node <em>id</em></dt>
+<dd>Designates the id for the node. Normally new ids are automatically generated. This allows you to create a node with a specific id. It is an error if the id is already used by another node in the tree.
 </dd>
 <dt>-tags <em>tagList</em></dt>
 <dd>Adds each tag in <em>tagList</em> to the new node. <em>TagList</em> is a list of tags, so be careful if a tag has embedded space.

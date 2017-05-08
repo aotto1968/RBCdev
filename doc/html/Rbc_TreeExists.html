@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, tree, token Tcl\_TreeCreate, Tcl\_TreeGetToken, Tcl\_TreeReleaseToken" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeExists</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeExists - Indicates if a tree exists.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>#include &lt;rbcTree.h&gt;</strong></p>
+<p>int<br />
+<strong>Rbc_TreeExists</strong>(<em>interp</em>, <em>name</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<dl>
+<dt>Tcl_Interp <em>*interp</em> (in)</dt>
+<dd>Interpreter to determine current namespace context.
+</dd>
+<dt>const char <em>*name</em> (in)</dt>
+<dd>Name of an existing tree data object. Can be qualified by a namespace.
+</dd>
+</dl>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure determines if a C-based tree data object exists by a given name. The arguments are as follows:</p>
+<dl>
+<dt>interp</dt>
+<dd>Used the determine the current namespace context.
+</dd>
+<dt>name</dt>
+<dd>Name of an existing tree data object. <em>Name</em> can be qualified by a namespace such as fred::myTree. If no namespace qualifier is used, the current namespace is searched, then the global namespace.
+</dd>
+</dl>
+<h1 id="returns">RETURNS</h1>
+<p>A boolean result is returned. If the tree exists 1 is returned, 0 otherwise.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example checks if a tree &quot;myTree&quot; exists.</p>
+<pre><code>if (!Rbc_TreeExists(interp, &quot;myTree&quot;)) {
+    fprintf(stderr, &quot;can&#39;t find tree \&quot;myTree\\n&quot;);
+}</code></pre>
+<h1 id="keywords">KEYWORDS</h1>
+<p>tree, token Tcl_TreeCreate, Tcl_TreeGetToken, Tcl_TreeReleaseToken</p>
+</body>
+</html>

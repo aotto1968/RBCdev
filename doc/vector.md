@@ -337,9 +337,9 @@ VECTOR OPERATIONS
 =================
 
 
-vector
-:   create__ *vecName*?(*size*)?\.\.\. ?*switches*?
-    The __create__ operation creates a new vector *vecName*\.  Both a Tcl
+__vector create__ *vecName*?(*size*)?\.\.\. ?*switches*?
+
+:   The __create__ operation creates a new vector *vecName*\.  Both a Tcl
     command and array variable *vecName* are also created\.  The name
     *vecName* must be unique, so another Tcl command or array variable
     can not already exist in that scope\.  You can access the
@@ -373,10 +373,12 @@ vector
         is different from previous releases\.  Set *boolean* to
         "true" to get the old behavior\.  
 
-vector
-:   destroy__ *vecName* ?*vecName\.\.\.*?
+__vector destroy__ *vecName* ?*vecName\.\.\.*?
 
-vector expr *expression*
+: …
+
+__vector expr__ *expression*
+
 :   All binary operators take vectors as operands (remember that
     numbers are treated as one\-component vectors)\.  The exact action
     of binary operators depends upon the length of the second
@@ -403,11 +405,11 @@ vector expr *expression*
     ^
     :   Exponentiation\.
 
-    \*
-    :   /  %__             Multiply, divide, remainder\.
+    \*  /  %
+    :   Multiply, divide, remainder\.
 
-    +
-    :   \-__                Add and subtract\.
+    +  \-
+    :   Add and subtract\.
 
     \<\<  \>\>
     :   Left and right shift\.  Circularly shifts the
@@ -549,7 +551,9 @@ vector expr *expression*
     :   Returns the vector components sorted in ascending
         order\.  
 
-__vector names__ ?*pattern*?  
+__vector names__ ?*pattern*?
+
+: …
 
 INSTANCE OPERATIONS
 ===================
@@ -816,8 +820,8 @@ __Rbc\_DeleteVector__
 
 Synopsis:  
 
-int __Rbc\_DeleteVector__ (*vecPtr*)  
-Rbc\_Vector \**vecPtr*;  
+int Rbc\_DeleteVector (*vecPtr*)
+:   Rbc\_Vector \**vecPtr*;
 
 Description:
 :   Removes the vector pointed to by *vecPtr*\.  *VecPtr* is a
@@ -937,8 +941,8 @@ the vector, it should free the identifier\.
 
 The call\-back routine must of the following type\.  
 
-typedef void (__Rbc\_VectorChangedProc__) (Tcl\_Interp \**interp*,
-ClientData *clientData*, Rbc\_VectorNotify *notify*);
+typedef void (Rbc\_VectorChangedProc) (Tcl\_Interp \**interp*,
+:   ClientData *clientData*, Rbc\_VectorNotify *notify*);
 
 *ClientData* is passed to this routine whenever it is called\.  You can
 use this to pass information to the call\-back\.  The *notify* argument
@@ -1013,8 +1017,8 @@ __Rbc\_FreeVectorId__
 
 Synopsis:  
 
-void __Rbc\_FreeVectorId__ (*clientId*);  
-Rbc\_VectorId *clientId*;  
+void Rbc\_FreeVectorId (*clientId*);
+:   Rbc\_VectorId *clientId*;
 
 Description:
 :   Frees the client identifier\.  Memory allocated for the
@@ -1029,8 +1033,8 @@ __Rbc\_NameOfVectorId__
 
 Synopsis:  
 
-char \*__Rbc\_NameOfVectorId__ (*clientId*);  
-Rbc\_VectorId *clientId*;  
+char \*Rbc\_NameOfVectorId (*clientId*);
+:   Rbc\_VectorId *clientId*;
 
 Description:
 :   Retrieves the name of the vector associated with the

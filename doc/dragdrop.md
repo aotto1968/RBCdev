@@ -79,11 +79,8 @@ __drag&drop source__ *window* ?*options*?
 :   Registers a new drag&drop source window with the given options,
     or modifies the options for an existing window:
 
-    Name:
-    :   __buttonBinding__
-
-    Class:
-    :   __ButtonBinding__
+    Name:     __buttonBinding__  
+    Class:    __ButtonBinding__  
     Switch:   __\-button__ *n*  
 
     Specifies the mouse button (integer 1\-5) that will invoke
@@ -98,11 +95,8 @@ __drag&drop source__ *window* ?*options*?
     then no bindings are added; this enables the user to establish
     bindings manually\.  
 
-    Name:
-    :   __packageCommand__
-
-    Class:
-    :   __Command__
+    Name:     __packageCommand__  
+    Class:    __Command__  
     Switch:   __\-packagecmd__ *command*  
 
     Specifies a Tcl command used to establish the appearance
@@ -151,14 +145,9 @@ __drag&drop source__ *window* ?*options*?
     the source handler\.  Otherwise, it is substituted in place of
     "%v" in the target handler\.  
 
-    Name:
-    :   __rejectBackground__
-
-    Class:
-    :   __Background__
-
-    Switch:
-    :   __\-rejectbg__ *color*
+    Name:     __rejectBackground__  
+    Class:    __Background__  
+    Switch:   __\-rejectbg__ *color*  
 
     Specifies the color used to draw the background of the
     rejection symbol on the token window\.  The rejection
@@ -170,31 +159,21 @@ __drag&drop source__ *window* ?*options*?
 
     Class:
     :   __Foreground__
-
-    Switch:
-    :   __\-rejectfg__ *color*
+    Switch:   __\-rejectfg__ *color*  
 
     Specifies the color used to draw the foreground of the
     rejection symbol on the token window\.  
 
-    Name:
-    :   __rejectStipple__
-
-    Class:
-    :   __Stipple__
-
-    Switch:
-    :   __\-rejectstipple__ *pattern*
+    Name:     __rejectStipple__  
+    Class:    __Stipple__  
+    Switch:   __\-rejectstipple__ *pattern*  
 
     Specifies a stipple pattern used to draw the foreground
     of the rejection symbol on the token window\.  Any of the
     forms acceptable to Tk\_GetBitmap can be used\.
 
-    Name:
-    :   __selfTarget__
-
-    Class:
-    :   __SelfTarget__
+    Name:     __selfTarget__  
+    Class:    __SelfTarget__  
     Switch:   __\-selftarget__ *boolean*  
 
     If the *boolean* value is true, and if a source widget is
@@ -205,11 +184,8 @@ __drag&drop source__ *window* ?*options*?
     place to place within the same widget\.  By default, this
     option is disabled\.  
 
-    Name:
-    :   __send__
-
-    Class:
-    :   __Send__
+    Name:     __send__  
+    Class:    __Send__  
     Switch:   __\-send__ *list*  
 
     Specifies a *list* of *dataTypes* enabled for communication\.
@@ -231,11 +207,8 @@ __drag&drop source__ *window* ?*options*?
     source\.  Setting the value to an empty string disables the
     source; setting the value back to "all" restores communication\.
 
-    Name:
-    :   __siteCommand__
-
-    Class:
-    :   __Command__
+    Name:     __siteCommand__  
+    Class:    __Command__  
     Switch:   __\-sitecmd__ *command*  
 
     Specifies a Tcl command used to update the appearance of
@@ -259,11 +232,8 @@ __drag&drop source__ *window* ?*options*?
     become raised whenever the token is over a valid target\.  This
     command can be used to display other visual cues\.
 
-    Name:
-    :   __tokenAnchor__
-
-    Class:
-    :   __Anchor__
+    Name:     __tokenAnchor__  
+    Class:    __Anchor__  
     Switch:   __\-tokenanchor__ *anchor*  
 
     Specifies how the token window is positioned relative to
@@ -278,21 +248,14 @@ __drag&drop source__ *window* ?*options*?
 
     Class:
     :   __Background__
-
-    Switch:
-    :   __\-tokenbg__ *color*
+    Switch:   __\-tokenbg__ *color*  
 
     Specifies the color used to draw the background of the
     token window\.  
 
-    Name:
-    :   __tokenBorderWidth__
-
-    Class:
-    :   __BorderWidth__
-
-    Switch:
-    :   __\-tokenborderwidth__ *size*
+    Name:     __tokenBorderWidth__  
+    Class:    __BorderWidth__  
+    Switch:   __\-tokenborderwidth__ *size*  
 
     Specifies the width in pixels of the border around the
     token window\.  This border becomes raised to indicate
@@ -300,14 +263,9 @@ __drag&drop source__ *window* ?*options*?
     site\.  The value may have any of the forms acceptable to
     Tk\_GetPixels\.  The default value is "3"\.
 
-    Name:
-    :   __tokenCursor__
-
-    Class:
-    :   __Cursor__
-
-    Switch:
-    :   __\-tokencursor__ *cursor*
+    Name:     __tokenCursor__  
+    Class:    __Cursor__  
+    Switch:   __\-tokencursor__ *cursor*  
 
     Specifies the cursor used when a token window is active\.
     The value may have any of the forms acceptable to

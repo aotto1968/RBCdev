@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, Tcl\_TreeGetToken, Tcl\_TreeExists, Tcl\_TreeReleaseToken" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeName</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeName - Returns the name of the tree data object.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>#include &lt;rbcTree.h&gt;</strong></p>
+<p>char *<br />
+<strong>Rbc_TreeName</strong>(<em>tree</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<p>Rbc_Tree <em>tree</em> (in) Token for the tree object.</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure returns the name of the C-based tree data object. The arguments are as follows:</p>
+<dl>
+<dt><em>tree</em></dt>
+<dd>Token for the tree object. The token must have been previously obtained via <strong>Rbc_TreeGetToken</strong> or <strong>Rbc_TreeCreate</strong>.
+</dd>
+</dl>
+<h1 id="returns">RETURNS</h1>
+<p>The name of the tree object is returned. The name will be fully qualified with a namespace context.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example prints the name of the new tree.</p>
+<pre><code>Rbc_Tree token;
+
+if (Rbc_TreeCreate(interp, NULL, &amp;token) != TCL_OK) {
+    return TCL_ERROR;
+}
+printf(&quot;tree is %s\n&quot;, Rbc_TreeName(token));</code></pre>
+<h1 id="keywords">KEYWORDS</h1>
+<p>Tcl_TreeGetToken, Tcl_TreeExists, Tcl_TreeReleaseToken</p>
+</body>
+</html>

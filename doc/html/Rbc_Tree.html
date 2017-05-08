@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, alloc, allocation, free, malloc, memory, realloc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_Tree</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#include-rbctree.h">include &lt;rbcTree.h&gt;</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#tree-object-routines">TREE OBJECT ROUTINES</a></li>
+<li><a href="#treenode-routines">TREENODE ROUTINES</a></li>
+<li><a href="#node-navigation">NODE NAVIGATION</a></li>
+<li><a href="#node-data-values">NODE DATA VALUES</a></li>
+<li><a href="#node-traces">NODE TRACES</a></li>
+<li><a href="#node-events">NODE EVENTS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_Tree - Tree data object.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<h1 id="include-rbctree.h">include &lt;rbcTree.h&gt;</h1>
+<p>struct Rbc_Tree {<br />
+<strong>Tcl_Alloc</strong>(<em>size</em>)</p>
+<p><strong>Tcl_Free</strong>(<em>ptr</em>)</p>
+<p>char *<br />
+<strong>Tcl_Realloc</strong>(<em>ptr,</em> <em>size</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<p>int <em>size</em> (in) Size in bytes of the memory block to allocate.</p>
+<p>char <em>*ptr</em> (in) Pointer to memory block to free or realloc.</p>
+<h1 id="description">DESCRIPTION</h1>
+<p>These procedures provide a platform and compiler independent interface for memory allocation. Programs that need to transfer ownership of memory blocks between Tcl and other modules should use these routines rather than the native <strong>malloc()</strong> and <strong>free()</strong> routines provided by the C run-time library.</p>
+<p><strong>Tcl_Alloc</strong> returns a pointer to a block of at least <em>size</em> bytes suitably aligned for any use.</p>
+<p><strong>Tcl_Free</strong> makes the space referred to by <em>ptr</em> available for further allocation.</p>
+<p><strong>Tcl_Realloc</strong> changes the size of the block pointed to by <em>ptr</em> to <em>size</em> bytes and returns a pointer to the new block. The contents will be unchanged up to the lesser of the new and old sizes. The returned location may be different from <em>ptr</em>.</p>
+<h1 id="tree-object-routines">TREE OBJECT ROUTINES</h1>
+<p>The following library routines allow you to create and destroy tree objects. Each tree object has a name that uniquely identifies it. Tree objects can also be shared. For example, the <strong>tree</strong> and <strong>hiertable</strong> commands may access the same tree data object. Each client grabs a token associated with the tree. When all tokens are released the tree data object is automatically destroyed.</p>
+<dl>
+<dt>Rbc_TreeCreate</dt>
+<dd>Create a tree data object and optionally obtains a token associated with it.
+</dd>
+<dt>Rbc_TreeExists</dt>
+<dd>Indicates if a tree by a given name exists.
+</dd>
+<dt>Rbc_TreeGetToken</dt>
+<dd>Obtains a token for an existing tree data object.
+</dd>
+<dt>Rbc_TreeReleaseToken</dt>
+<dd>Releases a token for a tree data object. The tree object is deleted when all outstanding tokens have been released.
+</dd>
+<dt>Rbc_TreeName</dt>
+<dd>Returns the name of the tree object.
+</dd>
+<dt>Rbc_TreeChangeRoot</dt>
+<dd>Specifies a node as the new root to a tree.
+</dd>
+</dl>
+<h1 id="treenode-routines">TREENODE ROUTINES</h1>
+<p>Tree objects initially contain only a root node. You can add or delete nodes with the following routines.</p>
+<dl>
+<dt>Rbc_TreeCreateNode</dt>
+<dd>Creates a new child node for a given parent in the tree.
+</dd>
+<dt>Rbc_TreeDeleteNode</dt>
+<dd>Deletes a node and its children.
+</dd>
+<dt>Rbc_TreeNodeId</dt>
+<dd>Returns the unique node identifier for a node.
+</dd>
+<dt>Rbc_TreeGetNode</dt>
+<dd>Gets a node based upon its identifier.
+</dd>
+<dt>Rbc_TreeFindChild</dt>
+<dd>Searches for a child node given by its label in a parent node.
+</dd>
+<dt>Rbc_TreeNodeLabel</dt>
+<dd>Returns the current label for a node.
+</dd>
+<dt>Rbc_TreeRelabelNode</dt>
+<dd>Resets a node's label.
+</dd>
+<dt>Rbc_TreeNodePath</dt>
+<dd>Returns the fullpath to a node.
+</dd>
+<dt>Rbc_TreeNodeDepth</dt>
+<dd>Returns the depth of the node.
+</dd>
+<dt>Rbc_TreeNodeDegree</dt>
+<dd>Returns the number of children for a node.
+</dd>
+<dt>Rbc_TreeIsLeaf</dt>
+<dd>Indicates if a node has no children.
+</dd>
+<dt>Rbc_TreeIsBefore</dt>
+<dd>Indicates if a node is before another node in depth-first search order.
+</dd>
+<dt>Rbc_TreeIsAncestor</dt>
+<dd>Indicates if a node is an ancestor or another.
+</dd>
+<dt>Rbc_TreeSortNode</dt>
+<dd>Sorts the children of a node.
+</dd>
+<dt>Rbc_TreeSize</dt>
+<dd>Returns the number of nodes in a node and its descendants.
+</dd>
+</dl>
+<p><strong>Rbc_TreeMoveNode</strong></p>
+<h1 id="node-navigation">NODE NAVIGATION</h1>
+<p>Each node can have zero or more children nodes. These routines let you navigate the tree hierarchy.</p>
+<dl>
+<dt>Rbc_TreeNodeParent</dt>
+<dd>Returns the parent node.
+</dd>
+<dt>Rbc_TreeFirstChild</dt>
+<dd>Returns the first child of a parent node.
+</dd>
+<dt>Rbc_TreeLastChild</dt>
+<dd>Returns the last child of a parent node.
+</dd>
+<dt>Rbc_TreeNextSibling</dt>
+<dd>Returns the next sibling node in the parent's list of children.
+</dd>
+<dt>Rbc_TreePrevSibling</dt>
+<dd>Returns the previous sibling node in the parent's list of children.
+</dd>
+<dt>Rbc_TreeRootNode</dt>
+<dd>Returns the root node of the tree.
+</dd>
+<dt>Rbc_TreeNextNode</dt>
+<dd>Returns the next node in depth-first order.
+</dd>
+<dt>Rbc_TreePrevNode</dt>
+<dd>Returns the previous node in depth-first order.
+</dd>
+<dt>Rbc_TreeEndNode</dt>
+<dd>Returns the last node in the tree as determined by depth-first order.
+</dd>
+<dt>Rbc_TreeApply</dt>
+<dd>Walks through a node and all it descendants, applying a given callback procedure.
+</dd>
+<dt>Rbc_TreeApplyDFS</dt>
+<dd>Walks through a node and all it descendants in depth-first search order, applying a given callback procedure.
+</dd>
+<dt>Rbc_TreeApplyBFS</dt>
+<dd>Walks through a node and all it descendants in breadth-first search order, applying a given callback procedure.
+</dd>
+</dl>
+<h1 id="node-data-values">NODE DATA VALUES</h1>
+<p>Data values can be stored at any node. Values have by both a string key and a Tcl_Obj value. Data value keys do not have to be homogenous across all nodes (i.e. nodes do not have to contain the same keys). There is also a special node array data type.</p>
+<dl>
+<dt>Rbc_TreeGetValue</dt>
+<dd>Gets the node data value given by a key.
+</dd>
+<dt>Rbc_TreeValueExists</dt>
+<dd>Indicates if a node data value given by a key exists.
+</dd>
+<dt>Rbc_TreeSetValue</dt>
+<dd>Sets a node's value of a key.
+</dd>
+<dt>Rbc_TreeUnsetValue</dt>
+<dd>Remove the node data value and key.
+</dd>
+<dt>Rbc_TreeGetArrayValue</dt>
+<dd>Gets the node data array value given by a key and an array index.
+</dd>
+<dt>Rbc_TreeSetArrayValue</dt>
+<dd>Sets the node data array value given by a key and an array index.
+</dd>
+<dt>Rbc_TreeUnsetArrayValue</dt>
+<dd>Remove the node data array value.
+</dd>
+<dt>Rbc_TreeArrayValueExists</dt>
+<dd>Determines if an array element by a given index exists.
+</dd>
+<dt>Rbc_TreeFirstKey</dt>
+<dd>Returns the key of the first value in the node.
+</dd>
+<dt>Rbc_TreeNextKey</dt>
+<dd>Returns the key of the next value in the node.
+</dd>
+<dt>Rbc_TreePrivateValue</dt>
+<dd>Lock the value to current client, making it private.
+</dd>
+<dt>Rbc_TreePublicValue</dt>
+<dd>Unlock the value so that all clients can access it.
+</dd>
+</dl>
+<p><strong>Rbc_TreeGetKey</strong></p>
+<h1 id="node-traces">NODE TRACES</h1>
+<dl>
+<dt>Rbc_TreeCreateTrace</dt>
+<dd>Sets up a trace callback to be invoked when the node value is read, set, or unset.
+</dd>
+<dt>Rbc_TreeDeleteTrace</dt>
+<dd>Deletes an existing trace.
+</dd>
+</dl>
+<h1 id="node-events">NODE EVENTS</h1>
+<dl>
+<dt>Rbc_TreeCreateEventHandler</dt>
+<dd>Sets up a callback to be invoked when events (create, delete, relabel, etc) take place on a node.
+</dd>
+<dt>Rbc_TreeDeleteEventHandler</dt>
+<dd>Deletes an existing node callback.
+</dd>
+</dl>
+<h1 id="keywords">KEYWORDS</h1>
+<p>alloc, allocation, free, malloc, memory, realloc</p>
+</body>
+</html>

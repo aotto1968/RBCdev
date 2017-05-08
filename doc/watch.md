@@ -129,8 +129,9 @@ __watch names__ ?*state*?
 
 :   Lists the names of the watches for a given state\.  *State* may be
     one of the following: active, idle, or ignore\.  If a *state*
-    argument isn\'t specified,  
-    all watches are listed\.  
+
+    argument isn\'t specified,
+    :   all watches are listed\.
 
 KEYWORDS
 ========

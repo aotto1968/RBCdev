@@ -162,8 +162,8 @@ set vecName(0:5) 1.0</code></pre>
 puts $vecName(:)</code></pre>
 <h1 id="vector-operations">VECTOR OPERATIONS</h1>
 <dl>
-<dt>vector</dt>
-<dd><p>create__ <em>vecName</em>?(<em>size</em>)?... ?<em>switches</em>? The <strong>create</strong> operation creates a new vector <em>vecName</em>. Both a Tcl command and array variable <em>vecName</em> are also created. The name <em>vecName</em> must be unique, so another Tcl command or array variable can not already exist in that scope. You can access the components of the vector using its variable. If you change a value in the array, or unset an array element, the vector is updated to reflect the changes. When the variable <em>vecName</em> is unset, the vector and its Tcl command are also destroyed.</p>
+<dt><strong>vector create</strong> <em>vecName</em>?(<em>size</em>)?... ?<em>switches</em>?</dt>
+<dd><p>The <strong>create</strong> operation creates a new vector <em>vecName</em>. Both a Tcl command and array variable <em>vecName</em> are also created. The name <em>vecName</em> must be unique, so another Tcl command or array variable can not already exist in that scope. You can access the components of the vector using its variable. If you change a value in the array, or unset an array element, the vector is updated to reflect the changes. When the variable <em>vecName</em> is unset, the vector and its Tcl command are also destroyed.</p>
 <p>The vector has optional switches that affect how the vector is created. They are as follows:</p>
 <dl>
 <dt>-variable <em>varName</em></dt>
@@ -177,10 +177,10 @@ puts $vecName(:)</code></pre>
 </dd>
 </dl>
 </dd>
-<dt>vector</dt>
-<dd>destroy__ <em>vecName</em> ?<em>vecName...</em>?
+<dt><strong>vector destroy</strong> <em>vecName</em> ?<em>vecName...</em>?</dt>
+<dd><p>…</p>
 </dd>
-<dt>vector expr <em>expression</em></dt>
+<dt><strong>vector expr</strong> <em>expression</em></dt>
 <dd><p>All binary operators take vectors as operands (remember that numbers are treated as one-component vectors). The exact action of binary operators depends upon the length of the second operand. If the second operand has only one component, then each element of the first vector operand is computed by that value. For example, the expression &quot;x * 2&quot; multiples all elements of the vector x by 2. If the second operand has more than one component, both operands must be the same length. Each pair of corresponding elements are computed. So &quot;x + y&quot; adds the the first components of x and y together, the second, and so on.</p>
 <p>The valid operators are listed below, grouped in decreasing order of precedence:</p>
 <dl>
@@ -190,11 +190,11 @@ puts $vecName(:)</code></pre>
 <dt>^</dt>
 <dd>Exponentiation.
 </dd>
-<dt>*</dt>
-<dd>/ %__ Multiply, divide, remainder.
+<dt>* / %</dt>
+<dd>Multiply, divide, remainder.
 </dd>
-<dt>+</dt>
-<dd>-__ Add and subtract.
+<dt>+ -</dt>
+<dd>Add and subtract.
 </dd>
 <dt>&lt;&lt; &gt;&gt;</dt>
 <dd>Left and right shift. Circularly shifts the values of the vector (not implemented yet).
@@ -304,8 +304,10 @@ puts $vecName(:)</code></pre>
 </dd>
 </dl>
 </dd>
+<dt><strong>vector names</strong> ?<em>pattern</em>?</dt>
+<dd><p>…</p>
+</dd>
 </dl>
-<p><strong>vector names</strong> ?<em>pattern</em>?</p>
 <h1 id="instance-operations">INSTANCE OPERATIONS</h1>
 <p>You can also use the vector's Tcl command to query or modify it. The general form is <em>vecName</em> <em>operation</em> ?<em>arg</em>?... Both <em>operation</em> and its arguments determine the exact behavior of the command. The operations available for vectors are listed below.</p>
 <dl>
@@ -445,9 +447,10 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 </dl>
 <p><strong>Rbc_DeleteVector</strong></p>
 <p>Synopsis:</p>
-<p>int <strong>Rbc_DeleteVector</strong> (<em>vecPtr</em>)<br />
-Rbc_Vector *<em>vecPtr</em>;</p>
 <dl>
+<dt>int Rbc_DeleteVector (<em>vecPtr</em>)</dt>
+<dd>Rbc_Vector *<em>vecPtr</em>;
+</dd>
 <dt>Description:</dt>
 <dd>Removes the vector pointed to by <em>vecPtr</em>. <em>VecPtr</em> is a pointer to a vector, typically set by <strong>Rbc_GetVector</strong> or <strong>Rbc_CreateVector</strong>. Both the Tcl command and array variable of the vector are destroyed. All clients of the vector will be notified immediately that the vector has been destroyed.
 </dd>
@@ -514,7 +517,11 @@ Tcl_FreeProc *<em>freeProc</em>;
 </dl>
 <p>If your application needs to be notified when a vector changes, it can allocate a unique <em>client</em> <em>identifier</em> for itself. Using this identifier, you can then register a call-back to be made whenever the vector is updated or destroyed. By default, the call-backs are made at the next idle point. This can be changed to occur at the time the vector is modified. An application can allocate more than one identifier for any vector. When the client application is done with the vector, it should free the identifier.</p>
 <p>The call-back routine must of the following type.</p>
-<p>typedef void (<strong>Rbc_VectorChangedProc</strong>) (Tcl_Interp *<em>interp</em>, ClientData <em>clientData</em>, Rbc_VectorNotify <em>notify</em>);</p>
+<dl>
+<dt>typedef void (Rbc_VectorChangedProc) (Tcl_Interp *<em>interp</em>,</dt>
+<dd>ClientData <em>clientData</em>, Rbc_VectorNotify <em>notify</em>);
+</dd>
+</dl>
 <p><em>ClientData</em> is passed to this routine whenever it is called. You can use this to pass information to the call-back. The <em>notify</em> argument indicates whether the vector has been updated of destroyed. It is an enumerated type.</p>
 <dl>
 <dt>typedef enum {</dt>
@@ -564,9 +571,10 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 </dl>
 <p><strong>Rbc_FreeVectorId</strong></p>
 <p>Synopsis:</p>
-<p>void <strong>Rbc_FreeVectorId</strong> (<em>clientId</em>);<br />
-Rbc_VectorId <em>clientId</em>;</p>
 <dl>
+<dt>void Rbc_FreeVectorId (<em>clientId</em>);</dt>
+<dd>Rbc_VectorId <em>clientId</em>;
+</dd>
 <dt>Description:</dt>
 <dd>Frees the client identifier. Memory allocated for the identifier is released. The client will no longer be notified when the vector is modified.
 </dd>
@@ -576,9 +584,10 @@ Rbc_VectorId <em>clientId</em>;</p>
 </dl>
 <p><strong>Rbc_NameOfVectorId</strong></p>
 <p>Synopsis:</p>
-<p>char *<strong>Rbc_NameOfVectorId</strong> (<em>clientId</em>);<br />
-Rbc_VectorId <em>clientId</em>;</p>
 <dl>
+<dt>char *Rbc_NameOfVectorId (<em>clientId</em>);</dt>
+<dd>Rbc_VectorId <em>clientId</em>;
+</dd>
 <dt>Description:</dt>
 <dd>Retrieves the name of the vector associated with the client identifier <em>clientId</em>.
 </dd>

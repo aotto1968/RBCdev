@@ -134,7 +134,8 @@ OPERATIONS
 ==========
 
 
-spline natural *x* *y* *sx* *sy*
+__spline natural__ *x* *y* *sx* *sy*
+
 :   Computes a cubic spline from the data points represented by the
     vectors *x* and *y* and interpolates new points using vector *sx* as
     the x\-coordinates\.  The resulting y\-coordinates are written to a
@@ -148,7 +149,8 @@ spline natural *x* *y* *sx* *sy*
     vector where the calculated y\-coordinates will be stored\.  If *sy*
     does not already exist, a new vector will be created\.
 
-spline quadratic *x* *y* *sx* *sy*
+__spline quadratic__ *x* *y* *sx* *sy*
+
 :   Computes a quadratic spline from the data points represented by
     the vectors *x* and *y* and interpolates new points using vector *sx*
     as the x\-coordinates\.  The resulting y\-coordinates are written

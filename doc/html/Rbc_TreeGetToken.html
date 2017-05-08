@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc," />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeGetToken</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#see-also">SEE ALSO</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeGetToken - Grabs a token associated with existing tree data object.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p><strong>#include &lt;rbcTree.h&gt;</strong></p>
+<p>int<br />
+<strong>Rbc_TreeGetToken</strong>(<em>interp</em>, <em>name</em>, <em>tokenPtr</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<dl>
+<dt>Tcl_Interp <em>*interp</em> (in)</dt>
+<dd>Interpreter to report results back to.
+</dd>
+<dt>const char <em>*name</em> (in)</dt>
+<dd>Name of an existing tree data object. Can be qualified by a namespace.
+</dd>
+<dt>Rbc_Tree <em>*tokenPtr</em> (out)</dt>
+<dd>Points to location to store the client tree token.
+</dd>
+</dl>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure obtains a token to a C-based tree data object. The arguments are as follows:</p>
+<dl>
+<dt><em>interp</em></dt>
+<dd>Interpreter to report results back to. If an error occurs, then interp-&gt;result will contain an error message.
+</dd>
+<dt><em>name</em></dt>
+<dd>Name of an existing tree data object. It's an error if a tree <em>name</em> doesn't already exist. <em>Name</em> can be qualified by a namespace such as fred::myTree. If no namespace qualifier is used, the tree the current namespace is searched, then the global namespace.
+</dd>
+<dt><em>tokenPtr</em></dt>
+<dd>Points to the location where the returned token is stored. A tree token is used to work with the tree object.
+</dd>
+</dl>
+<p>A token for the tree data object is returned. Tree data objects can be shared. For example, the <strong>tree</strong> and <strong>hiertable</strong> commands may be accessing the same tree data object. Each client grabs a token that is associated with the tree. When all tokens are released (see <strong>Rbc_TreeReleaseToken</strong>) the tree data object is automatically destroyed.</p>
+<h1 id="returns">RETURNS</h1>
+<p>A standard Tcl result is returned. If TCL_ERROR is returned, then <em>interp-&gt;result</em> will contain an error message. The following errors may occur:</p>
+<ul>
+<li><p>No tree exists as <em>name</em>. You can use <strong>Tcl_TreeExists</strong> to determine if a tree exists beforehand.</p></li>
+<li><p>Memory can't be allocated for the token.</p></li>
+</ul>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example allocated a token for an existing tree.</p>
+<pre><code>Rbc_Tree token;
+
+if (Rbc_TreeGetToken(interp, &quot;myTree&quot;, &amp;token) != TCL_OK) {
+    return TCL_ERROR;
+}
+printf(&quot;tree is %s\n&quot;, Rbc_TreeName(token));</code></pre>
+<h1 id="see-also">SEE ALSO</h1>
+<p>Tcl_TreeCreate, Tcl_TreeExists, Tcl_TreeReleaseToken</p>
+</body>
+</html>

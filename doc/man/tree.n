@@ -216,11 +216,10 @@ selected.
 .RS
 .RE
 .TP
-.B \-key
-\f[I]key\f[] If pattern matching is selected (using the
-\f[B]\-exact\f[], \f[B]\-glob\f[], or \f[B]\-regexp\f[] switches),
-compare the values of the data field keyed by \f[I]key\f[] instead of
-the node\[aq]s label.
+.B \-key \f[I]key\f[]
+If pattern matching is selected (using the \f[B]\-exact\f[],
+\f[B]\-glob\f[], or \f[B]\-regexp\f[] switches), compare the values of
+the data field keyed by \f[I]key\f[] instead of the node\[aq]s label.
 If no pattern matching switches are set, then any node with this data
 key will match.
 .RS
@@ -462,9 +461,9 @@ selected.
 .RS
 .RE
 .TP
-.B \-key
-\f[I]key\f[] Compare the values of the data field keyed by \f[I]key\f[]
-instead of the node\[aq]s label.
+.B \-key \f[I]key\f[]
+Compare the values of the data field keyed by \f[I]key\f[] instead of
+the node\[aq]s label.
 If no pattern is given (\f[B]\-exact\f[], \f[B]\-glob\f[], or
 \f[B]\-regexp\f[] switches), then any node with this data key will
 match.
@@ -599,8 +598,8 @@ By default, nodes are labeled as node0, node1, etc.
 .RS
 .RE
 .TP
-.B \-node
-\f[I]id\f[] Designates the id for the node.
+.B \-node \f[I]id\f[]
+Designates the id for the node.
 Normally new ids are automatically generated.
 This allows you to create a node with a specific id.
 It is an error if the id is already used by another node in the tree.

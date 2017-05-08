@@ -187,8 +187,8 @@ command\.  The operations available for trees are listed below\.
     :   Select non\-matching nodes\.  Any node that *doesn\'t*
         match the given criteria will be selected\.
 
-    \-key
-    :   *key*  If pattern matching is selected (using the __\-exact__,
+    \-key *key*
+    :   If pattern matching is selected (using the __\-exact__,
         __\-glob__, or __\-regexp__ switches), compare the values of the
         data field keyed by *key* instead of the node\'s label\.
         If no pattern matching switches are set, then any node
@@ -376,8 +376,8 @@ command\.  The operations available for trees are listed below\.
     :   Select non\-matching nodes\.  Any node that *doesn\'t*
         match the given criteria will be selected\.
 
-    \-key
-    :   *key*  Compare the values of the data field keyed by *key*
+    \-key *key*
+    :   Compare the values of the data field keyed by *key*
         instead of the node\'s label\. If no pattern is given
         (__\-exact__, __\-glob__, or __\-regexp__ switches), then any node
         with this data key will match\.  
@@ -473,8 +473,8 @@ command\.  The operations available for trees are listed below\.
     :   Designates the labels of the node as *string*\.  By
         default, nodes are labeled as node0, node1, etc\.
 
-    \-node
-    :   *id*  Designates the id for the node\.  Normally new ids are
+    \-node *id*
+    :   Designates the id for the node\.  Normally new ids are
         automatically generated\.  This allows you to create a
         node with a specific id\.  It is an error if the id is
         already used by another node in the tree\.

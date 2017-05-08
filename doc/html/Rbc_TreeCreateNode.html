@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="keywords" content="tcl, tk, rbc, tree, token" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">em { text-decoration:underline; }</style>
+  <style type="text/css">dt { font-weight: bold; }</style>
+  <style type="text/css">dl { margin-left: 2em; }</style>
+  <style type="text/css">pre { margin-left: 3em; background: #e6e6e6 }</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Rbc_TreeCreateNode</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#name">NAME</a></li>
+<li><a href="#synopsis">SYNOPSIS</a></li>
+<li><a href="#include-rbctree.h">include &lt;rbcTree.h&gt;</a></li>
+<li><a href="#arguments">ARGUMENTS</a></li>
+<li><a href="#description">DESCRIPTION</a></li>
+<li><a href="#returns">RETURNS</a></li>
+<li><a href="#example">EXAMPLE</a></li>
+<li><a href="#notifications">NOTIFICATIONS</a></li>
+<li><a href="#keywords">KEYWORDS</a></li>
+</ul>
+</div>
+<h1 id="name">NAME</h1>
+<p>Rbc_TreeCreateNode - Creates a node in a tree data object.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<h1 id="include-rbctree.h">include &lt;rbcTree.h&gt;</h1>
+<p>Rbc_TreeNode<br />
+<strong>Rbc_TreeCreateNode</strong>(<em>tree</em>, <em>parent</em>, <em>name</em>, <em>position</em>)</p>
+<h1 id="arguments">ARGUMENTS</h1>
+<dl>
+<dt>Rbc_Tree <em>tree</em> (in)</dt>
+<dd>Tree containing the parent node.
+</dd>
+<dt>Rbc_TreeNode <em>parent</em> (in)</dt>
+<dd>Node in which to insert the new child.
+</dd>
+<dt>const char <em>*name</em> (in)</dt>
+<dd>Node label. If NULL, a label will automatically be generated.
+</dd>
+<dt>int <em>position</em> (in)</dt>
+<dd>Position in the parent's list of children to insert the new node.
+</dd>
+</dl>
+<h1 id="description">DESCRIPTION</h1>
+<p>This procedure creates a new node is a tree data object. The node is initially empty, but data values can be added with <strong>Rbc_TreeSetValue</strong>. Each node has a serial number that identifies it within the tree. No two nodes in the same tree will ever have the same ID. You can find a node's ID with <strong>Rbc_TreeNodeId</strong>.</p>
+<p>The arguments are as follows:</p>
+<dl>
+<dt><em>tree</em></dt>
+<dd>The tree containing the parent node.
+</dd>
+<dt><em>parent</em></dt>
+<dd>Node in which the new child will be inserted.
+</dd>
+<dt><em>name</em></dt>
+<dd>Label of the new node. If <em>name</em> is NULL, a label in the form &quot;node0&quot;, &quot;node1&quot;, etc. will automatically be generated. <em>Name</em> can be any string. Labels are non-unique. A parent can contain two nodes with the same label. Nodes can be relabeled using <strong>Rbc_TreeRelabelNode</strong>.
+</dd>
+<dt><em>position</em></dt>
+<dd>Position the parent's list of children to insert the new node. For example, if <em>position</em> is 0, then the new node is prepended to the beginning of the list. If <em>position</em> is -1, then the node is appended onto the end of the parent's list.
+</dd>
+</dl>
+<h1 id="returns">RETURNS</h1>
+<p>The new node returned is of type <strong>Rbc_TreeNode</strong>. It's a token that can be used with other routines to add/delete data values or children nodes.</p>
+<h1 id="example">EXAMPLE</h1>
+<p>The following example creates a new node from the root node.</p>
+<pre><code>Rbc_Tree token;
+Rbc_TreeNode root, node;
+
+if (Rbc_TreeGetToken(interp, &quot;myTree&quot;, &amp;token) != TCL_OK) {
+    return TCL_ERROR;
+}
+root = Rbc_TreeRootNode(token);
+node = Rbc_TreeCreateNode(token, root, &quot;myNode&quot;, -1);</code></pre>
+<h1 id="notifications">NOTIFICATIONS</h1>
+<p><strong>Rbc_TreeCreateNode</strong> can trigger tree notify events. You can be notified whenever a node is created by using the <strong>Rbc_TreeCreateNotifyHandler</strong>. A callback routine is registered that will be automatically invoked whenever a new node is added via <strong>Rbc_TreeCreateNode</strong> to the tree.</p>
+<h1 id="keywords">KEYWORDS</h1>
+<p>tree, token</p>
+</body>
+</html>
