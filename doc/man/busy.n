@@ -82,18 +82,24 @@ effect before any other user events can occur.
 .PP
 When the application is no longer busy processing, you can allow user
 interactions again by the \f[B]release\f[] operation.
+.RS
 .PP
 busy release .top
+.RE
 .PP
 The busy window has a configurable cursor.
 You can change the busy cursor using the \f[B]configure\f[] operation.
+.RS
 .PP
 busy configure .top \-cursor "watch"
+.RE
 .PP
 Finally, when you no longer need to the busy window, invoke the
 \f[B]forget\f[] operation to free any resources it allocated.
+.RS
 .PP
 busy forget .top
+.RE
 .PP
 Destroying the widget will also clean up any resources allocated by the
 busy command.
@@ -146,12 +152,14 @@ Please note that the option database is referenced through
 \f[I]window\f[].
 For example, if the widget .frame is to be made busy, the busy cursor
 can be specified for it by either \f[B]option\f[] command:
+.RS
 .PP
 option add *frame.busyCursor gumby
 .PD 0
 .P
 .PD
 option add *Frame.BusyCursor gumby
+.RE
 .RE
 .TP
 .B \f[B]busy forget\f[] \f[I]window\f[] ?\f[I]window\f[]?...

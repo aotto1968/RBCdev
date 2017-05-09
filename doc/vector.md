@@ -453,17 +453,12 @@ __vector expr__ *expression*
     for details on what they do\.  The operation is applied to all
     elements of the vector returning the results\.  
 
-    acos
-    :   __cos         hypot      sinh__
-
-    asin
-    :   __cosh        log        sqrt__
-
-    atan
-    :   __exp         log10      tan__
-
-    ceil
-    :   __floor       sin        tanh__
+    > ----------- ----------- ---------- ---
+    > __acos__    __cos__     __hypot__  __sinh__
+    > __asin__    __cosh__    __log__    __sqrt__
+    > __atan__    __exp__     __log10__  __tan__
+    > __ceil__    __floor__   __sin__    __tanh__
+    > ----------- ----------- ---------- ---
 
     Additional functions are:  
 
@@ -774,7 +769,7 @@ are identified by the vector name\.
 
 __Rbc\_CreateVector__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_CreateVector (*interp*, *vecName*, *length*, *vecPtrPtr*)
 :   Tcl\_Interp \**interp*;
@@ -798,7 +793,7 @@ Results:
 
 __Rbc\_DeleteVectorByName__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_DeleteVectorByName (*interp*, *vecName*)
 :   Tcl\_Interp \**interp*;
@@ -818,7 +813,7 @@ Results:
 
 __Rbc\_DeleteVector__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_DeleteVector (*vecPtr*)
 :   Rbc\_Vector \**vecPtr*;
@@ -838,7 +833,7 @@ Results:
 
 __Rbc\_GetVector__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_GetVector (*interp*, *vecName*, *vecPtrPtr*)
 :   Tcl\_Interp \**interp*;
@@ -857,9 +852,9 @@ Results:
 
 __Rbc\_ResetVector__  
 
-Synopsis:  
+> Synopsis:  
 
-int __Rbc\_ResetVector__ (*vecPtr*, *dataArr*,  
+> int __Rbc\_ResetVector__ (*vecPtr*, *dataArr*,  
 
 *numValues*, *arraySize*, *freeProc*)
 :   Rbc\_Vector \**vecPtr*;
@@ -896,7 +891,7 @@ Results:
 
 __Rbc\_ResizeVector__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_ResizeVector (*vecPtr*, *newSize*)
 :   Rbc\_Vector \**vecPtr*;
@@ -912,13 +907,16 @@ Description:
 
 Results:
 :   Returns TCL\_OK if the vector is successfully resized\.  If
+
+    --------- ---
     *newSize* is negative or memory can not be allocated for the
-    vector, then TCL\_ERROR is returned and *interp\-\>result* will
-    contain an error message\.  
+    vector,   then TCL\_ERROR is returned and *interp\-\>result* will
+    contain   an error message\.
+    --------- ---
 
-__Rbc\_VectorExists__  
+> __Rbc\_VectorExists__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_VectorExists (*interp*, *vecName*)
 :   Tcl\_Interp \**interp*;
@@ -930,33 +928,33 @@ Description:
 Results:
 :   Returns 1 if a vector *vecName* exists and 0 otherwise\.
 
-If your application needs to be notified when a vector changes, it
-can allocate a unique *client* *identifier* for itself\.  Using this
-identifier, you can then register a call\-back to be made whenever the
-vector is updated or destroyed\.  By default, the call\-backs are made
-at the next idle point\.  This can be changed to occur at the time the
-vector is modified\.  An application can allocate more than one
-identifier for any vector\.  When the client application is done with
-the vector, it should free the identifier\.  
+> If your application needs to be notified when a vector changes, it
+> can allocate a unique *client* *identifier* for itself\.  Using this
+> identifier, you can then register a call\-back to be made whenever the
+> vector is updated or destroyed\.  By default, the call\-backs are made
+> at the next idle point\.  This can be changed to occur at the time the
+> vector is modified\.  An application can allocate more than one
+> identifier for any vector\.  When the client application is done with
+> the vector, it should free the identifier\.  
 
-The call\-back routine must of the following type\.  
+> The call\-back routine must of the following type\.  
 
 typedef void (Rbc\_VectorChangedProc) (Tcl\_Interp \**interp*,
 :   ClientData *clientData*, Rbc\_VectorNotify *notify*);
 
-*ClientData* is passed to this routine whenever it is called\.  You can
-use this to pass information to the call\-back\.  The *notify* argument
-indicates whether the vector has been updated of destroyed\. It is an
-enumerated type\.  
+> *ClientData* is passed to this routine whenever it is called\.  You can
+> use this to pass information to the call\-back\.  The *notify* argument
+> indicates whether the vector has been updated of destroyed\. It is an
+> enumerated type\.  
 
 typedef enum {
 :   RBC\_VECTOR\_NOTIFY\_UPDATE=1,
     RBC\_VECTOR\_NOTIFY\_DESTROY=2  
-} __Rbc\_VectorNotify__;  
+> } __Rbc\_VectorNotify__;  
 
-__Rbc\_AllocVectorId__  
+> __Rbc\_AllocVectorId__  
 
-Synopsis:  
+> Synopsis:  
 
 Rbc\_VectorId Rbc\_AllocVectorId (*interp*, *vecName*)
 :   Tcl\_Interp \**interp*;
@@ -973,9 +971,9 @@ Results:
     is not the name of a vector, then NULL is returned and
     *interp\-\>result* will contain an error message\.
 
-__Rbc\_GetVectorById__  
+> __Rbc\_GetVectorById__  
 
-Synopsis:  
+> Synopsis:  
 
 int Rbc\_GetVector (*interp*, *clientId*, *vecPtrPtr*)
 :   Tcl\_Interp \**interp*;
@@ -991,9 +989,9 @@ Description:
 Results:
 :   Returns TCL\_OK if the vector is successfully retrieved\.
 
-__Rbc\_SetVectorChangedProc__  
+> __Rbc\_SetVectorChangedProc__  
 
-Synopsis:  
+> Synopsis:  
 
 void Rbc\_SetVectorChangedProc (*clientId*, *proc*, *clientData*);
 :   Rbc\_VectorId *clientId*;
@@ -1013,9 +1011,9 @@ Results:
 :   The designated call\-back procedure will be invoked when
     the vector is updated or destroyed\.  
 
-__Rbc\_FreeVectorId__  
+> __Rbc\_FreeVectorId__  
 
-Synopsis:  
+> Synopsis:  
 
 void Rbc\_FreeVectorId (*clientId*);
 :   Rbc\_VectorId *clientId*;
@@ -1029,9 +1027,9 @@ Results:
 :   The designated call\-back procedure will be no longer be
     invoked when the vector is updated or destroyed\.
 
-__Rbc\_NameOfVectorId__  
+> __Rbc\_NameOfVectorId__  
 
-Synopsis:  
+> Synopsis:  
 
 char \*Rbc\_NameOfVectorId (*clientId*);
 :   Rbc\_VectorId *clientId*;
@@ -1045,9 +1043,9 @@ Results:
     If *clientId* is not an identifier or the vector has been
     destroyed, NULL is returned\.  
 
-__Rbc\_InstallIndexProc__  
+> __Rbc\_InstallIndexProc__  
 
-Synopsis:  
+> Synopsis:  
 
 void Rbc\_InstallIndexProc (*indexName*, *procPtr*)
 :   char \**indexName*;

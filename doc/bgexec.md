@@ -135,7 +135,7 @@ SYNTAX
 
 The __bgexec__ command takes the following form:  
 
-__rbc::bgexec__ *varName* ?*option* *value*?\.\.\. *program* ?*arg*?\.\.\.
+> __rbc::bgexec__ *varName* ?*option* *value*?\.\.\. *program* ?*arg*?\.\.\.
 
 *VarName* is the name of a global variable which is set when *program* has
 finished executing\.  The exit status of will be stored in *varName*\.  The

@@ -37,12 +37,12 @@ annotation markers\.  Each component can be queried or modified\.
 
 axis  
 
-Up to four coordinate axes (two X\-coordinate and two
-Y\-coordinate axes) can be displayed, but you can create and
-use any number of axes\. Axes control what region of data is
-displayed and how the data is scaled\. Each axis consists of
-the axis line, title, major and minor ticks, and tick labels\.
-Tick labels display the value at each major tick\.
+> Up to four coordinate axes (two X\-coordinate and two
+> Y\-coordinate axes) can be displayed, but you can create and
+> use any number of axes\. Axes control what region of data is
+> displayed and how the data is scaled\. Each axis consists of
+> the axis line, title, major and minor ticks, and tick labels\.
+> Tick labels display the value at each major tick\.
 
 crosshairs
 :   Cross hairs are used to position the mouse pointer relative
@@ -886,9 +886,11 @@ time\-series plots\.
     command\.  The resource class is Axis\.  The resource names are
     the names of the axes (such as x or x2)\.  
 
-    option add \*Barchart\.Axis\.Color  blue  
-    option add \*Barchart\.x\.LogScale  true  
-    option add \*Barchart\.x2\.LogScale false  
+    > ------ --- ------------------------ ---
+    > option add \*Barchart\.Axis\.Color  blue
+    > option add \*Barchart\.x\.LogScale  true
+    > option add \*Barchart\.x2\.LogScale false
+    > ------ --- ------------------------ ---
 
 *pathName* __axis create__ *axisName* ?*option* *value*?\.\.\.
 
@@ -1036,8 +1038,8 @@ The following operations are available for cross hairs:
     __option__ command\.  The resource name and class are crosshairs and
     Crosshairs respectively\.  
 
-    option add \*Barchart\.Crosshairs\.LineWidth 2
-    option add \*Barchart\.Crosshairs\.Color     red
+    > option add \*Barchart\.Crosshairs\.LineWidth 2
+    > option add \*Barchart\.Crosshairs\.Color     red
 
 *pathName* __crosshairs off__
 
@@ -1218,7 +1220,7 @@ The following operations are available for elements\.
     command\.  The resource names  in the option database are
     prefixed by elem\.  
 
-    option add \*Barchart\.Element\.background blue
+    > option add \*Barchart\.Element\.background blue
 
 *pathName* __element create__ *elemName* ?*option* *value*?\.\.\.
 
@@ -1323,8 +1325,8 @@ operations are available for grid lines\.
     command\.  The resource name and class are grid and Grid
     respectively\.  
 
-    option add \*Barchart\.grid\.LineWidth 2  
-    option add \*Barchart\.Grid\.Color     black
+    > option add \*Barchart\.grid\.LineWidth 2  
+    > option add \*Barchart\.Grid\.Color     black
 
 *pathName* __grid off__
 
@@ -1540,8 +1542,8 @@ The following operations are valid for the legend\.
     command\.  The resource name and class are legend and Legend
     respectively\.  
 
-    option add \*Barchart\.legend\.Foreground blue
-    option add \*Barchart\.Legend\.Relief     raised
+    > option add \*Barchart\.legend\.Foreground blue
+    > option add \*Barchart\.Legend\.Relief     raised
 
 *pathName* __legend deactivate__ *pattern*\.\.\.
 
@@ -1656,8 +1658,8 @@ The following operations are available for pen components\.
     command\.  The resource class is Pen\.  The resource names are the
     names of the pens\.  
 
-    option add \*Barchart\.Pen\.Foreground   blue
-    option add \*Barchart\.activeBar\.foreground  green
+    > option add \*Barchart\.Pen\.Foreground   blue
+    > option add \*Barchart\.activeBar\.foreground  green
 
 *pathName* __pen create__ *penName* ?*option* *value*?\.\.\.
 
@@ -1812,8 +1814,8 @@ The following postscript operations are available\.
     __option__ command\.  The resource name and class are postscript and
     Postscript respectively\.  
 
-    option add \*Barchart\.postscript\.Decorations false
-    option add \*Barchart\.Postscript\.Landscape   true
+    > option add \*Barchart\.postscript\.Decorations false
+    > option add \*Barchart\.Postscript\.Landscape   true
 
 *pathName* __postscript output__ ?*fileName*? ?*option* *value*?\.\.\.
 
@@ -1965,9 +1967,11 @@ The following operations are available for markers\.
     WindowMarker, depending on the type of marker\.  The resource
     name is the name of the marker\.  
 
-    option add \*Barchart\.TextMarker\.Foreground white
-    option add \*Barchart\.BitmapMarker\.Foreground white
-    option add \*Barchart\.m1\.Background     blue
+    > ------ --- ---
+    > option add \*Barchart\.TextMarker\.Foreground white
+    > option add \*Barchart\.BitmapMarker\.Foreground white
+    > option add \*Barchart\.m1\.Background blue
+    > ------ --- ---
 
 *pathName* __marker create__ *type* ?*option* *value*?\.\.\.
 

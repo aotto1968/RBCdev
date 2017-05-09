@@ -73,7 +73,9 @@ rbc::bgexec myStatus -output myOutput du -s $dir &amp;
 tkwait variable myStatus</code></pre>
 <h1 id="syntax">SYNTAX</h1>
 <p>The <strong>bgexec</strong> command takes the following form:</p>
+<blockquote>
 <p><strong>rbc::bgexec</strong> <em>varName</em> ?<em>option</em> <em>value</em>?... <em>program</em> ?<em>arg</em>?...</p>
+</blockquote>
 <p><em>VarName</em> is the name of a global variable which is set when <em>program</em> has finished executing. The exit status of will be stored in <em>varName</em>. The exit status is a list of a status token, the process-id of the program, the exit code, and a status message. You can also prematurely terminate the program by setting <em>varName</em>. Under Unix, the program will be sent a signal to terminate it (by default the signal is a SIGKILL; see the <strong>-killsignal</strong> option).</p>
 <p><em>Program</em> is the name of the program to be executed and <em>args</em> are any extra arguments for <em>program</em>. The syntax of <em>program</em> and <em>args</em> is the same as the <strong>exec</strong> command. So you can redirect I/O, execute pipelines, etc. (see the <strong>exec</strong> manual for further information) just like <strong>exec</strong>. If the last argument is an ampersand (&amp;), the program will be run detached, and <strong>bgexec</strong> will return immediately. <em>VarName</em> will still be set with the return status when <em>program</em> completes.</p>
 <h1 id="options">OPTIONS</h1>

@@ -80,17 +80,17 @@ events can occur\.
 When the application is no longer busy processing, you can allow user
 interactions again by the __release__ operation\.  
 
-busy release \.top  
+> busy release \.top  
 
 The busy window has a configurable cursor\.  You can change the busy
 cursor using the __configure__ operation\.  
 
-busy configure \.top \-cursor "watch"  
+> busy configure \.top \-cursor "watch"  
 
 Finally, when you no longer need to the busy window, invoke the __forget__
 operation to free any resources it allocated\.  
 
-busy forget \.top  
+> busy forget \.top  
 
 Destroying the widget will also clean up any resources allocated by the
 busy command\.  
@@ -138,8 +138,8 @@ __busy configure__ *window* ?*option* *value*?\.\.\.
     the busy cursor can be specified for it by either __option__
     command:  
 
-    option add \*frame\.busyCursor gumby  
-    option add \*Frame\.BusyCursor gumby  
+    > option add \*frame\.busyCursor gumby  
+    > option add \*Frame\.BusyCursor gumby  
 
 __busy forget__ *window* ?*window*?\.\.\.
 

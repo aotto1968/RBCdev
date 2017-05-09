@@ -248,9 +248,11 @@ All \f[B]container\f[] operations are invoked by specifying the
 widget\[aq]s pathname, the operation, and any arguments that pertain to
 that operation.
 The general form is:
+.RS
 .PP
 \f[I]pathName\f[] \f[I]operation\f[] ?\f[I]arg\f[] \f[I]arg\f[]
 \f[I]\&...\f[]?
+.RE
 .PP
 \f[I]Operation\f[] and the \f[I]arg\f[]s determine the exact behavior of
 the command.

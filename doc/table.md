@@ -760,7 +760,7 @@ usually done by accident, such as the following where all three widgets
 are arranged in the same container "\.", but using different geometry
 managers\.  
 
-table \.f1  
+> table \.f1  
 
 \.\.\.
 :   pack \.f2

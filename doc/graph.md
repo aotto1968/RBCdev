@@ -883,9 +883,11 @@ time\-series plots\.
     command\.  The resource class is Axis\.  The resource names are
     the names of the axes (such as x or x2)\.  
 
-    option add \*Graph\.Axis\.Color  blue  
-    option add \*Graph\.x\.LogScale  true  
-    option add \*Graph\.x2\.LogScale false  
+    > ------ --- --------------------- ---
+    > option add \*Graph\.Axis\.Color  blue
+    > option add \*Graph\.x\.LogScale  true
+    > option add \*Graph\.x2\.LogScale false
+    > ------ --- --------------------- ---
 
 *pathName* __axis create__ *axisName* ?*option* *value*?\.\.\.
 
@@ -1036,8 +1038,8 @@ The following operations are available for cross hairs:
     __option__ command\.  The resource name and class are crosshairs and
     Crosshairs respectively\.  
 
-    option add \*Graph\.Crosshairs\.LineWidth 2
-    option add \*Graph\.Crosshairs\.Color     red
+    > option add \*Graph\.Crosshairs\.LineWidth 2
+    > option add \*Graph\.Crosshairs\.Color     red
 
 *pathName* __crosshairs off__
 
@@ -1320,8 +1322,8 @@ The following operations are available for elements\.
     command\.  The resource class is Element\. The resource name is
     the name of the element\.  
 
-    option add \*Graph\.Element\.symbol line  
-    option add \*Graph\.e1\.symbol line  
+    > option add \*Graph\.Element\.symbol line  
+    > option add \*Graph\.e1\.symbol line  
 
 *pathName* __element create__ *elemName* ?*option* *value*?\.\.\.
 
@@ -1423,8 +1425,8 @@ operations are available for grid lines\.
     command\.  The resource name and class are grid and Grid
     respectively\.  
 
-    option add \*Graph\.grid\.LineWidth 2  
-    option add \*Graph\.Grid\.Color     black  
+    > option add \*Graph\.grid\.LineWidth 2  
+    > option add \*Graph\.Grid\.Color     black  
 
 *pathName* __grid off__
 
@@ -1641,8 +1643,8 @@ The following operations are valid for the legend\.
     command\.  The resource name and class are legend and Legend
     respectively\.  
 
-    option add \*Graph\.legend\.Foreground blue
-    option add \*Graph\.Legend\.Relief     raised
+    > option add \*Graph\.legend\.Foreground blue
+    > option add \*Graph\.Legend\.Relief     raised
 
 *pathName* __legend deactivate__ *pattern*\.\.\.
 
@@ -1781,8 +1783,8 @@ The following operations are available for pen components\.
     command\.  The resource class is Pen\.  The resource names are the
     names of the pens\.  
 
-    option add \*Graph\.Pen\.Color  blue  
-    option add \*Graph\.activeLine\.color  green
+    > option add \*Graph\.Pen\.Color  blue  
+    > option add \*Graph\.activeLine\.color  green
 
 *pathName* __pen create__ *penName* ?*option* *value*?\.\.\.
 
@@ -1937,8 +1939,8 @@ The following postscript operations are available\.
     __option__ command\.  The resource name and class are postscript and
     Postscript respectively\.  
 
-    option add \*Graph\.postscript\.Decorations false
-    option add \*Graph\.Postscript\.Landscape   true
+    > option add \*Graph\.postscript\.Decorations false
+    > option add \*Graph\.Postscript\.Landscape   true
 
 *pathName* __postscript output__ ?*fileName*? ?*option* *value*?\.\.\.
 
@@ -2091,9 +2093,11 @@ The following operations are available for markers\.
     WindowMarker, depending on the type of marker\.  The resource
     name is the name of the marker\.  
 
-    option add \*Graph\.TextMarker\.Foreground white
-    option add \*Graph\.BitmapMarker\.Foreground white
-    option add \*Graph\.m1\.Background     blue
+    > ------ --- ---
+    > option add \*Graph\.TextMarker\.Foreground white
+    > option add \*Graph\.BitmapMarker\.Foreground white
+    > option add \*Graph\.m1\.Background blue
+    > ------ --- ---
 
 *pathName* __marker create__ *type* ?*option* *value*?\.\.\.
 

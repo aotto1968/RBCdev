@@ -956,8 +956,10 @@ window is already a container of a different geometry manager.
 This is usually done by accident, such as the following where all three
 widgets are arranged in the same container ".", but using different
 geometry managers.
+.RS
 .PP
 table .f1
+.RE
 .TP
 .B \&...
 pack .f2

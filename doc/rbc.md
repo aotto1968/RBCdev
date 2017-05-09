@@ -221,9 +221,11 @@ RBC is available from:
 More information on BLT is available from:
 :   \<http://www\.sourceforge\.net/projects/blt/files\>
 
+----- ---
 *RBC* is intended to work with Tcl/Tk versions 8\.4 and 8\.5, although it
-may work with others\.  RBC is a TEA compliant extension, although it is
-not (yet) entirely free of dependency on Tcl/Tk private structures\.
+may   work with others\. RBC is a TEA compliant extension, although it is
+not   (yet) entirely free of dependency on Tcl/Tk private structures\.
+----- ---
 
 *RBC* is a subset of BLT, contains the essential components for
 developing data graphing applications\.  Some BLT components have been

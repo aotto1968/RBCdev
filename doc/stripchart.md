@@ -810,9 +810,11 @@ time\-series plots\.
     command\.  The resource class is Axis\.  The resource names are
     the names of the axes (such as x or x2)\.  
 
-    option add \*Stripchart\.Axis\.Color  blue
-    option add \*Stripchart\.x\.LogScale  true
-    option add \*Stripchart\.x2\.LogScale false
+    > ------ --- -------------------------- ---
+    > option add \*Stripchart\.Axis\.Color  blue
+    > option add \*Stripchart\.x\.LogScale  true
+    > option add \*Stripchart\.x2\.LogScale false
+    > ------ --- -------------------------- ---
 
 *pathName* __axis create__ *axisName* ?*option* *value*?\.\.\.
 
@@ -960,8 +962,8 @@ The following operations are available for cross hairs:
     __option__ command\.  The resource name and class are crosshairs and
     Crosshairs respectively\.  
 
-    option add \*Stripchart\.Crosshairs\.LineWidth 2
-    option add \*Stripchart\.Crosshairs\.Color     red
+    > option add \*Stripchart\.Crosshairs\.LineWidth 2
+    > option add \*Stripchart\.Crosshairs\.Color     red
 
 *pathName* __crosshairs off__
 
@@ -1174,8 +1176,8 @@ The following operations are available for elements\.
     command\.  The resource class is Element\. The resource name is
     the name of the element\.  
 
-    option add \*Stripchart\.Element\.symbol line
-    option add \*Stripchart\.e1\.symbol line  
+    > option add \*Stripchart\.Element\.symbol line
+    > option add \*Stripchart\.e1\.symbol line  
 
 *pathName* __element create__ *elemName* ?*option* *value*?\.\.\.
 
@@ -1275,8 +1277,8 @@ operations are available for grid lines\.
     command\.  The resource name and class are grid and Grid
     respectively\.  
 
-    option add \*Stripchart\.grid\.LineWidth 2
-    option add \*Stripchart\.Grid\.Color     black
+    > option add \*Stripchart\.grid\.LineWidth 2
+    > option add \*Stripchart\.Grid\.Color     black
 
 *pathName* __grid off__
 
@@ -1465,8 +1467,8 @@ The following operations are valid for the legend\.
     command\.  The resource name and class are legend and Legend
     respectively\.  
 
-    option add \*Stripchart\.legend\.Foreground blue
-    option add \*Stripchart\.Legend\.Relief     raised
+    > option add \*Stripchart\.legend\.Foreground blue
+    > option add \*Stripchart\.Legend\.Relief     raised
 
 *pathName* __legend deactivate__ *pattern*\.\.\.
 
@@ -1605,8 +1607,8 @@ The following operations are available for pen components\.
     command\.  The resource class is Pen\.  The resource names are the
     names of the pens\.  
 
-    option add \*Stripchart\.Pen\.Color  blue  
-    option add \*Stripchart\.activeLine\.color  green
+    > option add \*Stripchart\.Pen\.Color  blue  
+    > option add \*Stripchart\.activeLine\.color  green
 
 *pathName* __pen create__ *penName* ?*option* *value*?\.\.\.
 
@@ -1761,8 +1763,8 @@ The following postscript operations are available\.
     __option__ command\.  The resource name and class are postscript and
     Postscript respectively\.  
 
-    option add \*Stripchart\.postscript\.Decorations false
-    option add \*Stripchart\.Postscript\.Landscape   true
+    > option add \*Stripchart\.postscript\.Decorations false
+    > option add \*Stripchart\.Postscript\.Landscape   true
 
 *pathName* __postscript output__ ?*fileName*? ?*option* *value*?\.\.\.
 
@@ -1886,9 +1888,11 @@ The following operations are available for markers\.
     WindowMarker, depending on the type of marker\.  The resource
     name is the name of the marker\.  
 
-    option add \*Stripchart\.TextMarker\.Foreground white
-    option add \*Stripchart\.BitmapMarker\.Foreground white
-    option add \*Stripchart\.m1\.Background     blue
+    > ------ --- ---
+    > option add \*Stripchart\.TextMarker\.Foreground white
+    > option add \*Stripchart\.BitmapMarker\.Foreground white
+    > option add \*Stripchart\.m1\.Background blue
+    > ------ --- ---
 
 *pathName* __marker create__ *type* ?*option* *value*?\.\.\.
 

@@ -8,9 +8,12 @@ drag&drop \- facilities for handling drag&drop data transfers
 SYNOPSIS
 ========
 
-__drag&drop source__  
-__drag&drop source__ *window* ?*options*?  
-__drag&drop source__ *window* __handler__ ?*dataType*? ?*command* *arg* *arg\.\.\.*?
+
+------------- ---
+__drag&drop__ __source__
+__drag&drop__ __source__ *window* ?*options*?
+__drag&drop__ __source__ *window* __handler__ ?*dataType*? ?*command* *arg* *arg\.\.\.*?
+------------- ---
 
 __drag&drop target__  
 __drag&drop target__ *window* __handler__ ?*dataType* *command* *arg* *arg\.\.\.*?
@@ -79,33 +82,39 @@ __drag&drop source__ *window* ?*options*?
 :   Registers a new drag&drop source window with the given options,
     or modifies the options for an existing window:
 
-    Name:     __buttonBinding__  
-    Class:    __ButtonBinding__  
-    Switch:   __\-button__ *n*  
+    --------- ---
+    Name:     __buttonBinding__
+    Class:    __ButtonBinding__
+    Switch:   __\-button__ *n*
+    --------- ---
 
-    Specifies the mouse button (integer 1\-5) that will invoke
-    the drag&drop operation on the source window\.  This
-    causes the following bindings to be added to the widget:
+    > Specifies the mouse button (integer 1\-5) that will invoke
+    > the drag&drop operation on the source window\.  This
+    > causes the following bindings to be added to the widget:
 
-    bind *win* \<ButtonPress\-*n*\> {drag&drop drag %W %X %Y}
-    bind *win* \<B*n*\-Motion\> {drag&drop drag %W %X %Y}
-    bind *win* \<ButtonRelease\-*n*\> {drag&drop drop %W %X %Y}
+    > ---- ----- ---
+    > bind *win* \<ButtonPress\-*n*\> {drag&drop drag %W %X %Y}
+    > bind *win* \<B*n*\-Motion\> {drag&drop drag %W %X %Y}
+    > bind *win* \<ButtonRelease\-*n*\> {drag&drop drop %W %X %Y}
+    > ---- ----- ---
 
     The default value is button 3\.  If the value "0" is specified,
     then no bindings are added; this enables the user to establish
     bindings manually\.  
 
-    Name:     __packageCommand__  
-    Class:    __Command__  
-    Switch:   __\-packagecmd__ *command*  
+    --------- ---
+    Name:     __packageCommand__
+    Class:    __Command__
+    Switch:   __\-packagecmd__ *command*
+    --------- ---
 
-    Specifies a Tcl command used to establish the appearance
-    of the token window at the start of each drag&drop
-    operation\.  This command is automatically invoked by the
-    __drag&drop drag__ command whenever the token window is about
-    to be mapped for a drag operation\.  It should update the
-    appearance of the token window to represent the data that
-    is being moved\.  
+    > Specifies a Tcl command used to establish the appearance
+    > of the token window at the start of each drag&drop
+    > operation\.  This command is automatically invoked by the
+    > __drag&drop drag__ command whenever the token window is about
+    > to be mapped for a drag operation\.  It should update the
+    > appearance of the token window to represent the data that
+    > is being moved\.  
 
     The following substitutions are made in the *command* string
     before it is executed:  
@@ -137,7 +146,7 @@ __drag&drop source__ *window* ?*options*?
         set str \[\$lbox get \[\$lbox nearest \$y\]\]
         \$token\.value configure \-text \$str  
         return \$str  
-    }  
+    > }  
 
     The return value is available later when the source and target
     communicate\.  If the source has a command associated with its
@@ -145,77 +154,86 @@ __drag&drop source__ *window* ?*options*?
     the source handler\.  Otherwise, it is substituted in place of
     "%v" in the target handler\.  
 
-    Name:     __rejectBackground__  
-    Class:    __Background__  
-    Switch:   __\-rejectbg__ *color*  
+    --------- ---
+    Name:     __rejectBackground__
+    Class:    __Background__
+    Switch:   __\-rejectbg__ *color*
+    --------- ---
 
-    Specifies the color used to draw the background of the
-    rejection symbol on the token window\.  The rejection
-    symbol (a circle with a line through it\-\-the
-    international "no") appears whenever communication fails\.
+    > Specifies the color used to draw the background of the
+    > rejection symbol on the token window\.  The rejection
+    > symbol (a circle with a line through it\-\-the
+    > international "no") appears whenever communication fails\.
 
-    Name:
-    :   __rejectForeground__
+    --------- ---
+    Name:     __rejectForeground__
+    Class:    __Foreground__
+    Switch:   __\-rejectfg__ *color*
+    --------- ---
 
-    Class:
-    :   __Foreground__
-    Switch:   __\-rejectfg__ *color*  
+    > Specifies the color used to draw the foreground of the
+    > rejection symbol on the token window\.  
 
-    Specifies the color used to draw the foreground of the
-    rejection symbol on the token window\.  
+    --------- ---
+    Name:     __rejectStipple__
+    Class:    __Stipple__
+    Switch:   __\-rejectstipple__ *pattern*
+    --------- ---
 
-    Name:     __rejectStipple__  
-    Class:    __Stipple__  
-    Switch:   __\-rejectstipple__ *pattern*  
+    > Specifies a stipple pattern used to draw the foreground
+    > of the rejection symbol on the token window\.  Any of the
+    > forms acceptable to Tk\_GetBitmap can be used\.
 
-    Specifies a stipple pattern used to draw the foreground
-    of the rejection symbol on the token window\.  Any of the
-    forms acceptable to Tk\_GetBitmap can be used\.
+    --------- ---
+    Name:     __selfTarget__
+    Class:    __SelfTarget__
+    Switch:   __\-selftarget__ *boolean*
+    --------- ---
 
-    Name:     __selfTarget__  
-    Class:    __SelfTarget__  
-    Switch:   __\-selftarget__ *boolean*  
+    > If the *boolean* value is true, and if a source widget is
+    > also registered as a compatible target, then the source
+    > will be able to transmit to itself during drag&drop
+    > operations\.  This is primarily useful for complex sources
+    > such as a canvas widget, where items may be moved from
+    > place to place within the same widget\.  By default, this
+    > option is disabled\.  
 
-    If the *boolean* value is true, and if a source widget is
-    also registered as a compatible target, then the source
-    will be able to transmit to itself during drag&drop
-    operations\.  This is primarily useful for complex sources
-    such as a canvas widget, where items may be moved from
-    place to place within the same widget\.  By default, this
-    option is disabled\.  
+    --------- ---
+    Name:     __send__
+    Class:    __Send__
+    Switch:   __\-send__ *list*
+    --------- ---
 
-    Name:     __send__  
-    Class:    __Send__  
-    Switch:   __\-send__ *list*  
-
-    Specifies a *list* of *dataTypes* enabled for communication\.
-    Only *dataTypes* defined by commands of the form "__drag&drop__
-    __source__ *window* __handler__ ?*dataType* ?*command* *arg* *arg\.\.\.*?" are
-    allowed\.  This list also determines the priority of the
-    various *dataTypes*\.  When a token window is over a
-    potential drag&drop target, this list is searched from
-    start to finish for a *dataType* that is also recognized by
-    the target\.  The first matching *dataType* found determines
-    the value that will be sent if the token is dropped\.  If
-    no matching *dataType* is found, then the target is
-    incompatible, and is ignored\.  By default, this option
-    has the value "all", indicating that all *dataTypes* should
-    be considered in the order that they were defined for the
-    source\.  
+    > Specifies a *list* of *dataTypes* enabled for communication\.
+    > Only *dataTypes* defined by commands of the form "__drag&drop__
+    > __source__ *window* __handler__ ?*dataType* ?*command* *arg* *arg\.\.\.*?" are
+    > allowed\.  This list also determines the priority of the
+    > various *dataTypes*\.  When a token window is over a
+    > potential drag&drop target, this list is searched from
+    > start to finish for a *dataType* that is also recognized by
+    > the target\.  The first matching *dataType* found determines
+    > the value that will be sent if the token is dropped\.  If
+    > no matching *dataType* is found, then the target is
+    > incompatible, and is ignored\.  By default, this option
+    > has the value "all", indicating that all *dataTypes* should
+    > be considered in the order that they were defined for the
+    > source\.  
 
     Note that this option makes it easy to control a drag&drop
     source\.  Setting the value to an empty string disables the
     source; setting the value back to "all" restores communication\.
 
-    Name:     __siteCommand__  
-    Class:    __Command__  
-    Switch:   __\-sitecmd__ *command*  
+    --------- ---
+    Name:     __siteCommand__
+    Class:    __Command__
+    Switch:   __\-sitecmd__ *command*
+    --------- ---
 
-    Specifies a Tcl command used to update the appearance of
-    the token window\.  If specified, this command is
-    automatically invoked by the __drag&drop drag__ command
-    whenever the token window is over a compatible drag&drop
-    target\.  
+    > Specifies a Tcl command used to update the appearance of
+    > the token window\.  If specified, this command is
+    > automatically invoked by the __drag&drop drag__ command
+    > whenever the token window is over a compatible drag&drop
+    > target\.  
 
     The following substitutions are made in the *command* string
     before it is executed:  
@@ -232,44 +250,49 @@ __drag&drop source__ *window* ?*options*?
     become raised whenever the token is over a valid target\.  This
     command can be used to display other visual cues\.
 
-    Name:     __tokenAnchor__  
-    Class:    __Anchor__  
-    Switch:   __\-tokenanchor__ *anchor*  
+    --------- ---
+    Name:     __tokenAnchor__
+    Class:    __Anchor__
+    Switch:   __\-tokenanchor__ *anchor*
+    --------- ---
 
-    Specifies how the token window is positioned relative to
-    the mouse pointer coordinates passed to the __drag&drop__
-    __drag__ command\.  Must be one of the values n, s, e, w,
-    center, nw, ne, sw or se\.  For example, "nw" means to
-    position the token such that its upper\-left corner is at
-    the mouse pointer\.  The default value is "center"\.
+    > Specifies how the token window is positioned relative to
+    > the mouse pointer coordinates passed to the __drag&drop__
+    > __drag__ command\.  Must be one of the values n, s, e, w,
+    > center, nw, ne, sw or se\.  For example, "nw" means to
+    > position the token such that its upper\-left corner is at
+    > the mouse pointer\.  The default value is "center"\.
 
-    Name:
-    :   __tokenBackground__
+    --------- ---
+    Name:     __tokenBackground__
+    Class:    __Background__
+    Switch:   __\-tokenbg__ *color*
+    --------- ---
 
-    Class:
-    :   __Background__
-    Switch:   __\-tokenbg__ *color*  
+    > Specifies the color used to draw the background of the
+    > token window\.  
 
-    Specifies the color used to draw the background of the
-    token window\.  
+    --------- ---
+    Name:     __tokenBorderWidth__
+    Class:    __BorderWidth__
+    Switch:   __\-tokenborderwidth__ *size*
+    --------- ---
 
-    Name:     __tokenBorderWidth__  
-    Class:    __BorderWidth__  
-    Switch:   __\-tokenborderwidth__ *size*  
+    > Specifies the width in pixels of the border around the
+    > token window\.  This border becomes raised to indicate
+    > when the token is over a compatible drag&drop target
+    > site\.  The value may have any of the forms acceptable to
+    > Tk\_GetPixels\.  The default value is "3"\.
 
-    Specifies the width in pixels of the border around the
-    token window\.  This border becomes raised to indicate
-    when the token is over a compatible drag&drop target
-    site\.  The value may have any of the forms acceptable to
-    Tk\_GetPixels\.  The default value is "3"\.
+    --------- ---
+    Name:     __tokenCursor__
+    Class:    __Cursor__
+    Switch:   __\-tokencursor__ *cursor*
+    --------- ---
 
-    Name:     __tokenCursor__  
-    Class:    __Cursor__  
-    Switch:   __\-tokencursor__ *cursor*  
-
-    Specifies the cursor used when a token window is active\.
-    The value may have any of the forms acceptable to
-    Tk\_GetCursor\.  The default value is "center\_ptr"\.
+    > Specifies the cursor used when a token window is active\.
+    > The value may have any of the forms acceptable to
+    > Tk\_GetCursor\.  The default value is "center\_ptr"\.
 
 __drag&drop source__ *window* __handler__ ?*dataType*? ?*command* *arg* *arg\.\.\.*?
 

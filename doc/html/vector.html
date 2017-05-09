@@ -220,20 +220,36 @@ puts $vecName(:)</code></pre>
 </dl>
 <p>See the C manual for more details on the results produced by each operator. All of the binary operators group left-to-right within the same precedence level.</p>
 <p>Several mathematical functions are supported for vectors. Each of the following functions invokes the math library function of the same name; see the manual entries for the library functions for details on what they do. The operation is applied to all elements of the vector returning the results.</p>
-<dl>
-<dt>acos</dt>
-<dd><strong>cos hypot sinh</strong>
-</dd>
-<dt>asin</dt>
-<dd><strong>cosh log sqrt</strong>
-</dd>
-<dt>atan</dt>
-<dd><strong>exp log10 tan</strong>
-</dd>
-<dt>ceil</dt>
-<dd><strong>floor sin tanh</strong>
-</dd>
-</dl>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>acos</strong></td>
+<td align="left"><strong>cos</strong></td>
+<td align="left"><strong>hypot</strong></td>
+<td><strong>sinh</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>asin</strong></td>
+<td align="left"><strong>cosh</strong></td>
+<td align="left"><strong>log</strong></td>
+<td><strong>sqrt</strong></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>atan</strong></td>
+<td align="left"><strong>exp</strong></td>
+<td align="left"><strong>log10</strong></td>
+<td><strong>tan</strong></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>ceil</strong></td>
+<td align="left"><strong>floor</strong></td>
+<td align="left"><strong>sin</strong></td>
+<td><strong>tanh</strong></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <p>Additional functions are:</p>
 <dl>
 <dt>abs</dt>
@@ -418,7 +434,9 @@ puts $vecName(:)</code></pre>
 <h1 id="library-routines">LIBRARY ROUTINES</h1>
 <p>The following routines are available from C to manage vectors. Vectors are identified by the vector name.</p>
 <p><strong>Rbc_CreateVector</strong></p>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_CreateVector (<em>interp</em>, <em>vecName</em>, <em>length</em>, <em>vecPtrPtr</em>)</dt>
 <dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;<br />
@@ -433,7 +451,9 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 </dd>
 </dl>
 <p><strong>Rbc_DeleteVectorByName</strong></p>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_DeleteVectorByName (<em>interp</em>, <em>vecName</em>)</dt>
 <dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;
@@ -446,7 +466,9 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 </dd>
 </dl>
 <p><strong>Rbc_DeleteVector</strong></p>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_DeleteVector (<em>vecPtr</em>)</dt>
 <dd>Rbc_Vector *<em>vecPtr</em>;
@@ -459,7 +481,9 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 </dd>
 </dl>
 <p><strong>Rbc_GetVector</strong></p>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_GetVector (<em>interp</em>, <em>vecName</em>, <em>vecPtrPtr</em>)</dt>
 <dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;<br />
@@ -473,8 +497,12 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 </dd>
 </dl>
 <p><strong>Rbc_ResetVector</strong></p>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
+<blockquote>
 <p>int <strong>Rbc_ResetVector</strong> (<em>vecPtr</em>, <em>dataArr</em>,</p>
+</blockquote>
 <dl>
 <dt><em>numValues</em>, <em>arraySize</em>, <em>freeProc</em>)</dt>
 <dd>Rbc_Vector *<em>vecPtr</em>; double *<em>dataArr</em>;<br />
@@ -490,7 +518,9 @@ Tcl_FreeProc *<em>freeProc</em>;
 </dd>
 </dl>
 <p><strong>Rbc_ResizeVector</strong></p>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_ResizeVector (<em>vecPtr</em>, <em>newSize</em>)</dt>
 <dd>Rbc_Vector *<em>vecPtr</em>; int <em>newSize</em>;
@@ -499,11 +529,31 @@ Tcl_FreeProc *<em>freeProc</em>;
 <dd>Resets the length of the vector pointed to by <em>vecPtr</em> to <em>newSize</em>. If <em>newSize</em> is smaller than the current size of the vector, it is truncated. If <em>newSize</em> is greater, the vector is extended and the new components are initialized to 0.0. Calling <strong>Rbc_ResetVector</strong> will trigger the vector to dispatch notifications.
 </dd>
 <dt>Results:</dt>
-<dd>Returns TCL_OK if the vector is successfully resized. If <em>newSize</em> is negative or memory can not be allocated for the vector, then TCL_ERROR is returned and <em>interp-&gt;result</em> will contain an error message.
+<dd><p>Returns TCL_OK if the vector is successfully resized. If</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><em>newSize</em></td>
+<td>is negative or memory can not be allocated for the</td>
+</tr>
+<tr class="even">
+<td>vector,</td>
+<td>then TCL_ERROR is returned and <em>interp-&gt;result</em> will</td>
+</tr>
+<tr class="odd">
+<td>contain</td>
+<td>an error message.</td>
+</tr>
+</tbody>
+</table>
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_VectorExists</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_VectorExists (<em>interp</em>, <em>vecName</em>)</dt>
 <dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;
@@ -515,22 +565,32 @@ Tcl_FreeProc *<em>freeProc</em>;
 <dd>Returns 1 if a vector <em>vecName</em> exists and 0 otherwise.
 </dd>
 </dl>
+<blockquote>
 <p>If your application needs to be notified when a vector changes, it can allocate a unique <em>client</em> <em>identifier</em> for itself. Using this identifier, you can then register a call-back to be made whenever the vector is updated or destroyed. By default, the call-backs are made at the next idle point. This can be changed to occur at the time the vector is modified. An application can allocate more than one identifier for any vector. When the client application is done with the vector, it should free the identifier.</p>
+</blockquote>
+<blockquote>
 <p>The call-back routine must of the following type.</p>
+</blockquote>
 <dl>
 <dt>typedef void (Rbc_VectorChangedProc) (Tcl_Interp *<em>interp</em>,</dt>
 <dd>ClientData <em>clientData</em>, Rbc_VectorNotify <em>notify</em>);
 </dd>
 </dl>
+<blockquote>
 <p><em>ClientData</em> is passed to this routine whenever it is called. You can use this to pass information to the call-back. The <em>notify</em> argument indicates whether the vector has been updated of destroyed. It is an enumerated type.</p>
+</blockquote>
 <dl>
 <dt>typedef enum {</dt>
 <dd>RBC_VECTOR_NOTIFY_UPDATE=1, RBC_VECTOR_NOTIFY_DESTROY=2<br />
-} <strong>Rbc_VectorNotify</strong>;
+&gt; } <strong>Rbc_VectorNotify</strong>;
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_AllocVectorId</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>Rbc_VectorId Rbc_AllocVectorId (<em>interp</em>, <em>vecName</em>)</dt>
 <dd>Tcl_Interp *<em>interp</em>; char *<em>vecName</em>;
@@ -542,8 +602,12 @@ Tcl_FreeProc *<em>freeProc</em>;
 <dd>Returns a client identifier if successful. If <em>vecName</em> is not the name of a vector, then NULL is returned and <em>interp-&gt;result</em> will contain an error message.
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_GetVectorById</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>int Rbc_GetVector (<em>interp</em>, <em>clientId</em>, <em>vecPtrPtr</em>)</dt>
 <dd>Tcl_Interp *<em>interp</em>; Rbc_VectorId <em>clientId</em>;<br />
@@ -556,8 +620,12 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 <dd>Returns TCL_OK if the vector is successfully retrieved.
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_SetVectorChangedProc</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>void Rbc_SetVectorChangedProc (<em>clientId</em>, <em>proc</em>, <em>clientData</em>);</dt>
 <dd>Rbc_VectorId <em>clientId</em>; Rbc_VectorChangedProc *<em>proc</em>; ClientData *<em>clientData</em>;
@@ -569,8 +637,12 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 <dd>The designated call-back procedure will be invoked when the vector is updated or destroyed.
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_FreeVectorId</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>void Rbc_FreeVectorId (<em>clientId</em>);</dt>
 <dd>Rbc_VectorId <em>clientId</em>;
@@ -582,8 +654,12 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 <dd>The designated call-back procedure will be no longer be invoked when the vector is updated or destroyed.
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_NameOfVectorId</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>char *Rbc_NameOfVectorId (<em>clientId</em>);</dt>
 <dd>Rbc_VectorId <em>clientId</em>;
@@ -595,8 +671,12 @@ Rbc_Vector **<em>vecPtrPtr</em>;
 <dd>Returns the name of the vector associated with <em>clientId</em>. If <em>clientId</em> is not an identifier or the vector has been destroyed, NULL is returned.
 </dd>
 </dl>
+<blockquote>
 <p><strong>Rbc_InstallIndexProc</strong></p>
+</blockquote>
+<blockquote>
 <p>Synopsis:</p>
+</blockquote>
 <dl>
 <dt>void Rbc_InstallIndexProc (<em>indexName</em>, <em>procPtr</em>)</dt>
 <dd>char *<em>indexName</em>; Rbc_VectorIndexProc *<em>procPtr</em>;

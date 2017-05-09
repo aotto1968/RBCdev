@@ -147,7 +147,7 @@ All __tabset__ operations are invoked by specifying the widget\'s pathname,
 the operation, and any arguments that pertain to that operation\.  The
 general form is:  
 
-*pathName* *operation* ?*arg* *arg* *\.\.\.*?  
+> *pathName* *operation* ?*arg* *arg* *\.\.\.*?  
 
 *Operation* and the *arg*s determine the exact behavior of the command\.
 The following operations are available for tabset widgets:

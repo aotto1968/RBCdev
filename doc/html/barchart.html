@@ -60,7 +60,9 @@
 <p>The <strong>barchart</strong> command creates a new window for plotting two-dimensional data (X-Y coordinates), using bars of various lengths to represent the data points. The bars are drawn in a rectangular area displayed in the center of the new window. This is the <em>plotting</em> <em>area</em>. The coordinate axes are drawn in the margins surrounding the plotting area. By default, the legend is drawn in the right margin. The title is displayed in top margin.</p>
 <p>A <strong>barchart</strong> widget has several configurable components: coordinate axes, data elements, legend, grid, cross hairs, pens, postscript, and annotation markers. Each component can be queried or modified.</p>
 <p>axis</p>
+<blockquote>
 <p>Up to four coordinate axes (two X-coordinate and two Y-coordinate axes) can be displayed, but you can create and use any number of axes. Axes control what region of data is displayed and how the data is scaled. Each axis consists of the axis line, title, major and minor ticks, and tick labels. Tick labels display the value at each major tick.</p>
+</blockquote>
 <dl>
 <dt>crosshairs</dt>
 <dd>Cross hairs are used to position the mouse pointer relative to the X and Y coordinate axes. Two perpendicular lines, intersecting at the current location of the mouse, extend across the plotting area to the coordinate axes.
@@ -437,9 +439,30 @@ bind .b &lt;ButtonPress-1&gt; {
 </dd>
 </dl>
 <p>Axis configuration options may be also be set by the <strong>option</strong> command. The resource class is Axis. The resource names are the names of the axes (such as x or x2).</p>
-<p>option add *Barchart.Axis.Color blue<br />
-option add *Barchart.x.LogScale true<br />
-option add *Barchart.x2.LogScale false</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td>option</td>
+<td>add</td>
+<td align="left">*Barchart.Axis.Color</td>
+<td>blue</td>
+</tr>
+<tr class="even">
+<td>option</td>
+<td>add</td>
+<td align="left">*Barchart.x.LogScale</td>
+<td>true</td>
+</tr>
+<tr class="odd">
+<td>option</td>
+<td>add</td>
+<td align="left">*Barchart.x2.LogScale</td>
+<td>false</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>axis create</strong> <em>axisName</em> ?<em>option</em> <em>value</em>?...</dt>
 <dd><p>Creates a new axis by the name <em>axisName</em>. No axis by the same name can already exist. <em>Option</em> and <em>value</em> are described in above in the axis <strong>configure</strong> operation.</p>
@@ -517,7 +540,9 @@ option add *Barchart.x2.LogScale false</p>
 </dd>
 </dl>
 <p>Cross hairs configuration options may be also be set by the <strong>option</strong> command. The resource name and class are crosshairs and Crosshairs respectively.</p>
+<blockquote>
 <p>option add *Barchart.Crosshairs.LineWidth 2 option add *Barchart.Crosshairs.Color red</p>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>crosshairs off</strong></dt>
 <dd><p>Turns off the cross hairs.</p>
@@ -605,7 +630,9 @@ option add *Barchart.x2.LogScale false</p>
 </dd>
 </dl>
 <p>Element configuration options may also be set by the <strong>option</strong> command. The resource names in the option database are prefixed by elem.</p>
+<blockquote>
 <p>option add *Barchart.Element.background blue</p>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>element create</strong> <em>elemName</em> ?<em>option</em> <em>value</em>?...</dt>
 <dd><p>Creates a new element <em>elemName</em>. Element names must be unique, so an element <em>elemName</em> may not already exist. If additional arguments are present, they specify any of the element options valid for element <strong>configure</strong> operation.</p>
@@ -661,8 +688,10 @@ option add *Barchart.x2.LogScale false</p>
 </dd>
 </dl>
 <p>Grid configuration options may also be set by the <strong>option</strong> command. The resource name and class are grid and Grid respectively.</p>
+<blockquote>
 <p>option add *Barchart.grid.LineWidth 2<br />
 option add *Barchart.Grid.Color black</p>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>grid off</strong></dt>
 <dd><p>Turns off the display the grid lines.</p>
@@ -761,7 +790,9 @@ option add *Barchart.Grid.Color black</p>
 </dd>
 </dl>
 <p>Legend configuration options may also be set by the <strong>option</strong> command. The resource name and class are legend and Legend respectively.</p>
+<blockquote>
 <p>option add *Barchart.legend.Foreground blue option add *Barchart.Legend.Relief raised</p>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>legend deactivate</strong> <em>pattern</em>...</dt>
 <dd><p>Selects legend entries to be drawn using the normal legend colors and relief. All entries whose element names match <em>pattern</em> are selected. To be selected, the element name must match only one <em>pattern</em>.</p>
@@ -810,7 +841,9 @@ option add *Barchart.Grid.Color black</p>
 </dd>
 </dl>
 <p>Pen configuration options may be also be set by the <strong>option</strong> command. The resource class is Pen. The resource names are the names of the pens.</p>
+<blockquote>
 <p>option add *Barchart.Pen.Foreground blue option add *Barchart.activeBar.foreground green</p>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>pen create</strong> <em>penName</em> ?<em>option</em> <em>value</em>?...</dt>
 <dd><p>Creates a new pen by the name <em>penName</em>. No pen by the same name can already exist. <em>Option</em> and <em>value</em> are described in above in the pen <strong>configure</strong> operation.</p>
@@ -873,7 +906,9 @@ option add *Barchart.Grid.Color black</p>
 </dd>
 </dl>
 <p>Postscript configuration options may be also be set by the <strong>option</strong> command. The resource name and class are postscript and Postscript respectively.</p>
+<blockquote>
 <p>option add *Barchart.postscript.Decorations false option add *Barchart.Postscript.Landscape true</p>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>postscript output</strong> ?<em>fileName</em>? ?<em>option</em> <em>value</em>?...</dt>
 <dd><p>Outputs a file of encapsulated PostScript. If a <em>fileName</em> argument isn't present, the command returns the PostScript. If any <em>option-value</em> pairs are present, they set configuration options controlling how the PostScript is generated. <em>Option</em> and <em>value</em> can be anything accepted by the postscript <strong>configure</strong> operation above.</p>
@@ -933,7 +968,27 @@ option add *Barchart.Grid.Color black</p>
 </dd>
 </dl>
 <p>Marker configuration options may also be set by the <strong>option</strong> command. The resource class is either BitmapMarker, ImageMarker, LineMarker, PolygonMarker, TextMarker, or WindowMarker, depending on the type of marker. The resource name is the name of the marker.</p>
-<p>option add *Barchart.TextMarker.Foreground white option add *Barchart.BitmapMarker.Foreground white option add *Barchart.m1.Background blue</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td>option</td>
+<td>add</td>
+<td>*Barchart.TextMarker.Foreground white</td>
+</tr>
+<tr class="even">
+<td>option</td>
+<td>add</td>
+<td>*Barchart.BitmapMarker.Foreground white</td>
+</tr>
+<tr class="odd">
+<td>option</td>
+<td>add</td>
+<td>*Barchart.m1.Background blue</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 </dd>
 <dt><em>pathName</em> <strong>marker create</strong> <em>type</em> ?<em>option</em> <em>value</em>?...</dt>
 <dd><p>Creates a marker of the selected type. <em>Type</em> may be either text, line, bitmap, image, polygon, or window. This command returns the marker identifier, used as the <em>markerId</em> argument in the other marker-related commands. If the <strong>-name</strong> option is used, this overrides the normal marker identifier. If the name provided is already used for another marker, the new marker will replace the old.</p>

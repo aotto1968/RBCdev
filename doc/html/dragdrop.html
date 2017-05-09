@@ -27,9 +27,22 @@
 <h1 id="name">NAME</h1>
 <p>drag&amp;drop - facilities for handling drag&amp;drop data transfers</p>
 <h1 id="synopsis">SYNOPSIS</h1>
-<p><strong>drag&amp;drop source</strong><br />
-<strong>drag&amp;drop source</strong> <em>window</em> ?<em>options</em>?<br />
-<strong>drag&amp;drop source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em>? ?<em>command</em> <em>arg</em> <em>arg...</em>?</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>drag&amp;drop</strong></td>
+<td><strong>source</strong></td>
+</tr>
+<tr class="even">
+<td><strong>drag&amp;drop</strong></td>
+<td><strong>source</strong> <em>window</em> ?<em>options</em>?</td>
+</tr>
+<tr class="odd">
+<td><strong>drag&amp;drop</strong></td>
+<td><strong>source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em>? ?<em>command</em> <em>arg</em> <em>arg...</em>?</td>
+</tr>
+</tbody>
+</table>
 <p><strong>drag&amp;drop target</strong><br />
 <strong>drag&amp;drop target</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em> <em>command</em> <em>arg</em> <em>arg...</em>?</p>
 <p><strong>drag&amp;drop target</strong> <em>window</em> <strong>handle</strong> <em>dataType</em> ?<em>value</em>?</p>
@@ -51,16 +64,66 @@
 </dd>
 <dt><strong>drag&amp;drop source</strong> <em>window</em> ?<em>options</em>?</dt>
 <dd><p>Registers a new drag&amp;drop source window with the given options, or modifies the options for an existing window:</p>
-<p>Name: <strong>buttonBinding</strong><br />
-Class: <strong>ButtonBinding</strong><br />
-Switch: <strong>-button</strong> <em>n</em></p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>buttonBinding</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>ButtonBinding</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-button</strong> <em>n</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies the mouse button (integer 1-5) that will invoke the drag&amp;drop operation on the source window. This causes the following bindings to be added to the widget:</p>
-<p>bind <em>win</em> &lt;ButtonPress-<em>n</em>&gt; {drag&amp;drop drag %W %X %Y} bind <em>win</em> &lt;B<em>n</em>-Motion&gt; {drag&amp;drop drag %W %X %Y} bind <em>win</em> &lt;ButtonRelease-<em>n</em>&gt; {drag&amp;drop drop %W %X %Y}</p>
+</blockquote>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td>bind</td>
+<td><em>win</em></td>
+<td>&lt;ButtonPress-<em>n</em>&gt; {drag&amp;drop drag %W %X %Y}</td>
+</tr>
+<tr class="even">
+<td>bind</td>
+<td><em>win</em></td>
+<td>&lt;B<em>n</em>-Motion&gt; {drag&amp;drop drag %W %X %Y}</td>
+</tr>
+<tr class="odd">
+<td>bind</td>
+<td><em>win</em></td>
+<td>&lt;ButtonRelease-<em>n</em>&gt; {drag&amp;drop drop %W %X %Y}</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
 <p>The default value is button 3. If the value &quot;0&quot; is specified, then no bindings are added; this enables the user to establish bindings manually.</p>
-<p>Name: <strong>packageCommand</strong><br />
-Class: <strong>Command</strong><br />
-Switch: <strong>-packagecmd</strong> <em>command</em></p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>packageCommand</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Command</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-packagecmd</strong> <em>command</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies a Tcl command used to establish the appearance of the token window at the start of each drag&amp;drop operation. This command is automatically invoked by the <strong>drag&amp;drop drag</strong> command whenever the token window is about to be mapped for a drag operation. It should update the appearance of the token window to represent the data that is being moved.</p>
+</blockquote>
 <p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
 <dl>
 <dt>%t</dt>
@@ -77,40 +140,125 @@ Switch: <strong>-packagecmd</strong> <em>command</em></p>
 <dd><p>set xy [drag&amp;drop location] set y [expr [lindex $xy 1]-[winfo rooty $lbox]]</p>
 <p>set str [$lbox get [$lbox nearest $y]] $token.value configure -text $str<br />
 return $str<br />
-}</p>
+&gt; }</p>
 </dd>
 </dl>
 <p>The return value is available later when the source and target communicate. If the source has a command associated with its data handler, then this value is substituted in place of &quot;%v&quot; in the source handler. Otherwise, it is substituted in place of &quot;%v&quot; in the target handler.</p>
-<p>Name: <strong>rejectBackground</strong><br />
-Class: <strong>Background</strong><br />
-Switch: <strong>-rejectbg</strong> <em>color</em></p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>rejectBackground</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Background</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-rejectbg</strong> <em>color</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies the color used to draw the background of the rejection symbol on the token window. The rejection symbol (a circle with a line through it--the international &quot;no&quot;) appears whenever communication fails.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>rejectForeground</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Foreground</strong> Switch: <strong>-rejectfg</strong> <em>color</em>
-</dd>
-</dl>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>rejectForeground</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Foreground</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-rejectfg</strong> <em>color</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies the color used to draw the foreground of the rejection symbol on the token window.</p>
-<p>Name: <strong>rejectStipple</strong><br />
-Class: <strong>Stipple</strong><br />
-Switch: <strong>-rejectstipple</strong> <em>pattern</em></p>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>rejectStipple</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Stipple</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-rejectstipple</strong> <em>pattern</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies a stipple pattern used to draw the foreground of the rejection symbol on the token window. Any of the forms acceptable to Tk_GetBitmap can be used.</p>
-<p>Name: <strong>selfTarget</strong><br />
-Class: <strong>SelfTarget</strong><br />
-Switch: <strong>-selftarget</strong> <em>boolean</em></p>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>selfTarget</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>SelfTarget</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-selftarget</strong> <em>boolean</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>If the <em>boolean</em> value is true, and if a source widget is also registered as a compatible target, then the source will be able to transmit to itself during drag&amp;drop operations. This is primarily useful for complex sources such as a canvas widget, where items may be moved from place to place within the same widget. By default, this option is disabled.</p>
-<p>Name: <strong>send</strong><br />
-Class: <strong>Send</strong><br />
-Switch: <strong>-send</strong> <em>list</em></p>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>send</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Send</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-send</strong> <em>list</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies a <em>list</em> of <em>dataTypes</em> enabled for communication. Only <em>dataTypes</em> defined by commands of the form &quot;<strong>drag&amp;drop</strong> <strong>source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em> ?<em>command</em> <em>arg</em> <em>arg...</em>?&quot; are allowed. This list also determines the priority of the various <em>dataTypes</em>. When a token window is over a potential drag&amp;drop target, this list is searched from start to finish for a <em>dataType</em> that is also recognized by the target. The first matching <em>dataType</em> found determines the value that will be sent if the token is dropped. If no matching <em>dataType</em> is found, then the target is incompatible, and is ignored. By default, this option has the value &quot;all&quot;, indicating that all <em>dataTypes</em> should be considered in the order that they were defined for the source.</p>
+</blockquote>
 <p>Note that this option makes it easy to control a drag&amp;drop source. Setting the value to an empty string disables the source; setting the value back to &quot;all&quot; restores communication.</p>
-<p>Name: <strong>siteCommand</strong><br />
-Class: <strong>Command</strong><br />
-Switch: <strong>-sitecmd</strong> <em>command</em></p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>siteCommand</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Command</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-sitecmd</strong> <em>command</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies a Tcl command used to update the appearance of the token window. If specified, this command is automatically invoked by the <strong>drag&amp;drop drag</strong> command whenever the token window is over a compatible drag&amp;drop target.</p>
+</blockquote>
 <p>The following substitutions are made in the <em>command</em> string before it is executed:</p>
 <dl>
 <dt>%s</dt>
@@ -121,27 +269,82 @@ Switch: <strong>-sitecmd</strong> <em>command</em></p>
 </dd>
 </dl>
 <p>Regardless of this command, border of the token window will become raised whenever the token is over a valid target. This command can be used to display other visual cues.</p>
-<p>Name: <strong>tokenAnchor</strong><br />
-Class: <strong>Anchor</strong><br />
-Switch: <strong>-tokenanchor</strong> <em>anchor</em></p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>tokenAnchor</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Anchor</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-tokenanchor</strong> <em>anchor</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies how the token window is positioned relative to the mouse pointer coordinates passed to the <strong>drag&amp;drop</strong> <strong>drag</strong> command. Must be one of the values n, s, e, w, center, nw, ne, sw or se. For example, &quot;nw&quot; means to position the token such that its upper-left corner is at the mouse pointer. The default value is &quot;center&quot;.</p>
-<dl>
-<dt>Name:</dt>
-<dd><strong>tokenBackground</strong>
-</dd>
-<dt>Class:</dt>
-<dd><strong>Background</strong> Switch: <strong>-tokenbg</strong> <em>color</em>
-</dd>
-</dl>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>tokenBackground</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Background</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-tokenbg</strong> <em>color</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies the color used to draw the background of the token window.</p>
-<p>Name: <strong>tokenBorderWidth</strong><br />
-Class: <strong>BorderWidth</strong><br />
-Switch: <strong>-tokenborderwidth</strong> <em>size</em></p>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>tokenBorderWidth</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>BorderWidth</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-tokenborderwidth</strong> <em>size</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies the width in pixels of the border around the token window. This border becomes raised to indicate when the token is over a compatible drag&amp;drop target site. The value may have any of the forms acceptable to Tk_GetPixels. The default value is &quot;3&quot;.</p>
-<p>Name: <strong>tokenCursor</strong><br />
-Class: <strong>Cursor</strong><br />
-Switch: <strong>-tokencursor</strong> <em>cursor</em></p>
+</blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">Name:</td>
+<td><strong>tokenCursor</strong></td>
+</tr>
+<tr class="even">
+<td align="left">Class:</td>
+<td><strong>Cursor</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Switch:</td>
+<td><strong>-tokencursor</strong> <em>cursor</em></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
 <p>Specifies the cursor used when a token window is active. The value may have any of the forms acceptable to Tk_GetCursor. The default value is &quot;center_ptr&quot;.</p>
+</blockquote>
 </dd>
 <dt><strong>drag&amp;drop source</strong> <em>window</em> <strong>handler</strong> ?<em>dataType</em>? ?<em>command</em> <em>arg</em> <em>arg...</em>?</dt>
 <dd><p>With no extra arguments, this command returns a list of all <em>dataType</em> names that have been registered for the source <em>window</em>. If only the <em>dataType</em> is specified, then the <em>dataType</em> is created if necessary, and the command associated with the <em>dataType</em> is returned. Otherwise, it concatenates the <em>command</em> and any extra <em>arg</em> strings, and registers a new <em>dataType</em> with this command.</p>

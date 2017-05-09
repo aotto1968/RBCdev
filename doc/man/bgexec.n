@@ -159,10 +159,12 @@ tkwait\ variable\ myStatus
 .SH SYNTAX
 .PP
 The \f[B]bgexec\f[] command takes the following form:
+.RS
 .PP
 \f[B]rbc::bgexec\f[] \f[I]varName\f[] ?\f[I]option\f[]
 \f[I]value\f[]?...
 \f[I]program\f[] ?\f[I]arg\f[]?...
+.RE
 .PP
 \f[I]VarName\f[] is the name of a global variable which is set when
 \f[I]program\f[] has finished executing.
